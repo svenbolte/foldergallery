@@ -1,6 +1,3 @@
-# foldergallery
- Wordpress plugin to create gallery, sliders and document lists from a directory
-
 === Folder Gallery and Slider with documentlist ===
 Contributors: vjalby,PBMod
 Tags: gallery, folder, lightbox, Folder Slider, bxslider

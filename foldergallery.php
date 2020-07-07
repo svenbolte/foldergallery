@@ -364,13 +364,13 @@ class foldergallery{
 				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 				if ( in_array( $ext, $extensions ) ) {
 					if ($file != '.' && $file != '..') {
-						if ( file_exists( plugin_dir_path( __FILE__ ).'/icons/'.$ext.'.png ' ) ) {
+						if ( file_exists( plugin_dir_path( __FILE__ ).'icons/'.$ext.'.png' ) ) {
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/'.$ext.'.png' );
 						} else {
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
 						}
 						$files[] = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
-						$files[] .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'.$folder ."/". $file.'">' . $file . ' </a>';
+						$files[] .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
 						$files[] .= '  &nbsp; '. file_size(filesize($directory ."/". $file)) . '  &nbsp; erstellt: '. date("d.m.Y H:i:s", filectime($directory ."/". $file)). ' &nbsp; aktualisiert: ' . date("d.m.Y H:i:s", filemtime($directory . "/". $file)) . '</td></tr>';
 					}	
 				}	

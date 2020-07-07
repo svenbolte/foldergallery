@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Folder Gallery Slider
+Plugin URI: https://github.com/svenbolte/foldergallery
 Version: 9.7.5.25
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. The gallery is automatically generated in a post or page with a shortcode. Usage: [foldergallery folder="local_path_to_folder" title="Gallery title"]. For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. The picture folder must be writable (chmod 777).

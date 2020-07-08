@@ -359,6 +359,11 @@ class foldergallery{
 				sprintf( __( 'Unable to find the directory %s.', 'foldergallery' ), $folder ) . '</p>';	
 		}
 		$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4";
+		if (!wp_style_is( 'font-awesome', 'enqueued' )) {
+			$creatext='erstellt:'; $modtext='erstellt:';
+		}  else {
+			$creatext='<i class="fa fa-calendar-o"></i>';$modtext='<i class="fa fa-calendar-check-o"></i>';
+		}
 		$directory=$folder;
 		$extensions = explode(" ", $filetypes);
 		$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
@@ -374,11 +379,13 @@ class foldergallery{
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
 						}
 						$dateigroesse = $this->file_size(filesize($directory ."/". $file));
-						$mtime = date("d.m.Y H:i:s", filemtime($directory ."/". $file));
-						$ctime = date("d.m.Y H:i:s", filectime($directory ."/". $file));
+						$mtime = date("Y.m.d H:i:s", filemtime($directory ."/". $file));
+						$mtimed = date("d.m.y, H:i:s", filemtime($directory ."/". $file));
+						$ctime = date("Y.m.d H:i:s", filectime($directory ."/". $file));
+						$ctimed = date("d.m.Y, H:i:s", filectime($directory ."/". $file));
 						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
 						$content .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
-						$content .= '  &nbsp; '.$dateigroesse.'  &nbsp; erstellt: '. $ctime . ' &nbsp; aktualisiert: ' . $mtime . '</td></tr>';
+						$content .= '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed . ' &nbsp; '.$modtext.' ' . $mtimed . '</td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),

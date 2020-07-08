@@ -2,7 +2,7 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.25
+Version: 9.7.5.27
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. The gallery is automatically generated in a post or page with a shortcode. Usage: [foldergallery folder="local_path_to_folder" title="Gallery title"]. For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. The picture folder must be writable (chmod 777).
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders
@@ -27,7 +27,7 @@ class foldergallery{
 		add_action('plugins_loaded', array( $this, 'fg_init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'fg_styles' ) );
 		add_shortcode( 'foldergallery', array( $this, 'fg_gallery' ) );
-		add_shortcode ('folderdir', array( $this, 'meinedirliste' ) );
+		add_shortcode( 'folderdir', array( $this, 'meinedirliste' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'fg_plugin_action_links' ) );
 	}
 	
@@ -256,6 +256,18 @@ class foldergallery{
 		return $files;
 	}
 	
+	public function file_size($size_in_bytes ) {
+		if ($size_in_bytes < 1000) {
+			return $size_in_bytes . ' B';
+		} elseif ($size_in_bytes < 1000*1000) {
+			$size_in_kb = (int) ($size_in_bytes/1000);
+			return $size_in_kb . ' KB';	
+		} else {
+			$size_in_mb = (int) ($size_in_bytes/1000/1000);
+			return $size_in_mb . 'MB';
+		}
+	}
+	
 	public function file_array( $directory , $sort) { // List all image files in $directory
 		$cwd = getcwd();
 		chdir( $directory );
@@ -329,25 +341,18 @@ class foldergallery{
     	$url .= '/' . ltrim( $path, '/' );
     	return $url;
 	}
-				
-	// Verzeichnisliste ausgeben mit Erstelldatum und Moddatum [folderdir folder="wp-content/uploads/bilder/]" 
-	function meinedirliste( $atts ) {  // generate document/file download list
 
-		function file_size($size_in_bytes ) {
-			if ($size_in_bytes < 1000) {
-				return "$size_in_bytes B";
-			} elseif ($size_in_bytes < 1000*1000) {
-				$size_in_kb = (int) ($size_in_bytes/1000);
-				return "$size_in_kb KB";	
-			} else {
-				$size_in_mb = (int) ($size_in_bytes/1000/1000);
-				return "$size_in_mb MB";
-			}
-		}
+	
+	// Verzeichnisliste ausgeben mit Erstelldatum und Moddatum [folderdir folder="wp-content/uploads/bilder/]" 
+	public function meinedirliste( $atts ) {  // generate document/file download list
 
 		extract( shortcode_atts( array(
 			'folder'  => 'wp-content/uploads/bilder/',
+			'sort'	  => $fg_options['sort'],
 		), $atts ) );
+		if (isset($_GET['sort'])) {
+		  $sort = $_GET['sort'];
+		} 
 		$folder = rtrim( $folder, '/' ); // Remove trailing / from path
 		if ( !is_dir( $folder ) ) {
 			return '<p style="color:red;"><strong>' . __( 'Folder Gallery Error:', 'foldergallery' ) . '</strong> ' .
@@ -360,7 +365,6 @@ class foldergallery{
 		$files = array();
 		if( $handle = opendir( $directory ) ) {
 			while ( false !== ( $file = readdir( $handle ) ) ) {
-
 				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 				if ( in_array( $ext, $extensions ) ) {
 					if ($file != '.' && $file != '..') {
@@ -369,22 +373,66 @@ class foldergallery{
 						} else {
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
 						}
-						$files[] = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
-						$files[] .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
-						$files[] .= '  &nbsp; '. file_size(filesize($directory ."/". $file)) . '  &nbsp; erstellt: '. date("d.m.Y H:i:s", filectime($directory ."/". $file)). ' &nbsp; aktualisiert: ' . date("d.m.Y H:i:s", filemtime($directory . "/". $file)) . '</td></tr>';
+						$dateigroesse = $this->file_size(filesize($directory ."/". $file));
+						$mtime = date("d.m.Y H:i:s", filemtime($directory ."/". $file));
+						$ctime = date("d.m.Y H:i:s", filectime($directory ."/". $file));
+						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
+						$content .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
+						$content .= '  &nbsp; '.$dateigroesse.'  &nbsp; erstellt: '. $ctime . ' &nbsp; aktualisiert: ' . $mtime . '</td></tr>';
+						$file_object = array(
+							'name' => $file,
+							'size' => filesize($directory ."/". $file),
+							'mtime' => $mtime,
+							'ctime' => $ctime,
+							'content' => $content
+						);
+						$files[] = $file_object;
 					}	
 				}	
 			}
 			closedir( $handle );
 		}
-		$xausgabe='<table>';
+
+		// Sort files
+		switch ( $sort ) {
+			case 'size' :
+				array_multisort(array_column($files, 'size'), SORT_ASC, $files);
+			break;
+			case 'size_desc' :
+				array_multisort(array_column($files, 'size'), SORT_DESC, $files);
+			break;
+			case 'date' :
+				array_multisort(array_column($files, 'mtime'), SORT_ASC, $files);
+			break;
+			case 'date_desc' :
+				array_multisort(array_column($files, 'mtime'), SORT_DESC, $files);
+			break;
+			case 'name_desc' :
+				array_multisort(array_column($files, 'name'), SORT_DESC, $files);
+			break;
+			default:
+				// nach filename
+				array_multisort(array_column($files, 'name'), SORT_ASC, $files);
+		}
+		
+		// ausgeben
+		$xausgabe='<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
+		$xausgabe.='   <option value="name">Dateiname</option>';
+		$xausgabe.='   <option value="name_desc">Dateiname absteigend</option>';
+		$xausgabe.='   <option value="size">Datei-Größe</option>';
+		$xausgabe.='   <option value="size_desc">Datei-Größe absteigend</option>';
+		$xausgabe.='   <option value="date">Datum</option>';
+		$xausgabe.='   <option value="date_desc">Datum absteigend</option>';
+		$xausgabe.='</select><input type="submit" value="sortieren" /></form></div>';
+		$xausgabe.='<table>';
 		foreach( $files as $fout ) {
-			$xausgabe.= $fout ;	
+			$xausgabe.= $fout['content'];
 		}	
 		$xausgabe.='</table>';
 		return $xausgabe;
 	}
 
+	
 
 	public function fg_gallery( $atts ) { // Generate gallery
 		$fg_options = get_option( 'FolderGallery' );

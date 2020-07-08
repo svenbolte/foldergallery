@@ -3,23 +3,21 @@ Contributors: vjalby,PBMod
 Tags: gallery, folder, lightbox, Folder Slider, bxslider
 Requires at least: 4.0
 Tested up to: 4.9.0
-Stable tag: 1.7.4
+Stable tag: 9.7.5.27
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin generates picture galleries and Sliders from a folder using a shortcode.
-
-== Description ==
-
-This plugin creates picture galleries from a folder. 
+This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
-
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
 
 To show a documents list for download pdf files use shortcode
 
 	[folderdir folder="wp-content/uploads/bilder/]
 
+To show a photo slider from a gallery:
+
+	[folderslider folder="wp-content/upload/MyPictures" width=500 mode=fade speed=2.5 captions=smartfilename controls=false]
 
 To include a gallery in a post or a page, you have to use the following shortcode :
 
@@ -47,10 +45,8 @@ An Options page allow to set the default paramaters of the galleries :
  
 Most of theses settings can be overridden using the corresponding shortcode :
 
-	[foldergallery folder="path" title="title" columns=1 width=150 
-			height=90 border=1 padding=2 margin=10 thumbnails=single]
+	[foldergallery folder="path" title="title" columns=1 width=150 height=90 border=1 padding=2 margin=10 thumbnails=single]
  
-Sample, contact available at http://jalby.org/wordpress/
 
 == Installation ==
 
@@ -143,13 +139,39 @@ The caption format is set with the attribute `caption`. It can be set to `filena
 
 	[foldergallery folder="path" title="My Gallery" show_thumbnail_captions=1 caption='smartfilename']
 
+========================================= Slider =========================================================================================
 
-== Screenshots ==
-1. Folder Gallery Options
-2. Folder Gallery in a post
-3. Folder Gallery Lightbox
+To include a slider in a post or a page, you have to use the following shortcode :
+
+	[folderslider folder="local_path_to_folder"]
+
+An Options page allow to set the default paramaters of the sliders :
+
+* Transition Mode (mode): horizontal, vertical, fade
+* Caption Format (captions): none, filename, filenamewithoutextension, smartfilename (filename with underscores, extension and front numbers removed)
+* CSS (css): change the frame around slider: 'noborder', 'shadow', 'shadownoborder', 'black-border', 'white-border', 'gray-border'
+* Width and Height of the slider (width and height)
+* Speed (speed):  time between slides in seconds
+* Previous/Next Buttons (controls): true or false
+* Play/Pause Button (playcontrol): true or false
+* Start Slider Automatically (autostart): true or false
+* Pager (pager): true or false
+
+Default slider width is the width of the first picture unless the attribute width is set to a non-zero value. The height is calculate for each picture (to keep ratio) unless the attribute height is set to a non-zero value.
+
+Most of theses settings can be overridden using the corresponding shortcode attribute:
+
+	[folderslider folder="wp-content/upload/MyPictures" width=500 mode=fade speed=2.5 captions=smartfilename controls=false]
+ 
+This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com 
+
+
 
 == Changelog ==
+
+= 9.7.5.27
+Folderdir shortcode gets parameter sort= to be sorted. This can also be done by adding url paramater ?sort=file_desc (file size size_desc date date_desc)
+A Select box is displayed on top of the table to invoke sorting from the frontend
 
 = 9.7.5.25
 * Add [folderdir] shortcode which displays a file list of filetypes pdf, zip, exe, pptx, docx, xlsx for document downloading or for tech datasheets
@@ -243,93 +265,4 @@ The caption format is set with the attribute `caption`. It can be set to `filena
 * Misc changes
 
 = 0.90 [2013-01-05] =
-* First released version
-
-======================================== Slider ================================================
-
-=== Folder Slider ===
-Contributors: vjalby, PBMod
-Tags: slider, slideshow, folder, bxslider
-Requires at least: 4.0
-Tested up to: 4.9.0
-Stable tag: 1.1.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
-This plugin generates picture sliders from a folder using a shortcode.
-
-== Description ==
-
-This plugin creates picture sliders (slideshows) from a folder.
-The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload).
-
-To include a slider in a post or a page, you have to use the following shortcode :
-
-	[folderslider folder="local_path_to_folder"]
-
-An Options page allow to set the default paramaters of the sliders :
-
-* Transition Mode (mode): horizontal, vertical, fade
-* Caption Format (captions): none, filename, filenamewithoutextension, smartfilename (filename with underscores, extension and front numbers removed)
-* CSS (css): change the frame around slider: 'noborder', 'shadow', 'shadownoborder', 'black-border', 'white-border', 'gray-border'
-* Width and Height of the slider (width and height)
-* Speed (speed):  time between slides in seconds
-* Previous/Next Buttons (controls): true or false
-* Play/Pause Button (playcontrol): true or false
-* Start Slider Automatically (autostart): true or false
-* Pager (pager): true or false
-
-Default slider width is the width of the first picture unless the attribute width is set to a non-zero value. The height is calculate for each picture (to keep ratio) unless the attribute height is set to a non-zero value.
-
-Most of theses settings can be overridden using the corresponding shortcode attribute:
-
-	[folderslider folder="wp-content/upload/MyPictures" width=500 
-		mode=fade speed=2.5 captions=smartfilename controls=false css="gray-border"]
- 
-This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com 
-
-Sample, contact available at http://jalby.org/wordpress/
-
-== Installation ==
-
-1. Unzip the archive folder-slider.zip
-2. Upload the directory 'folder-slider' to the '/wp-content/plugins/' directory
-3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Upload a folder of pictures to 'wp-content/upload/MyPictures'
-5. Insert the following short code in post or page :
-
-	[folderslider folder="wp-content/upload/MyPictures"]
-
-
-== Changelog ==
-
-= 1.1.3 [2017-11-18] =
-* WPML fix option
-* Misc bugs fixed
-
-= 1.1.2 [2017-08-12] =
-* PHP7 compatibility
-* Update bxSlider to 4.2.12
-
-= 1.1.1 [2015-10-12] =
-* Update bxSlider to 4.2.5
-* New CSS setting/option replacing CSS/Show box with shadow. 
-* Shadow option can be set per slider. 
-* When width option is set to 0, slider's width is set to the width of first picture (instead of 100 %)
-* Speed (in seconds) may be decimal (e.g., 1.5)
-* Fix a bug with ML Plugin
-
-= 1.0 [2014-02-02] =
-* Support for several sliders (with different settings) on the same page
-
-= 0.94 [2013-08-22] =
-* Safari bug fixed
-
-= 0.92 [2013-08-20] =
-* HTML tag bug fixed
-
-= 0.91 [2013-08-19] =
-* CSS bug fixed
-
-= 0.9 [2013-08-19] =
 * First released version

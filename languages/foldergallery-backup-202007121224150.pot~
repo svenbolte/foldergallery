@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Folder Gallery\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-12 12:24+0000\n"
+"POT-Creation-Date: 2020-07-04 10:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,315 +15,306 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.4.0; wp-5.4.2"
 
-#: foldergallery.php:394 foldergallery.php:526 foldergallery.php:534
-#: foldergallery.php:549
+#: foldergallery.php:357 foldergallery.php:365 foldergallery.php:380
 msgid "Folder Gallery Error:"
 msgstr ""
 
-#: foldergallery.php:395 foldergallery.php:527
+#: foldergallery.php:358
 #, php-format
 msgid "Unable to find the directory %s."
 msgstr ""
 
-#: foldergallery.php:535
+#: foldergallery.php:366
 #, php-format
 msgid "No picture available inside %s."
 msgstr ""
 
-#: foldergallery.php:550
+#: foldergallery.php:381
 #, php-format
 msgid "Unable to create the thumbnails directory inside %s."
 msgstr ""
 
-#: foldergallery.php:551
+#: foldergallery.php:382
 msgid "Verify that this directory is writable (chmod 777)."
 msgstr ""
 
-#: foldergallery.php:770
+#: foldergallery.php:601
 msgid "FGal Settings"
 msgstr ""
 
-#: foldergallery.php:867
+#: foldergallery.php:698
 msgid "Folder Gallery Settings"
 msgstr ""
 
-#: foldergallery.php:875
+#: foldergallery.php:705
 msgid "Gallery Engine"
 msgstr ""
 
-#: foldergallery.php:919 foldergallery.php:937 foldergallery.php:1022
-#: foldergallery.php:1060
+#: foldergallery.php:749 foldergallery.php:767 foldergallery.php:846
+#: foldergallery.php:884
 msgid "None"
 msgstr ""
 
-#: foldergallery.php:923
+#: foldergallery.php:753
 msgid "Thumbnail Settings"
 msgstr ""
 
-#: foldergallery.php:927
+#: foldergallery.php:757
 msgid "Display Thumbnails"
 msgstr ""
 
-#: foldergallery.php:931
+#: foldergallery.php:761
 msgid "All"
 msgstr ""
 
-#: foldergallery.php:934
+#: foldergallery.php:764
 msgid "Single"
 msgstr ""
 
-#: foldergallery.php:942
+#: foldergallery.php:772
 msgid "Sort Pictures by"
 msgstr ""
 
-#: foldergallery.php:946 foldergallery.php:1001
+#: foldergallery.php:776 foldergallery.php:825
 msgid "Filename"
 msgstr ""
 
-#: foldergallery.php:949
+#: foldergallery.php:779
 msgid "Filename (descending)"
 msgstr ""
 
-#: foldergallery.php:952
+#: foldergallery.php:782
 msgid "Date"
 msgstr ""
 
-#: foldergallery.php:955
+#: foldergallery.php:785
 msgid "Date (descending)"
 msgstr ""
 
-#: foldergallery.php:958
-msgid "Size"
-msgstr ""
-
-#: foldergallery.php:961
-msgid "Size (descending)"
-msgstr ""
-
-#: foldergallery.php:964
+#: foldergallery.php:788
 msgid "Random"
 msgstr ""
 
-#: foldergallery.php:968
+#: foldergallery.php:792
 msgid "Columns"
 msgstr ""
 
-#: foldergallery.php:968 foldergallery.php:970 foldergallery.php:1563
-#: foldergallery.php:1564
+#: foldergallery.php:792 foldergallery.php:794 foldergallery.php:1387
+#: foldergallery.php:1388
 msgid "(0 = auto)"
 msgstr ""
 
-#: foldergallery.php:969
+#: foldergallery.php:793
 msgid "Thumbnails Width"
 msgstr ""
 
-#: foldergallery.php:970
+#: foldergallery.php:794
 msgid "Thumbnails Height"
 msgstr ""
 
-#: foldergallery.php:971
+#: foldergallery.php:795
 msgid "Picture Border"
 msgstr ""
 
-#: foldergallery.php:972
+#: foldergallery.php:796
 msgid "Padding"
 msgstr ""
 
-#: foldergallery.php:973
+#: foldergallery.php:797
 msgid "Margin"
 msgstr ""
 
-#: foldergallery.php:977
+#: foldergallery.php:801
 msgid "Show Thumbnail Captions"
 msgstr ""
 
-#: foldergallery.php:981
+#: foldergallery.php:805
 msgid "No"
 msgstr ""
 
-#: foldergallery.php:984
+#: foldergallery.php:808
 msgid "Yes"
 msgstr ""
 
-#: foldergallery.php:989
+#: foldergallery.php:813
 msgid "Lightbox Settings"
 msgstr ""
 
-#: foldergallery.php:994 foldergallery.php:1520
+#: foldergallery.php:818 foldergallery.php:1344
 msgid "Caption Format"
 msgstr ""
 
-#: foldergallery.php:998
+#: foldergallery.php:822
 msgid "Default (Title + Picture Number)"
 msgstr ""
 
-#: foldergallery.php:1004
+#: foldergallery.php:828
 msgid "Filename without extension"
 msgstr ""
 
-#: foldergallery.php:1007
+#: foldergallery.php:831
 msgid "Smart Filename"
 msgstr ""
 
-#: foldergallery.php:1010
+#: foldergallery.php:834
 msgid "Modification date"
 msgstr ""
 
-#: foldergallery.php:1013
+#: foldergallery.php:837
 msgid "Modification date and time"
 msgstr ""
 
-#: foldergallery.php:1016
+#: foldergallery.php:840
 msgid "Modification date (RFC 2822)"
 msgstr ""
 
-#: foldergallery.php:1019
+#: foldergallery.php:843
 msgid "Modification date (ISO 8601)"
 msgstr ""
 
-#: foldergallery.php:1030
+#: foldergallery.php:854
 msgid "Lightview Options"
 msgstr ""
 
-#: foldergallery.php:1032
+#: foldergallery.php:856
 msgid "Lightview default options, comma-separated."
 msgstr ""
 
-#: foldergallery.php:1034
+#: foldergallery.php:858
 msgid "For details, see:"
 msgstr ""
 
-#: foldergallery.php:1044
+#: foldergallery.php:868
 msgid "Fancybox Caption Style"
 msgstr ""
 
-#: foldergallery.php:1048
+#: foldergallery.php:872
 msgid "Inside"
 msgstr ""
 
-#: foldergallery.php:1051
+#: foldergallery.php:875
 msgid "Outside"
 msgstr ""
 
-#: foldergallery.php:1054
+#: foldergallery.php:878
 msgid "Over"
 msgstr ""
 
-#: foldergallery.php:1057
+#: foldergallery.php:881
 msgid "Float"
 msgstr ""
 
-#: foldergallery.php:1065
+#: foldergallery.php:889
 msgid "Fancybox Transition"
 msgstr ""
 
-#: foldergallery.php:1076
+#: foldergallery.php:900
 msgid "Autoplay Speed"
 msgstr ""
 
-#: foldergallery.php:1076
+#: foldergallery.php:900
 msgid "(0 = off)"
 msgstr ""
 
-#: foldergallery.php:1090
+#: foldergallery.php:914
 msgid "Enable infinite gallery navigation"
 msgstr ""
 
-#: foldergallery.php:1091
+#: foldergallery.php:915
 msgid "Display toolbar (buttons at the top)"
 msgstr ""
 
-#: foldergallery.php:1092
+#: foldergallery.php:916
 msgid "Display infobar (counter and arrows at the top)"
 msgstr ""
 
-#: foldergallery.php:1093
+#: foldergallery.php:917
 msgid "Display navigation arrows at the screen edges"
 msgstr ""
 
-#: foldergallery.php:1094
+#: foldergallery.php:918
 msgid "Display images fullscreen"
 msgstr ""
 
-#: foldergallery.php:1095
+#: foldergallery.php:919
 msgid "Start slideshow automatically"
 msgstr ""
 
-#: foldergallery.php:1096
+#: foldergallery.php:920
 msgid "Slideshow speed"
 msgstr ""
 
-#: foldergallery.php:1097
+#: foldergallery.php:921
 msgid " seconds "
 msgstr ""
 
-#: foldergallery.php:1125
+#: foldergallery.php:949
 msgid "Misc Settings"
 msgstr ""
 
-#: foldergallery.php:1128
+#: foldergallery.php:952
 msgid "Permissions"
 msgstr ""
 
-#: foldergallery.php:1128
+#: foldergallery.php:952
 msgid "Force 777 permissions on cache folders"
 msgstr ""
 
-#: foldergallery.php:1131
+#: foldergallery.php:955
 msgid "Orientation"
 msgstr ""
 
-#: foldergallery.php:1131
+#: foldergallery.php:955
 msgid ""
 "Correct picture orientation according to EXIF tag. (Pictures will be "
 "overwritten.)"
 msgstr ""
 
-#: foldergallery.php:1134 foldergallery.php:1596
+#: foldergallery.php:958 foldergallery.php:1420
 msgid "WPML"
 msgstr ""
 
-#: foldergallery.php:1134
+#: foldergallery.php:958
 msgid "Fix WPML paths"
 msgstr ""
 
-#: foldergallery.php:1451
+#: foldergallery.php:1275
 msgid "FSlider Settings"
 msgstr ""
 
-#: foldergallery.php:1492
+#: foldergallery.php:1316
 msgid "Folder Slider Settings"
 msgstr ""
 
-#: foldergallery.php:1504
+#: foldergallery.php:1328
 msgid "Transition Mode"
 msgstr ""
 
-#: foldergallery.php:1540
+#: foldergallery.php:1364
 msgid "CSS"
 msgstr ""
 
-#: foldergallery.php:1563
+#: foldergallery.php:1387
 msgid "Width"
 msgstr ""
 
-#: foldergallery.php:1564
+#: foldergallery.php:1388
 msgid "Height"
 msgstr ""
 
-#: foldergallery.php:1565
+#: foldergallery.php:1389
 msgid "Speed"
 msgstr ""
 
-#: foldergallery.php:1566
+#: foldergallery.php:1390
 msgid "Carousel"
 msgstr ""
 
-#: foldergallery.php:1569
+#: foldergallery.php:1393
 msgid "Controls"
 msgstr ""
 
-#: foldergallery.php:1605
+#: foldergallery.php:1429
 msgid "Link zum Bild"
 msgstr ""
 
@@ -342,7 +333,7 @@ msgid ""
 msgstr ""
 
 #. URI of the plugin
-msgid "https://github.com/svenbolte/foldergallery"
+msgid "https://wp.pbcs.de"
 msgstr ""
 
 #. Author of the plugin

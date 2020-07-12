@@ -331,6 +331,12 @@ function fg_init_handle_download() {
 			case 'date_desc' :
 				array_multisort( array_map( 'filemtime' , $files ) , SORT_DESC, $files );			
 			break;
+			case 'size' :
+				array_multisort( array_map( 'filesize' , $files ) , SORT_ASC, $files );			
+			break;
+			case 'size_desc' :
+				array_multisort( array_map( 'filesize' , $files ) , SORT_DESC, $files );			
+			break;
 			case 'filename_desc' :
 				rsort( $files );
 			break;
@@ -474,23 +480,37 @@ function fg_init_handle_download() {
 		}
 		
 		// ausgeben
-		$xausgabe='<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
-		$xausgabe.='   <option value="name">Dateiname</option>';
-		$xausgabe.='   <option value="name_desc">Dateiname absteigend</option>';
-		$xausgabe.='   <option value="size">Datei-Größe</option>';
-		$xausgabe.='   <option value="size_desc">Datei-Größe absteigend</option>';
-		$xausgabe.='   <option value="date">Datum</option>';
-		$xausgabe.='   <option value="date_desc">Datum absteigend</option>';
-		$xausgabe.='</select><input type="submit" value="sortieren" /></form></div>';
-		$xausgabe.='<table>';
+		$gallery_code= '<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
+		$gallery_code.=	'<option value="filename"';
+		if ( 'filename' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Filename', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="filename_desc"';
+		if ( 'filename_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Filename (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="date"';
+		if ( 'date' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Date', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="date_desc"';
+		if ( 'date_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Date (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="size"';
+		if ( 'size' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Size', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="size_desc"';
+		if ( 'size_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Size (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="random"';
+		if ( 'random' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Random', 'foldergallery' ) . '</option>' ;
+		$gallery_code.='</select><input type="submit" value="sortieren" /></form></div>';
+		$gallery_code.='<table>';
 		foreach( $files as $fout ) {
-			$xausgabe.= $fout['content'];
+			$gallery_code.= $fout['content'];
 		}	
-		$xausgabe.='</table>';
-		return $xausgabe;
+		$gallery_code.='</table>';
+		return $gallery_code;
 	}
 
-	
 
 	public function fg_gallery( $atts ) { // Generate gallery
 		$fg_options = get_option( 'FolderGallery' );
@@ -510,6 +530,9 @@ function fg_init_handle_download() {
 			'show_thumbnail_captions'=> $fg_options['show_thumbnail_captions'],
 			'sort'	  => $fg_options['sort'],
 		), $atts ) );
+		if (isset($_GET['sort'])) {
+		  $sort = $_GET['sort'];
+		} 
 		
 		// 1.3 Compatibility
 		if ( $subtitle ) $caption = $subtitle;
@@ -534,6 +557,7 @@ function fg_init_handle_download() {
 		$margin=intval($margin);
 		$border=intval($border);
 		$padding=intval($padding);
+
 		// Cache folder
 		$cache_folder = $folder . '/cache_' . $width . 'x' . $height;
 		if ( ! is_dir( $cache_folder ) ) {
@@ -568,6 +592,32 @@ function fg_init_handle_download() {
 		} else {
 			$gallery_code = '<div class="fg_gallery">';
 		}		
+		// Sortierselectbox
+		$gallery_code.= '<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
+		$gallery_code.=	'<option value="filename"';
+		if ( 'filename' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Filename', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="filename_desc"';
+		if ( 'filename_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Filename (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="date"';
+		if ( 'date' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Date', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="date_desc"';
+		if ( 'date_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Date (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="size"';
+		if ( 'size' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Size', 'foldergallery' ) . '</option>' ;		
+		$gallery_code.=	'<option value="size_desc"';
+		if ( 'size_desc' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Size (descending)', 'foldergallery' ) . '</option>' ;
+		$gallery_code.=	'<option value="random"';
+		if ( 'random' == $sort ) $gallery_code.= ' selected="selected"';
+		$gallery_code.= '>' . __( 'Random', 'foldergallery' ) . '</option>' ;
+		$gallery_code.='</select><input type="submit" value="sortieren" /></form></div>';
+
+		
 		// Default single thumbnail
 		$thumbnail_idx = 0;
 		// If first picture == !!! then skip it (but use it as 'single' thumbnail).
@@ -631,8 +681,8 @@ function fg_init_handle_download() {
 					$thecaption = str_replace( '_', ' ', $thecaption );
 				break;
 				case 'modificationdater' :
-					$moddate = filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600;
-					$gmtoffset = get_option( 'gmt_offset' );
+					$moddate = filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600;				
+ 					$gmtoffset = get_option( 'gmt_offset' );
 					$tmznstr = sprintf( "%+03d%02d", $gmtoffset, (abs($gmtoffset) - intval(abs($gmtoffset)))*60 );
 					$thecaption = str_replace( '+0000', $tmznstr, date( 'r', $moddate));
 				break;
@@ -651,9 +701,14 @@ function fg_init_handle_download() {
 					$thecaption = date_i18n( get_option( 'date_format' ) . ', ' . get_option( 'time_format' ) , $moddate);					
 				break;
 				default :
+					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
 					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
 						// $title ;
-					if ( 'lightbox2' != $fg_options['engine'] ) $thecaption .= ' (' . ($idx+1) . ' von ' . ($NoP) . ')' ;
+					if ( 'lightbox2' != $fg_options['engine'] ) {
+						$moddate = date("d.m.Y H:i:s", filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600);
+						// $moddate = date("d.m.Y H:i:s", filemtime( $folder . ' / ' . $pictures[ $idx ] ) );
+						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . ' &nbsp;' . $moddate;
+					}	
 			}		
 			// Let's start
 			$gallery_code .= "\n<div class=\"fg_thumbnail\"$thmbdivstyle>\n";
@@ -715,7 +770,7 @@ function fg_init_handle_download() {
 		if ( intval($thumbpagination) > 1 ) {
 			for ( $plink = 0 ; $plink < $NoP ; $plink++ ) {
 				if ( ($plink/intval($thumbpagination) + 1) <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-				if ($plink % intval($thumbpagination) == 0 ) { $gallery_code .= " &nbsp;<a title='Fotos ".($plink + 1)."-".($plink + intval($thumbpagination))."' class='".$klasse."' href='".add_query_arg( array(), $wp->request )."?seite=".($plink/intval($thumbpagination) + 1) ."'>". ($plink/intval($thumbpagination) + 1) ."</a>"; }
+				if ($plink % intval($thumbpagination) == 0 ) { $gallery_code .= " &nbsp;<a title='Fotos ".($plink + 1)."-".($plink + intval($thumbpagination))."' class='".$klasse."' href='".add_query_arg( array(), $wp->request )."?seite=".($plink/intval($thumbpagination) + 1) ."&sort=".$sort ."'>". ($plink/intval($thumbpagination) + 1) ."</a>"; }
 			}	
 			$gallery_code .= "\n</div>\n";	
 		}	
@@ -774,7 +829,7 @@ function fg_init_handle_download() {
 		$input['border']            = intval( $input['border'] );
 		$input['padding']           = intval( $input['padding'] );
 		$input['margin']            = intval( $input['margin'] );
-		if ( ! in_array( $input['sort'], array( 'filename','filename_desc','date','date_desc','random' ) ) ) $input['sort'] = 'filename';
+		if ( ! in_array( $input['sort'], array( 'filename','filename_desc','date','date_desc','random','size', 'size_desc' ) ) ) $input['sort'] = 'filename';
 		if ( ! in_array( $input['thumbnails'], array( 'all','none','single' ) ) ) $input['thumbnails'] = 'all';
 		if ( ! in_array( $input['fb_title'], array( 'inside','outside','float','over','null' ) ) ) $input['fb_title'] = 'all';
 		if ( ! in_array( $input['fb_effect'], array( 'elastic','fade' ) ) ) $input['fb_effect'] = 'elastic';
@@ -859,8 +914,8 @@ function fg_init_handle_download() {
 		$fg_options = get_option( 'FolderGallery' );
 		echo '<div class="wrap">' . "\n";
 		echo '<h2>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h2>\n";
-		echo '<p>Shortcode Galerie: <code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1  border=0  padding=0 margin=0]</code></p>';
-		echo '<p>Dokumenten-Liste eines Verzeichnisses ausgeben mit Erstelldatum und Dateiänderungsdatum <code>[folderdir folder="wp-content/uploads/bilder/]</code></p>';
+		echo '<p><code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1 border=0 padding=0 margin=0]</code>  Shortcode für die Galerie</p>';
+		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code> Dokumenten-Liste eines Verzeichnisses ausgeben mit Erstelldatum und Dateiänderungsdatum, protect=1 schützt Ordner, ohne Parameter öffentlicher Zugriff auf die Deeplinks</p>';
 		echo '<form method="post" action="options.php">' . "\n";
 		settings_fields( 'FolderGallery' );
 		echo "\n" . '<table class="form-table"><tbody>' . "\n";
@@ -947,6 +1002,12 @@ function fg_init_handle_download() {
 			echo "\t" .	'<option value="date_desc"';
 				if ( 'date_desc' == $fg_options['sort'] ) echo ' selected="selected"';
 				echo '>' . __( 'Date (descending)', 'foldergallery' ) . '</option>' . "\n";
+			echo "\t" .	'<option value="size"';
+				if ( 'size' == $fg_options['sort'] ) echo ' selected="selected"';
+				echo '>' . __( 'Size', 'foldergallery' ) . '</option>' . "\n";		
+			echo "\t" .	'<option value="size_desc"';
+				if ( 'size_desc' == $fg_options['sort'] ) echo ' selected="selected"';
+				echo '>' . __( 'Size (descending)', 'foldergallery' ) . '</option>' . "\n";
 			echo "\t" .	'<option value="random"';
 				if ( 'random' == $fg_options['sort'] ) echo ' selected="selected"';
 				echo '>' . __( 'Random', 'foldergallery' ) . '</option>' . "\n";
@@ -1072,7 +1133,6 @@ function fg_init_handle_download() {
 		// Fancybox 3 options
 		if ( 'fancybox3' == $fg_options['engine'] ) {
 			
-			
 			echo '<tr><th scope="row">FancyBox 3</th>';
 			echo '<td><fieldset>';
 			$this->fg_option_checkbox( 'fb3_loop', '', __('Enable infinite gallery navigation', 'foldergallery' ) );	
@@ -1083,20 +1143,7 @@ function fg_init_handle_download() {
 			$this->fg_option_checkbox( 'fb3_autostart', '', __('Start slideshow automatically', 'foldergallery' ) );
 			echo __( 'Slideshow speed', 'foldergallery' ) . ': ' ;
 			$this->fg_option_field( 'fb3_speed', '', __(' seconds ', 'foldergallery' ) );
-			
-//			$this->fg_option_field( 'fb3_speed', __( 'FB3 Slideshow speed', 'foldergallery' ), __(' seconds ', 'foldergallery' ) );
-
 			echo '</fieldset></td></tr>';
-			
-			
-		
-// 			$this->fg_option_checkbox( 'fb3_loop', __('Loop', 'foldergallery'), __('Enable infinite gallery navigation', 'foldergallery' ) );	
-// 			$this->fg_option_checkbox( 'fb3_toolbar', __('Toolbar', 'foldergallery'), __('Display toolbar (buttons at the top)', 'foldergallery' ) );
-// 			$this->fg_option_checkbox( 'fb3_infobar', __('Infobar', 'foldergallery'), __('Display infobar (counter and arrows at the top)', 'foldergallery' ) );
-// 			$this->fg_option_checkbox( 'fb3_arrows', __('Arrows', 'foldergallery'), __('Display navigation arrows at the screen edges', 'foldergallery' ) );
-// 			$this->fg_option_checkbox( 'fb3_fullscreen', __('Fullscreen', 'foldergallery'), __('Display images fullscreen', 'foldergallery' ) );
-// 			$this->fg_option_checkbox( 'fb3_autostart', __('Autostart', 'foldergallery'), __('Start slideshow automatically', 'foldergallery' ) );
-// 			$this->fg_option_field( 'fb3_speed', __( 'Slideshow speed', 'foldergallery' ), __(' seconds ', 'foldergallery' ) );
 			
 		} else {
 			echo '<input type="hidden" name="FolderGallery[fb3_loop]" id="fb3_loop" value="' . $fg_options['fb3_loop'] . '" />';

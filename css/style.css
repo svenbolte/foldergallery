@@ -1,7 +1,7 @@
 .fg_gallery img:hover { border-color:#888; }
 .fg_title_link { font-weight: bold; }
 .fg_title { font-style: italic; }
-.fg_caption { font-style: italic; }
+.fg_caption { font-size: 0.9em; }
 
 .fg_thumbnail { padding:0; display:block; float:left; text-align:center; }
 .fg_gallery img { border:1px solid #ddd; }

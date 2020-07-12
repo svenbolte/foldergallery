@@ -471,7 +471,7 @@ function fg_init_handle_download() {
 			case 'date_desc' :
 				array_multisort(array_column($files, 'mtime'), SORT_DESC, $files);
 			break;
-			case 'name_desc' :
+			case 'filename_desc' :
 				array_multisort(array_column($files, 'name'), SORT_DESC, $files);
 			break;
 			default:

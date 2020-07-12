@@ -29,7 +29,36 @@ class foldergallery{
 		add_shortcode( 'foldergallery', array( $this, 'fg_gallery' ) );
 		add_shortcode( 'folderdir', array( $this, 'meinedirliste' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'fg_plugin_action_links' ) );
+		add_action( 'init', array( $this, 'fg_init_handle_download' ) );	
 	}
+
+/**
+ * Init handle download FG. on folderdir option protect=1
+ */
+function fg_init_handle_download() {
+	if ( isset( $_GET[ 'dlid' ] ) ) {
+		// Onedaypass prüfen
+		if ($_GET['code'] == md5( $_GET[ 'dlid' ] . intval(date('Y-m-d H:i:s')/24*60*60))) { // if it match it is legit
+			// onedaypass_process( absint( $_GET[ 'dlid' ] ) );
+			$url_parse = wp_parse_url( $_GET[ 'dlid' ] );
+			$path = ABSPATH . $url_parse['path'];
+			$mm_type="application/octet-stream"; // modify accordingly to the file type of $path, but in most cases no need to do so
+			header("Pragma: public");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			header("Cache-Control: public");
+			header("Content-Description: File Transfer");
+			header("Content-Type: " . $mm_type);
+			header("Content-Length: " .(string)(filesize($path)) );
+			header('Content-Disposition: attachment; filename="'.basename($path).'"');
+			header("Content-Transfer-Encoding: binary\n");
+			readfile($path); // outputs the content of the file
+			exit();		  
+		} else {
+		echo 'Pfad nicht gefunden oder Code falsch'; // not legit
+		}  
+	}	
+}
 	
 	public function foldergallery() {
 		self::__construct();
@@ -342,12 +371,13 @@ class foldergallery{
     	return $url;
 	}
 
-	
+
 	// Verzeichnisliste ausgeben mit Erstelldatum und Moddatum [folderdir folder="wp-content/uploads/bilder/]" 
 	public function meinedirliste( $atts ) {  // generate document/file download list
 
 		extract( shortcode_atts( array(
-			'folder'  => 'wp-content/uploads/bilder/',
+			'folder'  => 'wp-content/uploads/pdf/',
+			'protect'  => 0,
 			'sort'	  => $fg_options['sort'],
 		), $atts ) );
 		if (isset($_GET['sort'])) {
@@ -358,6 +388,21 @@ class foldergallery{
 			return '<p style="color:red;"><strong>' . __( 'Folder Gallery Error:', 'foldergallery' ) . '</strong> ' .
 				sprintf( __( 'Unable to find the directory %s.', 'foldergallery' ), $folder ) . '</p>';	
 		}
+		// Add htaccess protection if enabled, else delete it
+		if ( 1 == $protect ) {
+			if ( !file_exists( $folder . '/.htaccess' ) && wp_is_writable( $folder ) ) {
+				$content = "Options -Indexes\n";
+				$content .= "deny from all";
+
+				@file_put_contents( $folder . '/.htaccess', $content );
+			}
+		}
+		else {
+			if ( file_exists( $folder . '/.htaccess' ) && wp_is_writable( $folder ) ) {
+				@unlink( $folder . '/.htaccess' );
+			}
+		}
+		// List files
 		$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4";
 		if (!wp_style_is( 'font-awesome', 'enqueued' )) {
 			$creatext='erstellt:'; $modtext='erstellt:';
@@ -384,8 +429,14 @@ class foldergallery{
 						$ctime = date("Y.m.d H:i:s", filectime($directory ."/". $file));
 						$ctimed = date("d.m.Y, H:i:s", filectime($directory ."/". $file));
 						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
-						$content .= '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
-						$content .= '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed . ' &nbsp; '.$modtext.' ' . $mtimed . '</td></tr>';
+						if ( 1 == $protect ) {
+							global $wp;
+							$hashwert = md5($folder ."/". $file . intval(date('Y-m-d H:i:s')/24*60*60));
+							$dllink = '<a style="font-size:1.2em" title="'.$ext.'&#10;herunter laden" href="'. add_query_arg( array('dlid' => $folder ."/". $file,'code' => $hashwert) , home_url() ) . '">'.$file.'</a>';
+						} else {
+							$dllink = '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
+						}
+						$content .= $dllink . '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed . ' &nbsp; '.$modtext.' ' . $mtimed . '</td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),

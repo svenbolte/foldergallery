@@ -2,8 +2,8 @@
 Contributors: vjalby,PBMod
 Tags: gallery, folder, lightbox, Folder Slider, bxslider
 Requires at least: 4.0
-Tested up to: 4.9.0
-Stable tag: 9.7.5.27
+Tested up to: 5.4.2
+Stable tag: 9.7.5.30
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Folder Gallery Plugin does not include any lightbox JS engine anymore. You have 
 
 To show a documents list for download pdf files use shortcode
 
-	[folderdir folder="wp-content/uploads/bilder/]
+	[folderdir folder="wp-content/uploads/bilder/" protect=1 sort=size_desc]
 
 To show a photo slider from a gallery:
 
@@ -21,10 +21,18 @@ To show a photo slider from a gallery:
 
 To include a gallery in a post or a page, you have to use the following shortcode :
 
-	[foldergallery folder="local_path_to_folder" title="Gallery title"]
+	[foldergallery folder="path" title="title" columns=1 width=150 height=90 border=1 padding=2 margin=10 thumbnails=single]
+ 
+Sort options for Folderdir are: (default taken from fg Settings and can be overridden with shortcode)
+			case 'size' :
+			case 'size_desc' :
+			case 'date' :
+			case 'date_desc' :
+			case 'name_desc' :
+			default: 'name' :
+Folder Gallery	Sort options are the same, except size paramaeters.
 
 For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. 
-
 An Options page allow to set the default paramaters of the galleries :
 
 * Lightbox JS Engine: Lightbox 2 (if installed), Fancybox 2 (if installed), Fancybox 3 (if installed), Lightview 3 (if installed), Easy Fancybox Plugin (if available), Responsive Lightbox Plugin (if available) or none (default)
@@ -42,25 +50,24 @@ An Options page allow to set the default paramaters of the galleries :
 * Fancybox 3 Options : Loop, Toolbar, Infobar, Arrows, Fullscreen, Slideshow, Slideshow speed. Available with Fancybox 3 engine only (if installed).
 * Misc settings - Permissions: force 777 permissions on cache folder. Leave it uncheck unless you really know what you do!
 * Misc settings - Orientation: Correct picture orientation according to EXIF tag. Rotated pictures will be overwritten. (Require EXIF library in PHP.) Delete the cache folder to apply to existing galleries.
- 
-Most of theses settings can be overridden using the corresponding shortcode :
+Most of these settings can be overridden using the corresponding shortcode
 
-	[foldergallery folder="path" title="title" columns=1 width=150 height=90 border=1 padding=2 margin=10 thumbnails=single]
- 
 
 == Installation ==
 
 1. Unzip the archive foldergallery.zip
 2. Upload the directory 'foldergallery' to the '/wp-content/plugins/' directory
 3. Download and upload to '/wp-content/' directory at least on lightbox JS engine (see FAQ)
-4. Activate the plugin through the 'Plugins' menu in WordPress
-5. Go to Settings / Folder Gallery to change the default settings
-6. Upload a folder of pictures to 'wp-content/upload/MyPictures'
-7. Insert the following short code in post or page :
+4. To use Lightbox engines, see FAQ
+5. Activate the plugin through the 'Plugins' menu in WordPress
+6. Go to Settings / Folder Gallery to change the default settings
+7. Upload a folder of pictures to 'wp-content/upload/MyPictures'
+8. Insert the following short code in post or page :
 
 	[foldergallery folder="wp-content/upload/MyPictures" title="My Picture Gallery"]
+  	  or
+	[folderdir folder="wp-content/upload/MyPictures" protect=1]
 	
-8. To use Fancybox 2 engine, see FAQ
 
 == Frequently Asked Questions ==
 
@@ -91,8 +98,7 @@ Most of theses settings can be overridden using the corresponding shortcode :
 
 You can specify lightview options with the shortcode attribute 'options':
 
-	[foldergallery folder="path" title="My Gallery"
-		options="controls: { slider: false }, skin: 'mac'"]
+	[foldergallery folder="path" title="My Gallery"	options="controls: { slider: false }, skin: 'mac'"]
 	
 You can set default options in Folder Gallery Options Page. 
 
@@ -168,6 +174,10 @@ This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com
 
 
 == Changelog ==
+
+= 9.7.5.30
+[folderdir] gets option protect=1. If given, files in folder can only be downloaded. Download links are only valid for the rest of the day
+ (one-day-pass) to prevent sharing deeplinks. Folder content is protected by .htaccess set to deny
 
 = 9.7.5.27
 Folderdir shortcode gets parameter sort= to be sorted. This can also be done by adding url paramater ?sort=file_desc (file size size_desc date date_desc)

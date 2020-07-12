@@ -1,4 +1,4 @@
-# Folder Gallery and Slider with documentlist ===
+# Folder Gallery and Slider with documentlist
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).

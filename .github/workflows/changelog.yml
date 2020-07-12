@@ -1,7 +1,14 @@
 name: Changelog
 
 on:
-  push
+  pull_request:
+    types: [closed]
+
+  release:
+    types: [published]
+
+  issues:
+    types: [closed, edited]
 
 jobs:
   generate_changelog:

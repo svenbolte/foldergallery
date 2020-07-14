@@ -2,7 +2,7 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.27
+Version: 9.7.5.31
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. The gallery is automatically generated in a post or page with a shortcode. Usage: [foldergallery folder="local_path_to_folder" title="Gallery title"]. For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. The picture folder must be writable (chmod 777).
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders
@@ -297,6 +297,21 @@ function fg_init_handle_download() {
 		}
 	}
 	
+	public function filedescription( $filepath, $filename ) {
+		if ( file_exists( $filepath.'/descriptions.txt')) { // Check the resource is valid
+			$csvdata = file_get_contents($filepath.'/descriptions.txt ');
+			$lines = explode("\n", $csvdata); // split data by new lines
+			foreach ($lines as $i => $line) {
+				$values = explode(',', $line); // split lines by commas
+				// set values removing them as we ago
+				$linevalues[$i]['name'] = trim($values[0]); unset($values[0]);
+				$linevalues[$i]['description'] = trim($values[1]); unset($values[1]);
+				if ( $linevalues[$i]['name'] == $filename ) { return $linevalues[$i]['description']; } 
+			}
+		}
+	//print_r($linevalues);
+	}	
+	
 	public function file_array( $directory , $sort) { // List all image files in $directory
 		$cwd = getcwd();
 		chdir( $directory );
@@ -434,6 +449,7 @@ function fg_init_handle_download() {
 						$mtimed = date("d.m.y, H:i:s", filemtime($directory ."/". $file));
 						$ctime = date("Y.m.d H:i:s", filectime($directory ."/". $file));
 						$ctimed = date("d.m.Y, H:i:s", filectime($directory ."/". $file));
+						$description = $this->filedescription($directory,$file);
 						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
 						if ( 1 == $protect ) {
 							global $wp;
@@ -442,13 +458,15 @@ function fg_init_handle_download() {
 						} else {
 							$dllink = '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
 						}
-						$content .= $dllink . '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed . ' &nbsp; '.$modtext.' ' . $mtimed . '</td></tr>';
+						$content .= $dllink . '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
+						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed . ' &nbsp; ' . $description . '</td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),
 							'mtime' => $mtime,
 							'ctime' => $ctime,
-							'content' => $content
+							'content' => $content,
+							'description' => $description
 						);
 						$files[] = $file_object;
 					}	

@@ -175,6 +175,9 @@ This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com
 
 == Changelog ==
 
+= 9.7.5.31
+Folderdir: if a text file descriptions.txt with filename.pdf,detailed description text is in folder, a description is listed with each filename found
+
 = 9.7.5.30
 [folderdir] gets option protect=1. If given, files in folder can only be downloaded. Download links are only valid for the rest of the day
  (one-day-pass) to prevent sharing deeplinks. Folder content is protected by .htaccess set to deny

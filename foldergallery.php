@@ -299,17 +299,16 @@ function fg_init_handle_download() {
 	
 	public function filedescription( $filepath, $filename ) {
 		if ( file_exists( $filepath.'/descriptions.txt')) { // Check the resource is valid
-			$csvdata = file_get_contents($filepath.'/descriptions.txt ');
-			$lines = explode("\n", $csvdata); // split data by new lines
-			foreach ($lines as $i => $line) {
-				$values = explode(',', $line); // split lines by commas
-				// set values removing them as we ago
-				$linevalues[$i]['name'] = trim($values[0]); unset($values[0]);
-				$linevalues[$i]['description'] = trim($values[1]); unset($values[1]);
-				if ( $linevalues[$i]['name'] == $filename ) { return $linevalues[$i]['description']; } 
+			$file = fopen($filepath.'/descriptions.txt', 'r');
+			while (($result = fgetcsv($file)) !== false)
+			{
+				$csvdata[] = $result;
+			}
+			fclose($file);
+			foreach ($csvdata as $i => $line) {
+				if ( $csvdata[$i][0] == $filename ) { return $csvdata[$i][1]; } 
 			}
 		}
-	//print_r($linevalues);
 	}	
 	
 	public function file_array( $directory , $sort) { // List all image files in $directory
@@ -718,14 +717,30 @@ function fg_init_handle_download() {
 					$moddate = filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600;
 					$thecaption = date_i18n( get_option( 'date_format' ) . ', ' . get_option( 'time_format' ) , $moddate);					
 				break;
-				default :
+				case 'namenumbersize' :
+					// Caption mit Namen, Nummer, Größe
 					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
 					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
-						// $title ;
+					if ( 'lightbox2' != $fg_options['engine'] ) {
+						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer;
+					}	
+				break;
+				case 'namenumbersizedescr' :
+					// Caption mit Namen, Nummer, Größe, Beschreibung
+					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
+					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
+					if ( 'lightbox2' != $fg_options['engine'] ) {
+						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . ' &nbsp; ' . $this->filedescription($folder,$pictures[ $idx ]);
+					}	
+				break;
+				default :
+					// Komplette Caption mit allen Daten anzeigen: Name Nummer, Size, Moddatum, Beschreibung
+					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
+					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
 					if ( 'lightbox2' != $fg_options['engine'] ) {
 						$moddate = date("d.m.Y H:i:s", filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600);
 						// $moddate = date("d.m.Y H:i:s", filemtime( $folder . ' / ' . $pictures[ $idx ] ) );
-						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . ' &nbsp;' . $moddate;
+						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . ' &nbsp;' . $moddate . ' &nbsp; ' . $this->filedescription($folder,$pictures[ $idx ]);
 					}	
 			}		
 			// Let's start
@@ -851,7 +866,7 @@ function fg_init_handle_download() {
 		if ( ! in_array( $input['thumbnails'], array( 'all','none','single' ) ) ) $input['thumbnails'] = 'all';
 		if ( ! in_array( $input['fb_title'], array( 'inside','outside','float','over','null' ) ) ) $input['fb_title'] = 'all';
 		if ( ! in_array( $input['fb_effect'], array( 'elastic','fade' ) ) ) $input['fb_effect'] = 'elastic';
-		if ( ! in_array( $input['caption'], array( 'default','none','filename','filenamewithoutextension','smartfilename','modificationdater','modificationdatec','modificationdate','modificationdateandtime'  ) ) ) $input['caption'] = 'default';
+		if ( ! in_array( $input['caption'], array( 'default','none','filename','filenamewithoutextension','smartfilename','modificationdater','modificationdatec','modificationdate','modificationdateandtime','namenumbersize','namenumbersizedescr'  ) ) ) $input['caption'] = 'default';
 		$input['show_thumbnail_captions']     = intval( $input['show_thumbnail_captions'] );
 		$input['fb_speed']             = intval( $input['fb_speed'] );
 		$input['permissions']          = intval( @ $input['permissions'] );
@@ -1062,7 +1077,7 @@ function fg_init_handle_download() {
 		echo '<td><select name="FolderGallery[caption]" id="FolderGallery[caption]">' . "\n";		
 			echo "\t" .	'<option value="default"';
 				if ( 'default' == $fg_options['caption'] ) echo ' selected="selected"';
-				echo '>'. __('Default (Title + Picture Number)', 'foldergallery') . '</option>' . "\n";
+				echo '>'. __('Default (title number size date description)', 'foldergallery') . '</option>' . "\n";
 			echo "\t" .	'<option value="filename"';
 				if ( 'filename' == $fg_options['caption'] ) echo ' selected="selected"';
 				echo '>' . __('Filename', 'foldergallery') . '</option>' . "\n";
@@ -1078,6 +1093,12 @@ function fg_init_handle_download() {
 			echo "\t" .	'<option value="modificationdateandtime"';
 				if ( 'modificationdateandtime' == $fg_options['caption'] ) echo ' selected="selected"';
 				echo '>' . __('Modification date and time', 'foldergallery') . '</option>' . "\n";
+			echo "\t" .	'<option value="namenumbersize"';
+				if ( 'namenumbersize' == $fg_options['caption'] ) echo ' selected="selected"';
+				echo '>' . __('Name Number Filesize', 'foldergallery') . '</option>' . "\n";
+			echo "\t" .	'<option value="namenumbersizedescr"';
+				if ( 'namenumbersizedescr' == $fg_options['caption'] ) echo ' selected="selected"';
+				echo '>' . __('Name Number Filesize Description', 'foldergallery') . '</option>' . "\n";
 			echo "\t" .	'<option value="modificationdater"';
 				if ( 'modificationdater' == $fg_options['caption'] ) echo ' selected="selected"';
 				echo '>' . __('Modification date (RFC 2822)', 'foldergallery') . '</option>' . "\n";	

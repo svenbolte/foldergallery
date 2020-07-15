@@ -10,6 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
+Now descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
 
 To show a documents list for download pdf files use shortcode
 
@@ -177,6 +178,7 @@ This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com
 
 = 9.7.5.31
 Folderdir: if a text file descriptions.txt with filename.pdf,detailed description text is in folder, a description is listed with each filename found
+Foldergallery: descriptions.txt aswell working for galleries. caption type can be selected in settings or via shortcode param caption=...
 
 = 9.7.5.30
 [folderdir] gets option protect=1. If given, files in folder can only be downloaded. Download links are only valid for the rest of the day

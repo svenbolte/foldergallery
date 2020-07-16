@@ -1,9 +1,11 @@
-# Folder Gallery and Slider with documentlist
+# Folder Gallery Slider and Folderdir
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
-Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
+Folder Gallery Slider Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
 Now descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
+A sorted file "descriptions-vorlage.txt" with all current filenames will be created automatically and can be used as template.
+For details and changelog see readme.txt
 
 To show a documents list for download pdf files use shortcode
 

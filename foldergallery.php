@@ -2,7 +2,7 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.31
+Version: 9.7.5.32
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. The gallery is automatically generated in a post or page with a shortcode. Usage: [foldergallery folder="local_path_to_folder" title="Gallery title"]. For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. The picture folder must be writable (chmod 777).
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders
@@ -394,7 +394,6 @@ function fg_init_handle_download() {
 
 	// Verzeichnisliste ausgeben mit Erstelldatum und Moddatum [folderdir folder="wp-content/uploads/bilder/]" 
 	public function meinedirliste( $atts ) {  // generate document/file download list
-
 		extract( shortcode_atts( array(
 			'folder'  => 'wp-content/uploads/pdf/',
 			'protect'  => 0,
@@ -413,7 +412,6 @@ function fg_init_handle_download() {
 			if ( !file_exists( $folder . '/.htaccess' ) && wp_is_writable( $folder ) ) {
 				$content = "Options -Indexes\n";
 				$content .= "deny from all";
-
 				@file_put_contents( $folder . '/.htaccess', $content );
 			}
 		}
@@ -422,6 +420,31 @@ function fg_init_handle_download() {
 				@unlink( $folder . '/.htaccess' );
 			}
 		}
+		// Add or update descriptions-vorlage.txt if protection if enabled, else delete it
+		if ( file_exists( $folder . '/descriptions-vorlage.txt' ) && wp_is_writable( $folder ) ) {
+			@unlink( $folder . '/descriptions-vorlage.txt' );
+		}	
+			$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4";
+			$directory=$folder;
+			$filed = array();
+			$extensions = explode(" ", $filetypes);
+			$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
+			$content='';
+			if( $handle = opendir( $directory ) ) {
+				while ( false !== ( $file = readdir( $handle ) ) ) {
+					$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+					if ( in_array( $ext, $extensions ) ) {
+						$filed[] = $file;
+						//$content .= $file . ",\n";
+					}	
+				}
+				closedir( $handle );
+				sort( $filed );
+				foreach( $filed as $file ) {
+					$content .= $file . ",\n";
+				}
+			}
+			@file_put_contents( $folder . '/descriptions-vorlage.txt', $content );
 		// List files
 		$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4";
 		if (!wp_style_is( 'font-awesome', 'enqueued' )) {
@@ -587,6 +610,32 @@ function fg_init_handle_download() {
 		}
 		
 		if ( 1 == $fg_options['permissions'] ) @chmod( $cache_folder, 0777);
+		
+		// Add or update descriptions-vorlage.txt if protection if enabled, else delete it
+		if ( file_exists( $folder . '/descriptions-vorlage.txt' ) && wp_is_writable( $folder ) ) {
+			@unlink( $folder . '/descriptions-vorlage.txt' );
+		}	
+			$filetypes="jpg png gif bmp jpeg";
+			$directory=$folder;
+			$filed = array();
+			$extensions = explode(" ", $filetypes);
+			$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
+			$content='';
+			if( $handle = opendir( $directory ) ) {
+				while ( false !== ( $file = readdir( $handle ) ) ) {
+					$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+					if ( in_array( $ext, $extensions ) ) {
+						$filed[] = $file;
+						//$content .= $file . ",\n";
+					}	
+				}
+				closedir( $handle );
+				sort( $filed );
+				foreach( $filed as $file ) {
+					$content .= $file . ",\n";
+				}
+			}
+			@file_put_contents( $folder . '/descriptions-vorlage.txt', $content );
 		
 		// Image and Thumbnail style
 		if ( 'none' == $thumbnails ) {
@@ -1277,12 +1326,12 @@ class folderslider{
 		wp_localize_script( 'fsd_slider-script', 'FSDparam' . $num , $param );
 	}
 
-	public function file_array( $directory ) { // List all JPG & PNG files in $directory
+	public function file_array( $directory ) { // List all JPG & PNG & GIF files in $directory
 		$files = array();
 		if( $handle = opendir( $directory ) ) {
 			while ( false !== ( $file = readdir( $handle ) ) ) {
 				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
-				if ( 'jpg' == $ext || 'png' == $ext ) {
+				if ( 'jpg' == $ext || 'png' == $ext || 'gif' == $ext ) {
 					$files[] = $file;
 				}
 			}

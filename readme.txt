@@ -3,7 +3,7 @@ Contributors: vjalby,PBMod
 Tags: gallery, folder, lightbox, Folder Slider, bxslider
 Requires at least: 4.0
 Tested up to: 5.4.2
-Stable tag: 9.7.5.30
+Stable tag: 9.7.5.32
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,18 +23,23 @@ To show a photo slider from a gallery:
 To include a gallery in a post or a page, you have to use the following shortcode :
 
 	[foldergallery folder="path" title="title" columns=1 width=150 height=90 border=1 padding=2 margin=10 thumbnails=single]
+	
+To include a slider in a post or a page, you have to use the following shortcode :
+
+	[folderslider folder="local_path_to_folder"]
+	
  
-Sort options for Folderdir are: (default taken from fg Settings and can be overridden with shortcode)
+Sort options for Folderdir and foldergallery are: (default taken from fg Settings and can be overridden with shortcode)
 			case 'size' :
 			case 'size_desc' :
 			case 'date' :
 			case 'date_desc' :
 			case 'name_desc' :
 			default: 'name' :
-Folder Gallery	Sort options are the same, except size paramaeters.
+Folder Gallery	Sort options are the same, plus 'random'.
 
 For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. 
-An Options page allow to set the default paramaters of the galleries :
+A FOLDERGALLERY Options page allow to set the default paramaters of the galleries :
 
 * Lightbox JS Engine: Lightbox 2 (if installed), Fancybox 2 (if installed), Fancybox 3 (if installed), Lightview 3 (if installed), Easy Fancybox Plugin (if available), Responsive Lightbox Plugin (if available) or none (default)
 * Display Thumbnails (thumbnails): all = standard Gallery, single = displays a single thumbnail linked to the lightbox gallery, none = displays a link to the lightbox gallery
@@ -52,6 +57,23 @@ An Options page allow to set the default paramaters of the galleries :
 * Misc settings - Permissions: force 777 permissions on cache folder. Leave it uncheck unless you really know what you do!
 * Misc settings - Orientation: Correct picture orientation according to EXIF tag. Rotated pictures will be overwritten. (Require EXIF library in PHP.) Delete the cache folder to apply to existing galleries.
 Most of these settings can be overridden using the corresponding shortcode
+
+A FOLDERSLIDER Options page allow to set the default paramaters of the sliders :
+
+* Transition Mode (mode): horizontal, vertical, fade
+* Caption Format (captions): none, filename, filenamewithoutextension, smartfilename (filename with underscores, extension and front numbers removed)
+* CSS (css): change the frame around slider: 'noborder', 'shadow', 'shadownoborder', 'black-border', 'white-border', 'gray-border'
+* Width and Height of the slider (width and height)
+* Speed (speed):  time between slides in seconds
+* Previous/Next Buttons (controls): true or false
+* Play/Pause Button (playcontrol): true or false
+* Start Slider Automatically (autostart): true or false
+* Pager (pager): true or false
+
+Default slider width is the width of the first picture unless the attribute width is set to a non-zero value. The height is calculate for each picture (to keep ratio) unless the attribute height is set to a non-zero value.
+Most of theses settings can be overridden using the corresponding shortcode attribute:
+	[folderslider folder="wp-content/upload/MyPictures" width=500 mode=fade speed=2.5 captions=smartfilename controls=false]
+This plugin uses bxSlider 4.2.5 by Steven Wanderski - https://bxslider.com 
 
 
 == Installation ==
@@ -73,7 +95,6 @@ Most of these settings can be overridden using the corresponding shortcode
 == Frequently Asked Questions ==
 
 = How to install Lightbox 2 JS engine? =
-
 1. Download Lightbox 2 from http://lokeshdhakar.com/projects/lightbox2/
 2. Unzip the archive
 3. Upload the directory 'dist' to '/wp-content' and rename it to 'lightbox'
@@ -81,7 +102,6 @@ Most of these settings can be overridden using the corresponding shortcode
 5. Done!
 
 = How to install Fancybox 3? =
-
 1. Download FancyBox 3 from http://fancyapps.com/fancybox/3/
 2. Unzip the archive then rename the directory to 'fancybox3'.
 3. Upload the directory 'fancybox3' to '/wp-content'.
@@ -90,7 +110,6 @@ Most of these settings can be overridden using the corresponding shortcode
 6. Done!
 
 = How to install Lightview 3? =
-
 1. Download lightview from http://projects.nickstakenburg.com/lightview/download
 2. Unzip the archive then rename the directory to 'lightview' (i.e., remove version number).
 3. Upload the directory 'lightview' to '/wp-content'.
@@ -98,83 +117,46 @@ Most of these settings can be overridden using the corresponding shortcode
 5. Done!
 
 You can specify lightview options with the shortcode attribute 'options':
-
 	[foldergallery folder="path" title="My Gallery"	options="controls: { slider: false }, skin: 'mac'"]
-	
 You can set default options in Folder Gallery Options Page. 
-
 See http://projects.nickstakenburg.com/lightview/documentation for details about Lightview options.
 
 = Can I use Folder Gallery along with another Lightbox plugin? =
-
 Folder Gallery has built-in support for "Easy Fancybox" plugin by RavanH, "Responsive Lightbox" plugin by dFactory, and "Slenderbox" plugin by Matthew Petroff. After activating the plugin, select it in Folder Gallery Settings (Gallery Engine).
-
 Otherwise, if your Lightbox plugin automatically handles images, you may set the lightbox engine to 'None' in Folder Gallery Options.
 This should work with
-
 * jQuery Colorbox 4.6+ by Arne Franken
 * Lightview Plus 3.1.3+ by Puzich
 * Maybe other
 
 = Can I use Easy Fancybox plugin along with Folder Gallery? =
-
 Yes! First install and activate Easy Fancybox plugin. In Wordpress > Settings > Media > Fancybox > Images > Gallery, Disabled Autogllery. Then, in Wordpress > Settings > Folder Gallery, select "Easy Fancybox (plugin)" as Gallery Engine.
 
 = I'd like to display a single thumbnail instead of the full thumbnails list =
-
 Add the attribute `thumbnails` in the shortcode with value `single` to display only the first thumbnail.
-
 	[foldergallery folder="path" title="My Gallery" thumbnails="single"]
-
 If you want to use a different picture (than the first) as the single thumbnail for the gallery, add a picture with name !!! (e.g., `!!!.jpg`) to your gallery. This picture will be used as thumbnail, but won't be included in the (lightbox) gallery. Another option is to use the shortcode attribute `thumbnails=-n` where `n`is the picture number (in the gallery) you want to use as single thumbnail. 
-
 To hide gallery title under the thumbnail, add `title=""`. You then should set `caption' to something else than `default`, e.g., `caption="filename"`.
 
 = I'd like to display only the n first thumbnails instead of the full thumbnails list =
-
 Add the attribute `thumbnails` in the shortcode with value `n` to display only the n first thumbnails.
-
 	[foldergallery folder="path" title="My Gallery" thumbnails=3]
 
 = I'd like to display a (sub)title under each thumbnail =
-
 You have to set show_thumbnail_captions to 1 (or change the global option in Folder Gallery Settings) using 
-
 	[foldergallery folder="path" title="My Gallery" show_thumbnail_captions=true]
-
 The caption format is set with the attribute `caption`. It can be set to `filename`, `filenamewithoutextension` or `smartfilename` which displays the filename without extension, front number removed and underscores (_) replaced with spaces.
-
 	[foldergallery folder="path" title="My Gallery" show_thumbnail_captions=1 caption='smartfilename']
-
-========================================= Slider =========================================================================================
-
-To include a slider in a post or a page, you have to use the following shortcode :
-
-	[folderslider folder="local_path_to_folder"]
-
-An Options page allow to set the default paramaters of the sliders :
-
-* Transition Mode (mode): horizontal, vertical, fade
-* Caption Format (captions): none, filename, filenamewithoutextension, smartfilename (filename with underscores, extension and front numbers removed)
-* CSS (css): change the frame around slider: 'noborder', 'shadow', 'shadownoborder', 'black-border', 'white-border', 'gray-border'
-* Width and Height of the slider (width and height)
-* Speed (speed):  time between slides in seconds
-* Previous/Next Buttons (controls): true or false
-* Play/Pause Button (playcontrol): true or false
-* Start Slider Automatically (autostart): true or false
-* Pager (pager): true or false
-
-Default slider width is the width of the first picture unless the attribute width is set to a non-zero value. The height is calculate for each picture (to keep ratio) unless the attribute height is set to a non-zero value.
-
-Most of theses settings can be overridden using the corresponding shortcode attribute:
-
-	[folderslider folder="wp-content/upload/MyPictures" width=500 mode=fade speed=2.5 captions=smartfilename controls=false]
- 
-This plugin uses bxSlider 4.2.5 by Steven Wanderski - http://bxslider.com 
 
 
 
 == Changelog ==
+
+= 9.7.5.32
+a file "descriptions-vorlage.txt" with all filenames of the folder will be put and updated automatically now.
+Files are sorted by filename ascending in this list. Just add a description after the comma and rename to descriptions.txt and you have file
+and image descriptions. Added the file tpye .GIF to Folderslider (former only png and jpg was allowed)
+Be aware that vorlage file will be overwritten with the current filenames in folder and does not keep your descriptions.
 
 = 9.7.5.31
 Folderdir: if a text file descriptions.txt with filename.pdf,detailed description text is in folder, a description is listed with each filename found

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2](https://github.com/svenbolte/foldergallery/tree/1.2) (2020-07-16)
+
+[Full Changelog](https://github.com/svenbolte/foldergallery/compare/1.1...1.2)
+
 ## [1.1](https://github.com/svenbolte/foldergallery/tree/1.1) (2020-07-12)
 
 [Full Changelog](https://github.com/svenbolte/foldergallery/compare/1.0...1.1)

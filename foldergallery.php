@@ -2,12 +2,12 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.32
+Version: 9.7.5.35
 Author: PBMod
-Description: This plugin creates picture galleries and sliders from a folder or from recent posts. The gallery is automatically generated in a post or page with a shortcode. Usage: [foldergallery folder="local_path_to_folder" title="Gallery title"]. For each gallery, a subfolder cache_[width]x[height] is created inside the pictures folder when the page is accessed for the first time. The picture folder must be writable (chmod 777).
-Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders
+Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
+Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
 Tested up to: 5.4.2
-Requires at least: 4.0
+Requires at least: 5.0
 Requires PHP: 5.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -998,6 +998,12 @@ function fg_init_handle_download() {
 		echo '<h2>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h2>\n";
 		echo '<p><code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1 border=0 padding=0 margin=0]</code>  Shortcode für die Galerie</p>';
 		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code> Dokumenten-Liste eines Verzeichnisses ausgeben mit Erstelldatum und Dateiänderungsdatum, protect=1 schützt Ordner, ohne Parameter öffentlicher Zugriff auf die Deeplinks</p>';
+		$upload_dir = wp_upload_dir();
+		$upload_basedir = $upload_dir['basedir'];
+		echo '<p><code>[csvtohtml_create source_files="sweden.csv"]</code> '. __('html table from the file sweden.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
+		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code> '. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
+		echo '<p><code>[csvtohtml_create source_files="https://domain.de/sweden.csv"]</code> '. __('html table from the file sweden.csv if it exists on the root of wibergsweb.se - domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
+
 		echo '<form method="post" action="options.php">' . "\n";
 		settings_fields( 'FolderGallery' );
 		echo "\n" . '<table class="form-table"><tbody>' . "\n";
@@ -1618,8 +1624,8 @@ class folderslider{
 		echo "\n" . '<table class="form-table"><tbody>' . "\n";
 		
 		echo '<tr valign="top"><td colspan=2>' . "\n";
-		echo "Shortcode Carousel:  [folderslider folder='wp-content/uploads/bilder/' width=400 height=0 speed=2.5 autostart=true captions=smartfilename controls=true pager=false playcontrol=false adaptiveheight=false maxslides=4 minslides=1 moveslides=1]";
-		echo "<br>folder=recentposts zeigt letzte 8 Posts als Slider an\n";
+		echo "<code>[folderslider folder='wp-content/uploads/bilder/' width=400 height=0 speed=2.5 autostart=true captions=smartfilename controls=true pager=false playcontrol=false adaptiveheight=false maxslides=4 minslides=1 moveslides=1]</code><br>zeigt Slider Karussell an";
+		echo ", Parameter: <code>folder=recentposts</code> zeigt letzte 8 Posts als Slider an\n";
 		echo "</td>\n</tr>\n";		
 
 		// Transition Mode
@@ -1628,13 +1634,13 @@ class folderslider{
 		echo '<td><select name="FolderSlider[mode]" id="FolderSlider[mode]">' . "\n";		
 			echo "\t" .	'<option value="horizontal"';
 				if ( 'horizontal' == $fsd_options['mode'] ) echo ' selected="selected"';
-				echo '>' . __('Horizontal', 'folderslider') . "</option>\n";
+				echo '>' . __('Horizontal', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="vertical"';
 				if ( 'vertical' == $fsd_options['mode'] ) echo ' selected="selected"';
-				echo '>' . __('Vertical', 'folderslider') . "</option>\n";
+				echo '>' . __('Vertical', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="fade"';
 				if ( 'fade' == $fsd_options['mode'] ) echo ' selected="selected"';
-				echo '>' . __('Fade', 'folderslider') . "</option>\n";
+				echo '>' . __('Fade', 'foldergallery' ) . "</option>\n";
 		echo "</select>\n";
 		echo "</td>\n</tr>\n";
 
@@ -1644,16 +1650,16 @@ class folderslider{
 		echo '<td><select name="FolderSlider[captions]" id="FolderSlider[captions]">' . "\n";		
 			echo "\t" .	'<option value="none"';
 				if ( 'none' == $fsd_options['captions'] ) echo ' selected="selected"';
-				echo '>' . __( 'None', 'folderslider') . "</option>\n";
+				echo '>' . __( 'None', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="filename"';
 				if ( 'filename' == $fsd_options['captions'] ) echo ' selected="selected"';
-				echo '>' . __('Filename', 'folderslider') . "</option>\n";
+				echo '>' . __('Filename', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="filenamewithoutextension"';
 				if ( 'filenamewithoutextension' == $fsd_options['captions'] ) echo ' selected="selected"';
-				echo '>' . __('Filename without extension', 'folderslider') . "</option>\n";	
+				echo '>' . __('Filename without extension', 'foldergallery' ) . "</option>\n";	
 			echo "\t" .	'<option value="smartfilename"';
 				if ( 'smartfilename' == $fsd_options['captions'] ) echo ' selected="selected"';
-				echo '>' . __('Smart Filename', 'folderslider') . "</option>\n";	
+				echo '>' . __('Smart Filename', 'foldergallery' ) . "</option>\n";	
 		echo "</select>\n";
 		echo "</td>\n</tr>\n";
 		
@@ -1664,29 +1670,29 @@ class folderslider{
 		echo '<td><select name="FolderSlider[css]" id="FolderSlider[css]">' . "\n";		
 			echo "\t" .	'<option value="noborder"';
 				if ( 'noborder' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __( 'No border', 'folderslider') . "</option>\n";
+				echo '>' . __( 'No border', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="shadow"';
 				if ( 'shadow' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __('Border with shadow', 'folderslider') . "</option>\n";
+				echo '>' . __('Border with shadow', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="shadownoborder"';
 				if ( 'shadownoborder' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __('Shadow without border', 'folderslider') . "</option>\n";
+				echo '>' . __('Shadow without border', 'foldergallery' ) . "</option>\n";
 			echo "\t" .	'<option value="black-border"';
 				if ( 'black-border' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __('Black border', 'folderslider') . "</option>\n";	
+				echo '>' . __('Black border', 'foldergallery' ) . "</option>\n";	
 			echo "\t" .	'<option value="white-border"';
 				if ( 'white-border' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __('White border', 'folderslider') . "</option>\n";	
+				echo '>' . __('White border', 'foldergallery' ) . "</option>\n";	
 			echo "\t" .	'<option value="gray-border"';
 				if ( 'gray-border' == $fsd_options['css'] ) echo ' selected="selected"';
-				echo '>' . __('Gray border', 'folderslider') . "</option>\n";	
+				echo '>' . __('Gray border', 'foldergallery' ) . "</option>\n";	
 		echo "</select>\n";
 		echo "</td>\n</tr>\n";		
 
 		$this->fsd_option_field( 'width', __( 'Width', 'foldergallery' ) , ' px ' . __( '(0 = auto)', 'foldergallery' ) );
 		$this->fsd_option_field( 'height', __( 'Height', 'foldergallery' ), ' px ' . __( '(0 = auto)', 'foldergallery' ) );
-		$this->fsd_option_field( 'speed', __( 'Speed', 'foldergallery' ), ' ' . __('seconds', 'folderslider') );
-		$this->fsd_option_field( 'maxslides', __( 'Carousel', 'foldergallery' ), ' ' . __('Bild(er) nebeneinander', 'folderslider') );
+		$this->fsd_option_field( 'speed', __( 'Speed', 'foldergallery' ), ' ' . __('seconds', 'foldergallery' ) );
+		$this->fsd_option_field( 'maxslides', __( 'Carousel', 'foldergallery' ), ' ' . __('Bild(er) nebeneinander', 'foldergallery' ) );
 
 		echo '<tr valign="top">' . "\n";
 		echo '<th scope="row">' . __( 'Controls', 'foldergallery' ) . "</th>\n";
@@ -1694,23 +1700,23 @@ class folderslider{
 		echo '<label for="controls">';
 			echo '<input name="FolderSlider[controls]" type="checkbox" id="FolderSlider[controls]" value="1"';
 			if ( $fsd_options['controls'] ) echo ' checked="checked"';
-			echo '> ' . __('Show Previous/Next Buttons', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Show Previous/Next Buttons', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="controls">';
 			echo '<input name="FolderSlider[activeheight]" type="checkbox" id="FolderSlider[activeheight]" value="1"';
 			if ( $fsd_options['activeheight'] ) echo ' checked="checked"';
-			echo '> ' . __('Auto Adjust Height', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Auto Adjust Height', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="playcontrol">';
 			echo '<input name="FolderSlider[playcontrol]" type="checkbox" id="FolderSlider[playcontrol]" value="1"';
 			if ( $fsd_options['playcontrol'] ) echo ' checked="checked"';
-			echo '> ' . __('Show Play/Pause Button', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Show Play/Pause Button', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="autostart">';
 			echo '<input name="FolderSlider[autostart]" type="checkbox" id="FolderSlider[autostart]" value="1"';
 			if ( $fsd_options['autostart'] ) echo ' checked="checked"';
-			echo '> ' . __('Start Slider Automatically', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Start Slider Automatically', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="pager">';
 			echo '<input name="FolderSlider[pager]" type="checkbox" id="FolderSlider[pager]" value="1"';
 			if ( $fsd_options['pager'] ) echo ' checked="checked"';
-			echo '> ' . __('Show Pager', 'folderslider') . "</label>\n";
+			echo '> ' . __('Show Pager', 'foldergallery' ) . "</label>\n";
 		echo "</fieldset>\n";
 		echo "</td>\n</tr>\n";		
 
@@ -1720,7 +1726,7 @@ class folderslider{
 		echo '<td><label for="wpml">';
 			echo '<input name="FolderSlider[wpml]" type="checkbox" id="FolderSlider[wpml]" value="1"';
 			if ( 1 == $fsd_options['wpml'] ) echo ' checked="checked"';
-			echo '> ' . __('Fix WPML Paths', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Fix WPML Paths', 'foldergallery' ) . "</label><br />\n";
 		echo "</td>\n</tr>\n";
 
 		// Doubleklick auf Bild öffnet Link zum Darstellen in einer Lightbox wie Fancybox3 mit a href Zuordnung (wie in Theme penguin)
@@ -1729,7 +1735,7 @@ class folderslider{
 		echo '<td><label for="lightboxlink">';
 			echo '<input name="FolderSlider[lightboxlink]" type="checkbox" id="FolderSlider[lightboxlink]" value="1"';
 			if ( 1 == $fsd_options['lightboxlink'] ) echo ' checked="checked"';
-			echo '> ' . __('Zoom Link zum Bild für Lightbox wie Fancybox aktivieren', 'folderslider') . "</label><br />\n";
+			echo '> ' . __('Zoom Link zum Bild für Lightbox wie Fancybox aktivieren', 'foldergallery' ) . "</label><br />\n";
 		echo "</td>\n</tr>\n";
 		echo "</tbody></table>\n";
 		submit_button();
@@ -1738,6 +1744,833 @@ class folderslider{
 	}
 		
 } //End Of Class
+
+// ------------------------------------- Now Class for CSV display as table ---------------------------------
+
+if( !class_exists('csvtohtmlwp') ) {
+    ini_set("auto_detect_line_endings", true); //Does not apply when loading external file(s), therefore also custom function for this below
+        
+	
+	/* Class to fetch values based on a "guess" (normal format) */    
+    class csvtohtmlwp_guess {
+    
+    /*
+     *   fetch_content
+     * 
+     *  This function returns an array of headers and rows based 
+     *  on given content
+     * 
+     *  @param  string $content_arr             content array to use to identify headers and rows
+     *  @return   array                                      array of 'rows' and 'headers'
+     *                 
+     */    
+    public function fetch_content( $content_arr, $cutarr_fromend ) {
+        
+        //Skip (first) empty rows
+        $new_arr = array();        
+        foreach ( $content_arr as $row => $subset) {
+           
+            foreach ( $subset as $ss) {
+                 $na = '';
+                foreach ($ss as $subset_value) { 
+                    $na .= $subset_value;
+                }
+                
+                //Copy item fron content_arr to new arr only if there are any
+                //values in this subset
+                if ( strlen ( $na ) > 0) {
+                    $new_arr[] = $ss;
+                }
+            }
+
+        }
+        
+        $first_value = true;
+        $header_values = array();
+        if ( isset ( $new_arr[0] ) )
+        {
+            foreach ( $new_arr[0] as $hvalues) {
+                    $header_values[] = $hvalues; //Add all but first value in arrya
+            }
+        }        
+        
+        $row_values = array();
+        unset ( $new_arr[0] );
+        
+        foreach ( $new_arr  as $row) {
+            $row_values[]= $row;
+        }
+        
+        
+        //Fetch last items? (eg. 2013,2014 instead of 2010,2011,2012,2013,2014)
+        if ( $cutarr_fromend === 0) {$cutarr_fromend = 1;}
+        
+        //Get last slice of header array
+        $slice_header = array_merge ( array_slice ( $header_values, 0, 1), array_slice( $header_values, $cutarr_fromend) );
+
+        //"Recreate header values array"
+        $header_values = array();
+        foreach ( $slice_header as $sh) {
+            $header_values[] = $sh;                
+        }
+
+        //"Recreate" row values array
+        $rvalues = array();
+        foreach( $row_values as $rv) {
+            $rvalues[] = array_merge( array_slice( $rv, 0,1), array_slice( $rv, $cutarr_fromend ) );
+        }
+
+        $row_values = array();
+        foreach ( $rvalues as $rv) {
+            $row_values[] = $rv;
+        }   
+        
+        $nr = 0;
+        $firstrow = 0;
+        
+        $row3values = array();        
+        $row2values = array();        
+                  
+        foreach($row_values as $row_key => $row_value) {
+            foreach ( $header_values as $hkey => $h_value) {
+
+                    $row2values[$hkey][0] = $h_value;
+                    if ( isset($row_values[$row_key][$hkey]) )
+                    {
+                        $row2values[$hkey][1] = $row_values[$row_key][$hkey];
+                    }
+                    else {
+                        $row2values[$hkey][1] = '';                 
+                    }
+                
+                $nr++;
+            }
+            $row3values[] = $row2values;        
+         }
+                
+        //Return row and headers
+        return array( 'header_values' => $header_values, 'row_values' => $row3values );
+    }
+    
+    }
+	
+	// .........................................................................................
+	
+	//Main class
+    class csvtohtmlwp
+    {
+    private $csv_delimit; //Used when using anynmous function in array_map when loading file(s) into array(s)
+    private $default_eol = "\r\n"; //Default - use this as this has been default in previous version of the plugin
+    private $encoding_to = null;
+    private $encoding_from = null;
+    private $sorting_on_columns = null; //Should contain an array
+    
+    /*
+    *  Constructor
+    *
+    *  This function will construct all the neccessary actions, filters and functions for the sourcetotable plugin to work
+    *
+    *
+    *  @param	N/A
+    *  @return	N/A
+    */	
+    public function __construct() 
+    {                        
+        add_action( 'init', array( $this, 'init' ) );
+    }
+    
+
+    /*
+     *  init
+     * 
+     *  This function initiates the actual shortcodes etc
+     *                 
+     */        
+    public function init() 
+    {               
+        //Add shortcodes
+        add_shortcode( 'csvtohtml_create', array ( $this, 'source_to_table') );
+    }
+		
+    
+    /*
+     *   valid_sourcetypes
+     * 
+     *  This function is a helper-function that is used for retrieving true/false if a source_type is valid or not
+     *  (defined sourcetypes are used so plugin knows how to fetch content from csv files)
+     * 
+     *  @param  string $source_type              what sourcetype to check
+     *  @return   bool                           true if valid, else false
+     *                 
+     */    
+    protected function valid_sourcetypes( $source_type = null ) {
+        if ( $source_type === null) {
+            return false;
+        }
+        
+        //If guess is set as sourcetype, then plugin tries to figure out what sourcetype that should be used, 
+        //but this is merely just a guess so it's better to define an actual source_type if applicable
+        $valid_types = array( 'guess' );
+        if (in_array( $source_type, $valid_types) !== false) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+
+    /**
+     * Detects the end-of-line character of a string.
+     * 
+     * @param string $str The string to check.
+     * @return string The detected eol. If no eol found, use default eol from object
+     */    
+    private function detect_eol( $str )
+    {
+        static $eols = array(
+            "\0x000D000A", // [UNICODE] CR+LF: CR (U+000D) followed by LF (U+000A)
+            "\0x000A",     // [UNICODE] LF: Line Feed, U+000A
+            "\0x000B",     // [UNICODE] VT: Vertical Tab, U+000B
+            "\0x000C",     // [UNICODE] FF: Form Feed, U+000C
+            "\0x000D",     // [UNICODE] CR: Carriage Return, U+000D
+            "\0x0085",     // [UNICODE] NEL: Next Line, U+0085
+            "\0x2028",     // [UNICODE] LS: Line Separator, U+2028
+            "\0x2029",     // [UNICODE] PS: Paragraph Separator, U+2029
+            "\0x0D0A",     // [ASCII] CR+LF: Windows, TOPS-10, RT-11, CP/M, MP/M, DOS, Atari TOS, OS/2, Symbian OS, Palm OS
+            "\0x0A0D",     // [ASCII] LF+CR: BBC Acorn, RISC OS spooled text output.
+            "\0x0A",       // [ASCII] LF: Multics, Unix, Unix-like, BeOS, Amiga, RISC OS
+            "\0x0D",       // [ASCII] CR: Commodore 8-bit, BBC Acorn, TRS-80, Apple II, Mac OS <=v9, OS-9
+            "\0x1E",       // [ASCII] RS: QNX (pre-POSIX)
+            "\0x15",       // [EBCDEIC] NEL: OS/390, OS/400
+            "\r\n",
+            "\r",
+            "\n"
+        );
+        $cur_cnt = 0;
+        $cur_eol = $this->default_eol;
+        
+        //Check if eols in array above exists in string
+        foreach($eols as $eol){      
+            $char_cnt = mb_substr_count($str, $eol);
+                    
+            if($char_cnt > $cur_cnt)
+            {
+                $cur_cnt = $char_cnt;
+                $cur_eol = $eol;
+            }
+        }
+        return $cur_eol;
+    }
+
+
+    /*
+     *   Create object from given sourcetype
+     * 
+     *  Returns an object based on sourcetype given by user
+     * 
+     *  @param  string $source_type     source type from user
+     *  @return   object $obj                     
+     *                 
+     */    
+    private function object_fromsourcetype( $source_type ) {
+		// require_once( 'guess.php' ); 
+        $obj = new csvtohtmlwp_guess();
+        return $obj;
+    }
+    
+    
+    /*
+     *   adjust_columns
+     * 
+     *  This function is a helper function for including or excluding columns in the final html table
+     * 
+     *  @param  string $what_columns             What columns it is about (1,2,3,7-12)
+     *  @return   array                                        What columns to use
+     *                 
+     */       
+    private function adjust_columns ( $what_columns ) 
+    {
+            $ex_cols = explode(',', $what_columns );
+            foreach($ex_cols as $key=>$ec) {
+                //Add hypen and number to array, so array will be consistent
+                //with values users put in (1-3,7 will be 1,2,3,7 and not 7,1,2,3)
+                if (stristr( $ec, '-') === false) 
+                {
+                    $ex_cols[$key] .= '-' . $ec;
+                }
+            }
+            
+            //If two values given like 2-7...then add 2,3,4,5,6 and 7.
+            foreach($ex_cols as $key=>$col_interval) 
+            {
+                $ac = explode('-', $col_interval); //3-7 would be array(3,7)
+                if ((int)count($ac) === 2) { //Only include when array has two elements                                    
+                    //Remove blank spaces left and right of each element in $ac-array
+                    $ac[0] = (int)trim($ac[0]); //interval start
+                    $ac[1] = (int)trim($ac[1]) + 1; //interval stop
+                    
+                    //Go through interval and to $ac-array (add column array)
+                    for ($i=$ac[0];$i<$ac[1];$i++) {
+                        $ex_cols[] = $i;
+                    }
+                    unset ( $ex_cols[$key] );
+                }
+            }
+
+            //Which columns to use?
+            $use_cols = array();
+            foreach ( $ex_cols as $c ) 
+            {
+                $use_cols[] = (int)($c - 1);
+            }
+                        
+            return $use_cols;
+    }
+    
+    
+    /*
+     *  custom_sort_columns
+     * 
+     *  This function is used for sorting one or several columns
+     * 
+     *  @param    $a                        First value
+     *  @param    $b                        Second value
+     *  @return   integer                   Returned comparision of firt and second value 
+     *                 
+     */      
+    private function custom_sort_columns($a, $b)
+    {        
+        //This has to be an array to work
+        if ( $this->sorting_on_columns === null ) 
+        {
+            return false;
+        }        
+        
+        $columns = $this->sorting_on_columns;
+        $first_column = true;        
+        foreach($columns as $item)
+        {            
+            $col = $item[0];
+            
+            //If column not set, ignore sorting
+            if (!isset($a[$col]) || !isset($b[$col])) 
+            {
+                return 0;
+            }
+
+            $sortorder = mb_strtolower( $item[1] );
+            
+            //First column to be sorted
+            if ($first_column === true)
+            {
+                if ( $sortorder === 'asc' )
+                {
+                    $sorted_column = strnatcmp( $a[$col], $b[$col] );   
+                }
+                else
+                {
+                    $sorted_column = strnatcmp( $b[$col], $a[$col] );   
+                }
+                $first_column = false;     
+            }                
+            //If this column and previous column is identical, then sort on this column
+            //(if it is not first column to be sorted)
+            else if (!$sorted_column)
+            {
+                if ( $sortorder === 'asc' )
+                {
+                    $sorted_column = strnatcmp( $a[$col], $b[$col] );   
+                }
+                else
+                {
+                    $sorted_column = strnatcmp( $b[$col], $a[$col] );   
+                }    
+            }
+        }                 
+        
+        return $sorted_column;
+    }
+     
+     
+    /*
+     *  convertarrayitem_encoding
+     * 
+     *  This function is used as a callback for walk_array and it changes
+     *  characterencoding for each item in an array
+     * 
+     *  @param    array  $given_item           Arrayitem to translate encoding
+     *  @return   N/A                          Change of arrayitem by reference
+     *                 
+     */  
+    private function convertarrayitem_encoding( &$given_item ) 
+    {       
+        $encoding_to = $this->encoding_to;
+        $encoding_from = $this->encoding_from;        
+        
+        $option_encoding = 0; //Only to encoding 
+        if ( $encoding_from !== null && $encoding_to !== null ) 
+        {
+            $option_encoding = 1; //Both from and to encoding
+        }
+                         
+        if ( $option_encoding === 1 )
+        {
+            if ( is_array($given_item) !== true ) 
+            {
+                $given_item = mb_convert_encoding($given_item, $encoding_to, $encoding_from);                  
+            }
+        }
+        else if ( $option_encoding === 0 )
+        {
+            if ( is_array($given_item) !== true )
+            {
+                $given_item = mb_convert_encoding($given_item, $encoding_to);                       
+            }
+        }
+                    
+    }
+    
+
+	// Für Search Parameter Wert in Zeile suchen - search function fulltext
+	function in_array_r($item , $array){
+		return preg_match('/'.preg_quote($item, '/').'/i' , json_encode($array, JSON_UNESCAPED_SLASHES));
+	}            
+
+
+    /*
+     *   source_to_table
+     * 
+     *  This function creates a (html) table based on given source (csv) files
+     *  Files are divided by semicolon
+     * 
+     *  @param  string $attr             shortcode attributes
+     *  @return   string                      html-content
+     *                 
+     */    
+    public function source_to_table( $attrs ) 
+    {
+        $defaults = array(
+            'html_id' > null,
+            'html_class' => null,
+            'title' => null, //if given then put titletext in top left corner
+            'path' => '', //This is the base path AFTER the upload path of Wordpress (eg. /2016/03 = /wp-content/uploads/2016/03)
+            'source_type' => 'guess', //So plugin knows HOW to fetch content from file(s)
+            'source_files' => null, //Files are be divided with sources_separator (file1;file2 etc). It's also possible to include urls to csv files. It's also possible to use a wildcard (example *.csv) for fetching all files from specified path. This only works when fetching files directly from own server.
+            'csv_delimiter' => ',', //Delimiter for csv - files (defaults to comma)
+            'fetch_lastheaders' => 0,   //If fetch_lastheaders=3 => (2012,2013,2014, if header_count = 2 => (2013,2014) etc
+            'exclude_cols' => null, //If you want to exclude some columns (eg. 1,4,9). Set to "last" if you want to remove last column.
+            'include_cols' => null, //If you want to include these columns (only) use this option (eg. 1,4,9). If include_cols is given, then exclude_cols are ignored
+            'eol_detection' => 'auto', //Use linefeed when using external files, Default auto = autodetect, CR/LF = Carriage return when using external files, CR = Carriage return, LF = Line feed
+            'convert_encoding_from' => null, //If you want to convert character encoding from source. (use both from and to for best result) 
+            'convert_encoding_to' => null, //If you want to convert character encoding from source. (use both from and to for best result)            
+            'sort_cols' => null, //Which column(s) to sort on in format nr,nr och nr-nr (example 1,2,4 or 1-2,4)
+            'sort_cols_order' => null, //Which order to sort columns on (asc/desc). If you have 3 columns, you can define these like asc,desc,asc
+            'add_ext_auto' => 'yes', //If file is not included with .csv, then add .csv automatically if this value is yes. Otherwise, set no
+            'float_divider' => '.', //If fetching float values from csv use this character to display "float-dividers" (default 6.4, 1.2 etc)
+            'debug_mode' => 'no'
+        );
+
+        //Extract values from shortcode and if not set use defaults above
+        $args = wp_parse_args( $attrs, $defaults );
+        extract ( $args );
+		
+		// Sort order from url parameter
+		if (isset($_GET['sort'])) {
+		  $sort_cols = $_GET['sort'];
+		}
+		if (isset($_GET['order'])) {
+		  if ( $_GET['order'] == 'desc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } 
+		  $sort_cols_order = $sortorder;
+		  
+		}
+		
+        $this->csv_delimit = $csv_delimiter; //Use this char as delimiter
+      
+        //Base upload path of uploads
+        $upload_dir = wp_upload_dir();
+        $upload_basedir = $upload_dir['basedir'];
+
+        //If user has put some wildcard in source_files then create a list of files
+        //based on that wildcard in the folder that is specified    
+        if ( stristr( $source_files, '*' ) !== false ) 
+        {
+            $files_path = glob( $upload_basedir . '/' . $path . '/'. $source_files);
+            $source_files = '';
+            foreach ($files_path as $filename) 
+            {
+                $source_files .= basename($filename) . ';';
+            }
+            if ( strlen($source_files) > 0) {
+                $source_files = substr($source_files,0,-1); //Remove last semicolon
+            }
+        }
+
+        //Find location of sources (if more then one source, user should divide them with 'sources_separator' (default semicolon) )
+        //Example:  [stt_create path="2015/04" sources="bayern;badenwuertemberg"] 
+        ///wp-content/uploads/2015/04/bayern.csv
+        ///wp-content/uploads/2015/04/badenwuertemberg.csv        
+        $sources = explode( ';', $source_files );
+
+        //Create an array of ("csv content")
+        $content_arr = array();
+        
+        foreach( $sources as $s) 
+        {
+            //If $s(file) misses an extension add csv extension to filename(s)
+            //if add extension auto is set to yes (yes is default)
+            if (stristr($s, '.csv') === false && $add_ext_auto === 'yes') {
+                $file = $s . '.csv';
+            }
+            else {
+                $file = $s;
+            }
+          
+            //Add array item with content from file(s)
+        
+            //If source file do not have http or https in it or if path is given, then it's a local file
+            $local_file = true;
+            
+            if ( stristr($file, 'http') !== false || stristr($file, 'https') !== false )
+            {
+                $local_file = false;
+            }                    
+            
+
+            
+            //Load external file and add it into array
+            if ( $local_file === false ) 
+            {         
+                $file_arr = false;
+                               
+                //Check if (external) file exists
+                $wp_response = wp_remote_get($file);
+                $ret_code = wp_remote_retrieve_response_code( $wp_response );
+                $ret_message = wp_remote_retrieve_response_message( $wp_response );
+
+                //200 OK               
+                if ( $ret_code === 200)
+                {
+                    $body_data = wp_remote_retrieve_body( $wp_response );                        
+
+                    //What end of line to use when handling file(s)
+                    switch (strtolower( $eol_detection ) ) 
+                    {
+                        case 'auto':
+                            $use_eol = $this->detect_eol ( $body_data ); 
+                            break;
+                        case 'lf':
+                            $use_eol = "\n";
+                        case 'cr':
+                            $use_eol = "\r";
+                            break;
+                        case 'cr/lf':
+                            $use_eol = "\r\n";
+                            break;
+                        default:
+                            $use_eol = $this->default_eol;
+                    }
+
+                    //Explode array with selected end of line
+                    $file_arr = explode( $use_eol, $body_data);
+
+                    //remove last item from array
+                    $x = count ( $file_arr ) - 1;
+                    unset ( $file_arr[$x] );
+                }
+
+                //try to fetch file with file() (fetching file as an array)
+                if ( $file_arr === false ) 
+                {                
+                    $file_arr = @file ( $file );
+                    if ( !is_array( $file_arr ) ) 
+                    {
+                        $file_arr = false;
+                    }
+                }                
+                
+                //Put an array with content into this array item
+                //(but only if  array has been created from file/url)
+                if ( $file_arr !== false ) 
+                {
+                    //Put an array with csv content into this array item                    
+                    $content_arr[] = array_map(function($v){return str_getcsv($v, $this->csv_delimit);}, $file_arr);   
+                }
+            }
+            
+            //Load local file into content array
+            if ( $local_file === true ) 
+            {
+                
+                if ( strlen( $path ) > 0 ) 
+                {
+                    $file = $upload_basedir . '/' . $path . '/' . $file; //File from uploads folder and path
+                }
+                else 
+                {
+                    $file = $upload_basedir . '/' . $file; //File directly from root upload folder
+                }
+                
+                if (file_exists($file)) 
+                {                                        
+                    //Put an array with csv content into this array item
+                    $content_arr[] = array_map(function($v){return str_getcsv($v, $this->csv_delimit);}, file( $file ));                    
+                }
+            }
+        }        
+                
+        
+        //Create the object used for fetching
+        $obj = $this->object_fromsourcetype( $source_type );        
+                
+        //Fetch row and headers from objects created above
+        $header_values = array();
+        $row_values = array();
+        
+         //Nr of items from end of array
+        //If not set=0, then $cutarr_fromend would be 0 = last index)
+        $cutarr_fromend = -1 * abs( (int)$fetch_lastheaders );
+                
+        //Cut array from end is set if fetch_lastheaders is sent
+        $values_from_obj = $obj->fetch_content( $content_arr, $cutarr_fromend );        
+        $header_values = $values_from_obj['header_values'];
+        $header_ori_values = $header_values;
+        $row_values = $values_from_obj['row_values'];   
+        
+        //If encoding is specified, then encode entire array to specified characterset
+        if ( $convert_encoding_from !== null || $convert_encoding_to !== null )
+        {
+            $this->encoding_from = $convert_encoding_from;
+            $this->encoding_to = $convert_encoding_to;        
+            array_walk_recursive($header_values, array($this, 'convertarrayitem_encoding') );
+            array_walk_recursive($row_values, array($this, 'convertarrayitem_encoding') );
+        }
+        
+        //Include columns (only) ?
+        if ($include_cols !== null) 
+        {
+            $include_cols = $this->adjust_columns( $include_cols );
+            
+            //Recreate header_values
+            $new_headervalues = array();
+            foreach ( $include_cols as $c) {
+                if (isset ( $header_values[$c]) ) {
+                    $new_headervalues[$c] = $header_values[$c];
+                }
+            }
+            
+            $header_values = array();
+            foreach($new_headervalues as $nhv) 
+            {
+                $header_values[]= $nhv;
+            }
+            
+            //Recreate row values (with appropiate columns)
+            $new_rowvalues = array();
+
+            //Add column values into new array from scratch
+            //Go through include columns (indexes) for every row and
+            //add item to the new array
+            $nr = 0;
+            foreach( $row_values as $key=>$rv ) 
+            {            
+                foreach($include_cols as $ic) 
+                {
+                    if ( isset( $rv[$ic])) 
+                    {
+                        $new_rowvalues[$nr][] = $rv[$ic];
+                    }
+                }              
+                $nr++;             
+           }            
+             
+           $row_values = array();
+           foreach($new_rowvalues as $nrv) 
+           {
+               $row_values[]= $nrv;
+           }
+        }
+        //Exclude columns? (if include_cols is set, this attribute is ignored)
+        else if ( $exclude_cols !== null ) 
+        {
+            //Remove last column?
+            if (stristr($exclude_cols, 'last') !== false ) 
+            {
+                $last_col = count ( $row_values[0] );                  
+                $exclude_cols = str_replace('last', $last_col, $exclude_cols );
+            }
+            
+            //remove given column(s)
+            $remove_cols = $this->adjust_columns( $exclude_cols );
+   
+            //Remove header values
+            foreach($remove_cols as $rc) 
+            {
+                unset( $header_values[$rc] );                
+            }
+            
+             //Remove column values
+             //Go through each row and for each row
+             //remove (unset) the index set by remove_cols above
+             foreach( $row_values as $key=>$rv ) 
+             {  
+                foreach($remove_cols as $rc) 
+                {
+                    unset ( $row_values[$key][$rc] );
+                }             
+             }
+        }
+
+
+
+        //Sort by specific column(s) in format: 1,2,4 or 2-4
+        if ( $sort_cols !== null)
+        {                       
+            //Create new array in a "sort-friendly format"
+            $new_arr = array();
+            $index = 0;
+            $cnt_headers = count($header_values);
+            foreach( $row_values as $r )
+            {
+                for ($c=0;$c<$cnt_headers;$c++) 
+                {
+                    $new_arr[$index][$c] = $r[$c][1]; //Column $c, value
+                }
+                
+                $index++;
+            }
+            
+            //Do the sorting    
+            $this->sorting_on_columns = $this->adjust_columns( $sort_cols );    
+            
+            $sort_cols_order_arr = array();
+            if ( $sort_cols_order === null )
+            {                
+                $so = 'asc';
+                foreach($this->sorting_on_columns as $key => $soc)
+                {
+                    $sort_cols_order_arr[$key] = $so;
+                }
+            }
+            else 
+            {
+                //Set unique sortorders for each column
+                $sort_cols_order_arr = explode(',',$sort_cols_order);
+            }
+
+            foreach( $this->sorting_on_columns as $key => &$soc )
+            {
+                $so = 'asc';
+                if (isset($sort_cols_order_arr[$key])) 
+                {
+                    $so = $sort_cols_order_arr[$key];
+                }
+                
+                $soc = array(
+                            $this->sorting_on_columns[$key],
+                            $so
+                        );                
+            }            
+            usort($new_arr, array( $this, 'custom_sort_columns') );
+            
+            //Put values from the orded array $new_arr into $row_values
+            $index = 0;
+            foreach($row_values as &$r)
+            {
+                for ($c=0;$c<$cnt_headers;$c++) 
+                {
+                    $r[$c][1] = $new_arr[$index][$c]; 
+                }
+                
+                $index++;
+            }
+            
+        }
+                
+        
+        //If title given, set this title in left top corner of htmltable
+        if ( isset($title) && isset($header_values[0])) 
+        {
+            $header_values[0] = sanitize_text_field( $title );
+        }
+        
+        //Create table
+        if ( isset($html_id) ) 
+        {
+            $htmlid_set = 'id="' .  $html_id . '" '; 
+        }
+        else 
+        {
+            $htmlid_set = '';
+        }
+        
+        if ( isset($html_class) ) 
+        {
+            $html_class = ' ' . $html_class;
+        }
+        else 
+        {
+            $html_class = '';
+        }
+        
+		// Zeilen filtern, wenn Suchbegriff gesetzt
+		if (isset($_GET['search'])) {
+		  $search = sanitize_text_field( $_GET['search'] );
+		  $searchquery = '&search='.$search;
+		}
+		$html = '<div style="text-align:right"><form><input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></span>';
+        $html .= '<table ' . $htmlid_set . 'class="csvtohtml' . $html_class . '"><thead><tr class="headers">';
+        $nr_col = 1;
+		foreach( $header_values as $hv) 
+        {
+			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } }
+            $key = array_search($hv, $header_ori_values)+1;
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array(), $wp->request ).'?sort='.$key.'&order='.$sortorder.$searchquery.'">' . $hv . '</a></th>';
+            $nr_col++;
+        }
+        $html .= '</tr></thead><tbody>';
+        
+        $nr_row = 1;
+        $pyj_class = 'odd';
+        
+		// Suchfilter 
+		foreach( $row_values as $rv ) 
+        {
+		if ( ! isset( $search ) || isset( $search ) && $this->in_array_r($search, $rv) ) {
+		
+			$html .= '<tr class="rowset '. $pyj_class . ' rowset-' .$nr_row . '">';    
+			if ( $pyj_class === 'odd') {
+				$pyj_class = 'even';
+			}
+			else {
+				$pyj_class = 'odd';
+			}
+				
+			$nr_col = 1;
+			foreach ( $rv as $inner_value) 
+			{
+				//Display other float divider (e.g. 6,3 instead 6.2)
+				if ($float_divider != '.') {
+						$inner_value[1] = str_replace('.', $float_divider, $inner_value[1]);
+				}
+
+				$html .= '<td class="colset colset-' . $nr_col . '">' . $inner_value[1]  . '</td>';      
+				$nr_col++;
+			}
+			$html .= '</tr>';
+			$nr_row++;
+		}
+		
+        }
+        
+        $html .= '</tbody></table>';
+        
+        return $html;
+    }
+
+}
+  
+$csvtohtmlwp = new csvtohtmlwp();
+}
 
 
 ?>

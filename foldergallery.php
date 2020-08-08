@@ -2515,66 +2515,72 @@ if( !class_exists('csvtohtmlwp') ) {
         
 		// Zeilen filtern, wenn Suchbegriff gesetzt
 		$search='';
-		$searchquery='';
 		if (isset($_GET['search'])) {
 		  $search = sanitize_text_field( $_GET['search'] );
-		  $searchquery = '&search='.$search;
 		}
 		$html = '<div style="text-align:right"><form><input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
         $html .= '<table ' . $htmlid_set . 'class="csvtohtml' . $html_class . '"><thead><tr class="headers">';
         $nr_col = 1;
+
+		// Page navigation
+		$nb_elem_per_page = 25;
+		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
+		$page = isset($_GET['seite'])?intval($_GET['seite']-1):0;
+
 		foreach( $header_values as $hv) 
         {
 			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array(), $wp->request ).'?sort='.$key.'&order='.$sort_cols_order.$searchquery.'">' . $hv . '</a></th>';
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv . '</a></th>';
             $nr_col++;
         }
         $html .= '</tr></thead><tbody>';
-        
+  
         $nr_row = 1;
         $pyj_class = 'odd';
         
-		// Suchfilter 
-		foreach( $row_values as $rv ) 
-        {
-		if ( ! isset( $search ) || isset( $search ) && $this->in_array_r($search, $rv) ) {
-		
-			$html .= '<tr class="rowset '. $pyj_class . ' rowset-' .$nr_row . '">';    
-			if ( $pyj_class === 'odd') {
-				$pyj_class = 'even';
-			}
-			else {
-				$pyj_class = 'odd';
-			}
-				
-			$nr_col = 1;
-			foreach ( $rv as $inner_value) 
-			{
-				//Display other float divider (e.g. 6,3 instead 6.2)
-				if ($float_divider != '.') {
-						$inner_value[1] = str_replace('.', $float_divider, $inner_value[1]);
-				}
+		// Suchfilter, wenn filter gesetzt, nicht paginieren
+		if ( !empty($search)) { $nb_elem_per_page = 200; }
+			// foreach( $row_values as $rv ) {
+			foreach (array_slice($row_values, $page*$nb_elem_per_page, $nb_elem_per_page) as $rv) { 
+			
+				if ( ! isset( $search ) || isset( $search ) && $this->in_array_r($search, $rv) ) {
+					$html .= '<tr class="rowset '. $pyj_class . ' rowset-' .$nr_row . '">';    
+					if ( $pyj_class === 'odd') {
+						$pyj_class = 'even';
+					}
+					else {
+						$pyj_class = 'odd';
+					}
+						
+					$nr_col = 1;
+					foreach ( $rv as $inner_value) {
+						//Display other float divider (e.g. 6,3 instead 6.2)
+						if ($float_divider != '.') {
+								$inner_value[1] = str_replace('.', $float_divider, $inner_value[1]);
+						}
 
-				$html .= '<td class="colset colset-' . $nr_col . '">' . $inner_value[1]  . '</td>';      
-				$nr_col++;
+						$html .= '<td class="colset colset-' . $nr_col . '">' . $inner_value[1]  . '</td>';      
+						$nr_col++;
+					}
+					$html .= '</tr>';
+					$nr_row++;
+				}
+			
 			}
-			$html .= '</tr>';
-			$nr_row++;
-			if ($nr_row % 20 == 0) { $html .= '<!--nextpage-->'; }
-		}
-		
-        }
-        
+			// Page navigation		
+			if ( empty($search)) {
+				$html .= '<tr><td colspan="100">';
+				for($i=1;$i<$number_of_pages;$i++){
+					$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), $wp->request ).'">'.$i.'</a>';
+				}	
+				$html .= '</td></tr>';		
+			}
         $html .= '</tbody></table>';
-        
         return $html;
     }
-
 }
   
 $csvtohtmlwp = new csvtohtmlwp();
 }
-
-
 ?>

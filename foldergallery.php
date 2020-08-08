@@ -2,7 +2,7 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.35
+Version: 9.7.5.36
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
@@ -2149,6 +2149,7 @@ if( !class_exists('csvtohtmlwp') ) {
      */    
     public function source_to_table( $attrs ) 
     {
+		global $wp;
         $defaults = array(
             'html_id' > null,
             'html_class' => null,
@@ -2165,7 +2166,7 @@ if( !class_exists('csvtohtmlwp') ) {
             'convert_encoding_to' => null, //If you want to convert character encoding from source. (use both from and to for best result)            
             'sort_cols' => null, //Which column(s) to sort on in format nr,nr och nr-nr (example 1,2,4 or 1-2,4)
             'sort_cols_order' => null, //Which order to sort columns on (asc/desc). If you have 3 columns, you can define these like asc,desc,asc
-            'add_ext_auto' => 'yes', //If file is not included with .csv, then add .csv automatically if this value is yes. Otherwise, set no
+            'add_ext_auto' => 'no', //If file is not included with .csv, then add .csv automatically if this value is yes. Otherwise, set no
             'float_divider' => '.', //If fetching float values from csv use this character to display "float-dividers" (default 6.4, 1.2 etc)
             'debug_mode' => 'no'
         );
@@ -2513,6 +2514,8 @@ if( !class_exists('csvtohtmlwp') ) {
         }
         
 		// Zeilen filtern, wenn Suchbegriff gesetzt
+		$search='';
+		$searchquery='';
 		if (isset($_GET['search'])) {
 		  $search = sanitize_text_field( $_GET['search'] );
 		  $searchquery = '&search='.$search;
@@ -2522,9 +2525,9 @@ if( !class_exists('csvtohtmlwp') ) {
         $nr_col = 1;
 		foreach( $header_values as $hv) 
         {
-			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } }
+			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array(), $wp->request ).'?sort='.$key.'&order='.$sortorder.$searchquery.'">' . $hv . '</a></th>';
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array(), $wp->request ).'?sort='.$key.'&order='.$sort_cols_order.$searchquery.'">' . $hv . '</a></th>';
             $nr_col++;
         }
         $html .= '</tr></thead><tbody>';

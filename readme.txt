@@ -1,9 +1,5 @@
 === Folder Gallery and Slider with documentlist and csv from file and url table shortcode ===
 Contributors: wibergsweb,vjalby,PBMod
-Tags: gallery, folder, lightbox, Folder Slider, bxslider, import, html, table, csv, excel, visualizer, csv into html, csv into table, csv to html, csv to table, html table generator, convert, csv to html table, multiple
-Requires at least: 4.0
-Tested up to: 5.4.2
-Stable tag: 9.7.5.35
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -241,6 +237,10 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 
 == Changelog ==
+
+= 9.7.5.36
+Bugfixes regarding csv imports. autoadd csv disabled by default (cause most of my csv exporting sites use a webservice in url and not a filename
+Declared some variables causing php notices if not set
 
 = 9.7.5.35
 Merged csv to html class:

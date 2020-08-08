@@ -2520,7 +2520,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		  $search = sanitize_text_field( $_GET['search'] );
 		  $searchquery = '&search='.$search;
 		}
-		$html = '<div style="text-align:right"><form><input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></span>';
+		$html = '<div style="text-align:right"><form><input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
         $html .= '<table ' . $htmlid_set . 'class="csvtohtml' . $html_class . '"><thead><tr class="headers">';
         $nr_col = 1;
 		foreach( $header_values as $hv) 
@@ -2561,6 +2561,7 @@ if( !class_exists('csvtohtmlwp') ) {
 			}
 			$html .= '</tr>';
 			$nr_row++;
+			if ($nr_row % 20 == 0) { $html .= '<!--nextpage-->'; }
 		}
 		
         }

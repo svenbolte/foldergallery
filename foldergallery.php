@@ -2,11 +2,11 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
-Version: 9.7.5.37
+Version: 9.7.5.38
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
-Tested up to: 5.4.2
+Tested up to: 5.5
 Requires at least: 5.0
 Requires PHP: 5.3
 License: GPLv2

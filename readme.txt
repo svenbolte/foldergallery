@@ -238,6 +238,9 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 == Changelog ==
 
+= 9.7.5.40
+Variable declaration notices und adjustments php 7.4.9
+
 = 9.7.5.39
 missing variable declaration bugfix
 

@@ -3,13 +3,13 @@
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
-Version: 9.7.5.39
+Version: 9.7.5.40
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
 Tested up to: 5.5
 Requires at least: 5.0
-Requires PHP: 5.3
+Requires PHP: 7.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
@@ -39,7 +39,7 @@ class foldergallery{
 function fg_init_handle_download() {
 	if ( isset( $_GET[ 'dlid' ] ) ) {
 		// Onedaypass prüfen
-		if ($_GET['code'] == md5( $_GET[ 'dlid' ] . intval(date('Y-m-d H:i:s')/24*60*60))) { // if it match it is legit
+		if ($_GET['code'] == md5( $_GET[ 'dlid' ] . intval(date('Y-m-d H:i:s')) / 24 * 3600)) { // if it match it is legit
 			// onedaypass_process( absint( $_GET[ 'dlid' ] ) );
 			$url_parse = wp_parse_url( $_GET[ 'dlid' ] );
 			$path = ABSPATH . $url_parse['path'];
@@ -56,7 +56,7 @@ function fg_init_handle_download() {
 			readfile($path); // outputs the content of the file
 			exit();		  
 		} else {
-		echo 'Pfad nicht gefunden oder Code falsch'; // not legit
+			echo 'Pfad nicht gefunden oder Code falsch'; // not legit
 		}  
 	}	
 }
@@ -476,7 +476,7 @@ function fg_init_handle_download() {
 						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
 						if ( 1 == $protect ) {
 							global $wp;
-							$hashwert = md5($folder ."/". $file . intval(date('Y-m-d H:i:s')/24*60*60));
+							$hashwert = md5($folder ."/". $file . intval(date('Y-m-d H:i:s')) / 24 * 3600 );
 							$dllink = '<a style="font-size:1.2em" title="'.$ext.'&#10;herunter laden" href="'. add_query_arg( array('dlid' => $folder ."/". $file,'code' => $hashwert) , home_url() ) . '">'.$file.'</a>';
 						} else {
 							$dllink = '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';

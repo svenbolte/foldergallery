@@ -1,7 +1,7 @@
 === Folder Gallery and Slider with documentlist and csv from file and url table shortcode ===
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
@@ -238,10 +238,8 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 == Changelog ==
 
-= 9.7.5.37
-csv to table - sort order fix. Did not sort descending when clicking on column title in header. now fixed ;)
-csv to table - pagination added, displays 25 table rows per page
-csv to table - search (fultext) on table array filters displayyed content
+= 9.7.5.39
+missing variable declaration bugfix
 
 = 9.7.5.36
 Bugfixes regarding csv imports. autoadd csv disabled by default (cause most of my csv exporting sites use a webservice in url and not a filename

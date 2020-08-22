@@ -2,6 +2,7 @@
 /*
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
+Author URI: https://github.com/svenbolte
 Version: 9.7.5.39
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
@@ -10,7 +11,7 @@ Tested up to: 5.5
 Requires at least: 5.0
 Requires PHP: 5.3
 License: GPLv2
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
 */
@@ -397,7 +398,7 @@ function fg_init_handle_download() {
 		extract( shortcode_atts( array(
 			'folder'  => 'wp-content/uploads/pdf/',
 			'protect'  => 0,
-			'sort'	  => $fg_options['sort'],
+			'sort'	  => 'filename',
 		), $atts ) );
 		if (isset($_GET['sort'])) {
 		  $sort = $_GET['sort'];
@@ -2524,7 +2525,6 @@ if( !class_exists('csvtohtmlwp') ) {
 
 		// Page navigation
 		$nb_elem_per_page = 25;
-		$sort_cols_order='asc';
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
 		$page = isset($_GET['seite'])?intval($_GET['seite']-1):0;
 

@@ -69,7 +69,6 @@ Most of these settings can be overridden using the corresponding shortcode
 == Frequently Asked Questions ==
 
 = How to install Lightbox 2 JS engine? =
-
 1. Download Lightbox 2 from http://lokeshdhakar.com/projects/lightbox2/
 2. Unzip the archive
 3. Upload the directory 'dist' to '/wp-content' and rename it to 'lightbox'
@@ -77,7 +76,6 @@ Most of these settings can be overridden using the corresponding shortcode
 5. Done!
 
 = How to install Fancybox 3? =
-
 1. Download FancyBox 3 from http://fancyapps.com/fancybox/3/
 2. Unzip the archive then rename the directory to 'fancybox3'.
 3. Upload the directory 'fancybox3' to '/wp-content'.
@@ -86,7 +84,6 @@ Most of these settings can be overridden using the corresponding shortcode
 6. Done!
 
 = How to install Lightview 3? =
-
 1. Download lightview from http://projects.nickstakenburg.com/lightview/download
 2. Unzip the archive then rename the directory to 'lightview' (i.e., remove version number).
 3. Upload the directory 'lightview' to '/wp-content'.
@@ -99,41 +96,32 @@ You can specify lightview options with the shortcode attribute 'options':
 	
 You can set default options in Folder Gallery Options Page. 
 
-See http://projects.nickstakenburg.com/lightview/documentation for details about Lightview options.
-
 = Can I use Folder Gallery along with another Lightbox plugin? =
-
 Folder Gallery has built-in support for "Easy Fancybox" plugin by RavanH, "Responsive Lightbox" plugin by dFactory, and "Slenderbox" plugin by Matthew Petroff. After activating the plugin, select it in Folder Gallery Settings (Gallery Engine).
 
 Otherwise, if your Lightbox plugin automatically handles images, you may set the lightbox engine to 'None' in Folder Gallery Options.
 This should work with
-
 * jQuery Colorbox 4.6+ by Arne Franken
 * Lightview Plus 3.1.3+ by Puzich
 * Maybe other
 
 = Can I use Easy Fancybox plugin along with Folder Gallery? =
-
 Yes! First install and activate Easy Fancybox plugin. In Wordpress > Settings > Media > Fancybox > Images > Gallery, Disabled Autogllery. Then, in Wordpress > Settings > Folder Gallery, select "Easy Fancybox (plugin)" as Gallery Engine.
 
 = I'd like to display a single thumbnail instead of the full thumbnails list =
-
 Add the attribute `thumbnails` in the shortcode with value `single` to display only the first thumbnail.
 
 	[foldergallery folder="path" title="My Gallery" thumbnails="single"]
 
 If you want to use a different picture (than the first) as the single thumbnail for the gallery, add a picture with name !!! (e.g., `!!!.jpg`) to your gallery. This picture will be used as thumbnail, but won't be included in the (lightbox) gallery. Another option is to use the shortcode attribute `thumbnails=-n` where `n`is the picture number (in the gallery) you want to use as single thumbnail. 
-
 To hide gallery title under the thumbnail, add `title=""`. You then should set `caption' to something else than `default`, e.g., `caption="filename"`.
 
 = I'd like to display only the n first thumbnails instead of the full thumbnails list =
-
 Add the attribute `thumbnails` in the shortcode with value `n` to display only the n first thumbnails.
 
 	[foldergallery folder="path" title="My Gallery" thumbnails=3]
 
 = I'd like to display a (sub)title under each thumbnail =
-
 You have to set show_thumbnail_captions to 1 (or change the global option in Folder Gallery Settings) using 
 
 	[foldergallery folder="path" title="My Gallery" show_thumbnail_captions=true]
@@ -142,7 +130,9 @@ The caption format is set with the attribute `caption`. It can be set to `filena
 
 	[foldergallery folder="path" title="My Gallery" show_thumbnail_captions=1 caption='smartfilename']
 
-========================================= Slider =========================================================================================
+=
+============================================================================ Slider =========================================================================================
+=
 
 To include a slider in a post or a page, you have to use the following shortcode :
 
@@ -169,7 +159,9 @@ Most of theses settings can be overridden using the corresponding shortcode attr
 This plugin uses bxSlider 4.2.5 by Steven Wanderski - https://bxslider.com 
 
 
+=
 ========================================= csv to html =========================================================================================
+=
 
 == Description ==
 
@@ -212,22 +204,20 @@ You can click on the header titles to sort toggling from asc to desc or give url
 = Default values =
 * [csvtohtml_create title="{none}" html_id="{none}" html_class="{none}" source_type="guess" path="{none}" fetch_lastheaders="0" source_files="{none}" csv_delimiter="," exclude_cols="{none} include_cols="{none}" eol_detection="cr/lf" convert_encoding_from="{none}" convert_encoding_to="{to}" sort_cols="{none}" sort_cols_order="asc" add_ext_auto="yes" float_divider="." debug_mode="no"]
 
-== Example of usage ==
-
-= shortcodes in post(s)/page(s) =
+== Example of usage == = shortcodes in post(s)/page(s) =
 * [csvtohtml_create source_type="visualizer_plugin" path="lan" source_files="skane.csv;smaland.csv;lappland.csv"]
 * [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1.csv;excel2.csv"]
 * [csvtohtml_create source_type="guess" path="excelfolder" source_files="*.csv"]
 * [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2" debug_mode="yes"]
 * [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1.csv;excel2.csv" debug_mode="yes" fetch_lastheaders="3"]
-* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;http://wibergsweb.se/map/sweden.csv" debug_mode="yes"]
-* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;http://wibergsweb.se/map/sweden.csv" include_cols="5,6,7,12-14" eol_detection="auto" debug_mode="yes"]
-* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;http://wibergsweb.se/map/sweden.csv" exclude_cols="3" debug_mode="yes" eol_detection="CR/LF"]
+* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;https://mysite.domain/map/camouflage.csv" debug_mode="yes"]
+* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;https://mysite.domain/map/camouflage.csv" include_cols="5,6,7,12-14" eol_detection="auto" debug_mode="yes"]
+* [csvtohtml_create source_type="guess" path="excelfolder" source_files="excel1;excel2;https://mysite.domain/map/camouflage.csv" exclude_cols="3" debug_mode="yes" eol_detection="CR/LF"]
 * [csvtohtml_create html_class="tablesorter" source_type="guess" path="excelfolder" source_files="excel1;excel2;http://wibergsweb.se/map/sweden.csv" exclude_cols="3,7,9,11-13"]
 * [csvtohtml_create source_type="guess" path="excelfolder" source_files="whatever.csv" csv_delimiter=";"]
-* [csvtohtml_create source_type="guess" source_files="http://wibergsweb.se/map/sweden.csv" debug_mode="no" convert_encoding_from="Windows-1252" convert_encoding_to="UTF-8"]
-* [csvtohtml_create source_type="guess" source_files="http://wibergsweb.se/map/sweden.csv" debug_mode="no" convert_encoding_to="UTF-8"]
-* [csvtohtml_create source_type="guess" source_files="http://wibergsweb.se/map/sweden.csv" debug_mode="no" sort_cols="1,2" sort_cols_order="desc,asc"]
+* [csvtohtml_create source_type="guess" source_files="https://mysite.domain/map/camouflage.csv" convert_encoding_from="Windows-1252" convert_encoding_to="UTF-8"]
+* [csvtohtml_create source_type="guess" source_files="https://mysite.domain/map/camouflage.csv" convert_encoding_to="UTF-8"]
+* [csvtohtml_create source_type="guess" source_files="https://mysite.domain/map/camouflage.csv" sort_cols="1,2" sort_cols_order="desc,asc"]
 
 == Example css ==
 * .csvtohtml th.colset-1 {background:#ff0000 !important;}
@@ -235,8 +225,10 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 
 
-
 == Changelog ==
+
+= 9.7.5.41
+CSVtotable downloads from url will be cached for 1 hour now
 
 = 9.7.5.40
 Variable declaration notices und adjustments php 7.4.9

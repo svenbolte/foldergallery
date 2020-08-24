@@ -3,7 +3,7 @@
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
-Version: 9.7.5.40
+Version: 9.7.5.41
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
@@ -2243,7 +2243,8 @@ if( !class_exists('csvtohtmlwp') ) {
             if ( $local_file === false ) 
             {         
                 $file_arr = false;
-                               
+
+				
                 //Check if (external) file exists
                 $wp_response = wp_remote_get($file);
                 $ret_code = wp_remote_retrieve_response_code( $wp_response );
@@ -2252,7 +2253,22 @@ if( !class_exists('csvtohtmlwp') ) {
                 //200 OK               
                 if ( $ret_code === 200)
                 {
-                    $body_data = wp_remote_retrieve_body( $wp_response );                        
+					// Download der ICS Datei 1 Stunde cachen	
+					if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()); }
+					$cache_key = 'foldergallery-' . $iswidget . get_the_ID() . '-' . md5($file);
+					$body_data = get_site_transient($cache_key);
+					 if ($body_data === False) {
+						$body_data = wp_remote_retrieve_body( $wp_response );                        
+						 if ($body_data === False) {
+							 $failed = True;
+							 $body_data = null;
+							 error_log('Keine Datei gefunden bei:  ' . $wp_response);
+						 } else {
+							 set_site_transient($cache_key, $body_data, 3600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
+						 }
+					 }
+					
+					// $body_data = wp_remote_retrieve_body( $wp_response );                        
 
                     //What end of line to use when handling file(s)
                     switch (strtolower( $eol_detection ) ) 

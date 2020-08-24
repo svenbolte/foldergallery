@@ -2548,8 +2548,8 @@ if( !class_exists('csvtohtmlwp') ) {
 			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } } else { $sort_cols_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
 			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
-			if ($_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
-			if ($_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
+			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
+			if (isset($_GET['order']) && $_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
 			$html.= '</a></th>';
             $nr_col++;
         }

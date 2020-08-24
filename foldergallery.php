@@ -3,7 +3,7 @@
 Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
-Version: 9.7.5.41
+Version: 9.7.5.42
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
 Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
@@ -2257,16 +2257,15 @@ if( !class_exists('csvtohtmlwp') ) {
 					if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()); }
 					$cache_key = 'foldergallery-' . $iswidget . get_the_ID() . '-' . md5($file);
 					$body_data = get_site_transient($cache_key);
-					 if ($body_data === False) {
+					if ($body_data === False) {
 						$body_data = wp_remote_retrieve_body( $wp_response );                        
 						 if ($body_data === False) {
-							 $failed = True;
 							 $body_data = null;
 							 error_log('Keine Datei gefunden bei:  ' . $wp_response);
 						 } else {
 							 set_site_transient($cache_key, $body_data, 3600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
 						 }
-					 }
+					}
 					
 					// $body_data = wp_remote_retrieve_body( $wp_response );                        
 
@@ -2542,33 +2541,28 @@ if( !class_exists('csvtohtmlwp') ) {
 		// Page navigation
 		$nb_elem_per_page = 25;
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
-		$page = isset($_GET['seite'])?intval($_GET['seite']-1):0;
+		$page = isset($_GET['seite'])?intval($_GET['seite']):1;
 
 		foreach( $header_values as $hv) 
         {
-			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } }
+			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } } else { $sort_cols_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv . '</a></th>';
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
+			if ($_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
+			if ($_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
+			$html.= '</a></th>';
             $nr_col++;
         }
         $html .= '</tr></thead><tbody>';
   
         $nr_row = 1;
-        $pyj_class = 'odd';
         
 		// Suchfilter, wenn filter gesetzt, nicht paginieren
-		if ( !empty($search)) { $nb_elem_per_page = 200; }
+		if ( !empty($search)) { $nb_elem_per_page = 200; $page = 0; }
 			// foreach( $row_values as $rv ) {
 			foreach (array_slice($row_values, $page*$nb_elem_per_page, $nb_elem_per_page) as $rv) { 
-			
 				if ( ! isset( $search ) || isset( $search ) && $this->in_array_r($search, $rv) ) {
-					$html .= '<tr class="rowset '. $pyj_class . ' rowset-' .$nr_row . '">';    
-					if ( $pyj_class === 'odd') {
-						$pyj_class = 'even';
-					}
-					else {
-						$pyj_class = 'odd';
-					}
+					$html .= '<tr class="rowset rowset-' .$nr_row . '">';    
 						
 					$nr_col = 1;
 					foreach ( $rv as $inner_value) {
@@ -2576,14 +2570,12 @@ if( !class_exists('csvtohtmlwp') ) {
 						if ($float_divider != '.') {
 								$inner_value[1] = str_replace('.', $float_divider, $inner_value[1]);
 						}
-
 						$html .= '<td class="colset colset-' . $nr_col . '">' . $inner_value[1]  . '</td>';      
 						$nr_col++;
 					}
 					$html .= '</tr>';
 					$nr_row++;
 				}
-			
 			}
 			// Page navigation		
 			if ( empty($search)) {

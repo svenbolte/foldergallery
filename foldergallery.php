@@ -1323,7 +1323,7 @@ class folderslider{
 	
 	public function fsd_styles() {
 		wp_enqueue_style( 'bxslider-style', plugins_url( 'jquery.bxslider/jquery.bxslider.min.css', __FILE__ ) );
-		wp_enqueue_style( 'fsd-style', plugins_url( 'style.min.css', __FILE__ ) );
+		wp_enqueue_style( 'fsd-style', plugins_url( 'style.css', __FILE__ ) );
 	}
 
 	public function fsd_scripts( $param, $num ) {

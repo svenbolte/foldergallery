@@ -597,6 +597,7 @@ function fg_init_handle_download() {
 		$margin=intval($margin);
 		$border=intval($border);
 		$padding=intval($padding);
+		$thumbpagination='';
 
 		// Cache folder
 		$cache_folder = $folder . '/cache_' . $width . 'x' . $height;

@@ -123,3 +123,15 @@ ul.bxslider li {
 .bx-clone {
 	display: block;
 }
+
+.fg_gallery img:hover { border-color:#888; }
+.fg_title_link { font-weight: bold; }
+.fg_title { font-style: italic; }
+.fg_caption { font-size: 0.9em;z-index:1; }
+
+.fg_thumbnail { padding:0; display:inline-block; text-align:center; }
+.fg_gallery img { border:1px solid #ddd; }
+
+.fancybox-toolbar, .fancybox-infobar {
+	top:40px!important;
+}

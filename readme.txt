@@ -2,6 +2,11 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Version: 9.7.5.43
+Stable tag: 9.7.5.43
+Requires at least: 5.1
+Tested up to: 5.5.1
+Requires PHP: 7.2
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).

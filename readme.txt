@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.5.43
-Stable tag: 9.7.5.43
+Version: 9.7.5.44
+Stable tag: 9.7.5.44
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2

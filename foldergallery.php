@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.5.43
-Stable tag: 9.7.5.43
+Version: 9.7.5.44
+Stable tag: 9.7.5.44
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2255,8 +2255,8 @@ if( !class_exists('csvtohtmlwp') ) {
                 if ( $ret_code === 200)
                 {
 					// Download der ICS Datei 1 Stunde cachen	
-					if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()); }
-					$cache_key = 'foldergallery-' . $iswidget . get_the_ID() . '-' . md5($file);
+					if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()) . get_the_ID(); }
+					$cache_key = 'foldergallery-' . $iswidget . '-' . md5($file);
 					$body_data = get_site_transient($cache_key);
 					if ($body_data === False) {
 						$body_data = wp_remote_retrieve_body( $wp_response );                        

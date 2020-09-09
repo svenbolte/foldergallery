@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.5.44
-Stable tag: 9.7.5.44
+Version: 9.7.5.45
+Stable tag: 9.7.5.45
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -20,9 +20,7 @@ Requires PHP: 7.2
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 new foldergallery();
-
 class foldergallery{
-
 	public function __construct() {		
 		add_action( 'admin_menu', array( $this, 'fg_menu' ) );	
 		add_action( 'admin_init', array( $this, 'fg_settings_init' ) );
@@ -1002,10 +1000,13 @@ function fg_init_handle_download() {
 		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code> Dokumenten-Liste eines Verzeichnisses ausgeben mit Erstelldatum und Dateiänderungsdatum, protect=1 schützt Ordner, ohne Parameter öffentlicher Zugriff auf die Deeplinks</p>';
 		$upload_dir = wp_upload_dir();
 		$upload_basedir = $upload_dir['basedir'];
-		echo '<p><code>[csvtohtml_create source_files="sweden.csv"]</code> '. __('html table from the file sweden.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
 		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code> '. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
-		echo '<p><code>[csvtohtml_create source_files="https://domain.de/sweden.csv"]</code> '. __('html table from the file sweden.csv if it exists on the root of wibergsweb.se - domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
-
+		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code> '. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
+		echo '<br><p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code> '. __('html table from the file sweden.csv if it exists on the root of wibergsweb.se - domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
+		
+		
+		
+		
 		echo '<form method="post" action="options.php">' . "\n";
 		settings_fields( 'FolderGallery' );
 		echo "\n" . '<table class="form-table"><tbody>' . "\n";
@@ -2178,9 +2179,7 @@ if( !class_exists('csvtohtmlwp') ) {
         extract ( $args );
 		
 		// Sort order from url parameter
-		if (isset($_GET['sort'])) {
-		  $sort_cols = $_GET['sort'];
-		}
+		if (isset($_GET['sort'])) { $sort_cols = $_GET['sort']; } else { $sort_cols = ''; }
 		if (isset($_GET['order'])) {
 		  if ( $_GET['order'] == 'desc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } 
 		  $sort_cols_order = $sortorder;
@@ -2335,7 +2334,6 @@ if( !class_exists('csvtohtmlwp') ) {
                 }
             }
         }        
-                
         
         //Create the object used for fetching
         $obj = $this->object_fromsourcetype( $source_type );        
@@ -2498,13 +2496,10 @@ if( !class_exists('csvtohtmlwp') ) {
                 {
                     $r[$c][1] = $new_arr[$index][$c]; 
                 }
-                
                 $index++;
             }
-            
         }
-                
-        
+
         //If title given, set this title in left top corner of htmltable
         if ( isset($title) && isset($header_values[0])) 
         {
@@ -2540,9 +2535,9 @@ if( !class_exists('csvtohtmlwp') ) {
         $nr_col = 1;
 
 		// Page navigation
-		$nb_elem_per_page = 25;
+		$nb_elem_per_page = 20;
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
-		$page = isset($_GET['seite'])?intval($_GET['seite']):1;
+		$page = isset($_GET['seite'])?intval($_GET['seite']):0;
 
 		foreach( $header_values as $hv) 
         {
@@ -2571,7 +2566,7 @@ if( !class_exists('csvtohtmlwp') ) {
 						if ($float_divider != '.') {
 								$inner_value[1] = str_replace('.', $float_divider, $inner_value[1]);
 						}
-						$html .= '<td class="colset colset-' . $nr_col . '">' . $inner_value[1]  . '</td>';      
+						$html .= '<td class="colset colset-' . $nr_col . '">' . sanitize_text_field($inner_value[1] ) . '</td>';      
 						$nr_col++;
 					}
 					$html .= '</tr>';
@@ -2581,8 +2576,9 @@ if( !class_exists('csvtohtmlwp') ) {
 			// Page navigation		
 			if ( empty($search)) {
 				$html .= '<tr><td colspan="100">';
-				for($i=1;$i<$number_of_pages;$i++){
-					$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), $wp->request ).'">'.$i.'</a>';
+				for($i=0;$i<$number_of_pages;$i++){
+					$seitennummer = $i+1;
+					$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), $wp->request ).'">'.$seitennummer.'</a>';
 				}	
 				$html .= '</td></tr>';		
 			}
@@ -2593,4 +2589,50 @@ if( !class_exists('csvtohtmlwp') ) {
   
 $csvtohtmlwp = new csvtohtmlwp();
 }
+
+// 
+// ----------------------------- Nun noch der Shortcode, um RSS-Feeds auf einer Seite anzuzeigen --------------------------
+//
+
+add_shortcode( 'rssdisplay', 't5_feed_shortcode' );
+
+function t5_feed_shortcode( $attrs )
+{
+    $args = shortcode_atts(
+        array (
+            'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
+			'excerpt' => '0',
+			'wordcount' => 0,
+        ),
+        $attrs
+    );
+	global $excerpt;
+    // a SimplePie instance
+    $feed = fetch_feed( $args[ 'url' ] );
+	$excerpt = $args[ 'excerpt' ];
+	$wordcount= $args['wordcount'];
+    if ( is_wp_error( $feed ) )
+        return 'There was an error';
+    if ( ! $feed->get_item_quantity() )
+        return 'Feed is down.';
+
+    $lis = array();
+    foreach ( $feed->get_items(0, 30) as $item )
+    {
+        if ( '' === $title = esc_attr( strip_tags( $item->get_title() ) ) ) $title = __( 'Untitled' );
+        if ( '' === $content = $item->get_description() ) $content = __( 'none' );
+		if ( '1' == $excerpt ) { $content = esc_attr( strip_tags( $item->get_description() )); }
+		if ( $wordcount > 0 ) {
+			$content = implode(" ", array_slice( explode(" ", $content), 0, $wordcount) );
+			$compactcss ='compact';
+		} else { $compactcss='rssdisplay'; }
+        $lis[] = sprintf(
+            '<a class="headline" href="%1$s">%2$s</a><br>%3$s',
+            esc_url( strip_tags( $item->get_link() ) ),
+            $title, $content
+        );
+    }
+    return '<ul class="'.$compactcss.'"><li>' . join( '</li><li>', $lis ) . '</ul>';
+}
+
 ?>

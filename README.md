@@ -1,10 +1,12 @@
-# Folder Gallery and Slider with documentlist and csv table display
+# Folder Gallery, FGSlider, Folder documentlist, csv table display and RSS display shortcodes
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
-Now descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
-display csv files from external url or from the uploads folder
+Descriptions can be uploaded in a text file with format: filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
+Display csv files from external url or from the uploads folder
+Display RSS feeds from external URL as list in long or shortened excerpt form
+
 
 To show a documents list for download pdf files use shortcode
 
@@ -24,6 +26,10 @@ To read csv from url and display as a sortable and searchable table on post/page
 
 	[csvtohtml_create source_files="https://domain.de/sweden.csv"]
 	
-To display csv from file(s) located in wordpress upload/mapfiles dir:
+To display csv from file(s) located in wordpress upload/mapfiles dir: (content will be cached 1 hrs)
 
-	[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]	
+	[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]
+	
+To display an RSS Feed from given URL use the following shortcode:	
+	
+	[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]

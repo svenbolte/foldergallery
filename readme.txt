@@ -1,9 +1,9 @@
-=== Folder Gallery and Slider with documentlist and csv from file and url table shortcode ===
+=== Folder Gallery and Slider with documentlist and csv from file/url table and rssdisplay shortcodes ===
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.5.44
-Stable tag: 9.7.5.44
+Version: 9.7.5.45
+Stable tag: 9.7.5.45
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -11,7 +11,9 @@ Requires PHP: 7.2
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
-Now descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
+Descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
+You can display rss feeds at shortcode position 'rssdisplay' in shortened or full display
+
 
 To show a documents list for download pdf files use shortcode
 
@@ -165,7 +167,7 @@ This plugin uses bxSlider 4.2.5 by Steven Wanderski - https://bxslider.com
 
 
 =
-========================================= csv to html =========================================================================================
+========================================= Shortcode csv to html =========================================================================================
 =
 
 == Description ==
@@ -228,9 +230,24 @@ You can click on the header titles to sort toggling from asc to desc or give url
 * .csvtohtml th.colset-1 {background:#ff0000 !important;}
 * .csvtohtml .even{background:#ddd;}
 
+=
+========================================= Shortcode rssdisplay =========================================================================================
+=
+
+[rssdisplay url="https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&amp;items=30&amp;shopid=" excerpt="1" wordcount="20" ]
+
+            'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
+			'excerpt' => '0',
+
 
 
 == Changelog ==
+
+= 9.7.5.42-45
+Shortcode rssdisplay added pulls rss feed and displays full or shortened link and content
+Bugfixes. Pagination did not display first page cos array counting from 0
+sanitizing Text Information
+declare empty variables if not set
 
 = 9.7.5.41
 CSVtotable downloads from url will be cached for 1 hour now

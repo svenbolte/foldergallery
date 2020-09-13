@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.5.45
-Stable tag: 9.7.5.45
+Version: 9.7.5.47
+Stable tag: 9.7.5.47
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -242,6 +242,9 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 
 == Changelog ==
+
+= 9.7.5.42-47
+Translations updated (de-de and de-de-formal
 
 = 9.7.5.42-45
 Shortcode rssdisplay added pulls rss feed and displays full or shortened link and content

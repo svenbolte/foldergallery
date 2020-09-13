@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.5.45
-Stable tag: 9.7.5.45
+Version: 9.7.5.47
+Stable tag: 9.7.5.47
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -991,22 +991,19 @@ function fg_init_handle_download() {
 		}
 	}
 	
-	public function fg_settings()
-	{
+	public function fg_settings() {
 		$fg_options = get_option( 'FolderGallery' );
-		echo '<div class="wrap">' . "\n";
-		echo '<h2>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h2>\n";
-		echo '<p><code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1 border=0 padding=0 margin=0]</code>  Shortcode für die Galerie</p>';
-		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code> Dokumenten-Liste eines Verzeichnisses ausgeben mit Erstelldatum und Dateiänderungsdatum, protect=1 schützt Ordner, ohne Parameter öffentlicher Zugriff auf die Deeplinks</p>';
 		$upload_dir = wp_upload_dir();
 		$upload_basedir = $upload_dir['basedir'];
-		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code> '. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
-		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code> '. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
-		echo '<br><p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code> '. __('html table from the file sweden.csv if it exists on the root of wibergsweb.se - domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
-		
-		
-		
-		
+		echo '<div class="wrap">' . "\n";
+		echo '<h2>' . __( 'Folder Gallery Slider Settings', 'foldergallery' ) . "</h2>\n";
+		echo '<h3>' . __( 'Shortcodes', 'foldergallery' ) . "</h3>\n";
+		echo '<p><code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1 border=0 padding=0 margin=0]</code><br>' . __('shortcode to display folder contents as a responsive paged gallery', 'foldergallery' ).'</p>';
+		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code><br>' . __('shortcode to display folder document contents as a table - protect=1 disables deep links and protects folder', 'foldergallery' ).'</p>';
+		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code><br>'. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
+		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code><br>'. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
+		echo '<p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
+		echo '<h3>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h3>\n";
 		echo '<form method="post" action="options.php">' . "\n";
 		settings_fields( 'FolderGallery' );
 		echo "\n" . '<table class="form-table"><tbody>' . "\n";
@@ -2611,9 +2608,9 @@ function t5_feed_shortcode( $attrs )
 	$excerpt = $args[ 'excerpt' ];
 	$wordcount= $args['wordcount'];
     if ( is_wp_error( $feed ) )
-        return 'There was an error';
+        return __( 'Feed display Error', 'foldergallery' );
     if ( ! $feed->get_item_quantity() )
-        return 'Feed is down.';
+        return __( 'Feed is down', 'foldergallery' );
 
     $lis = array();
     foreach ( $feed->get_items(0, 30) as $item )

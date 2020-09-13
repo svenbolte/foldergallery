@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Folder Gallery\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-07 19:09+0000\n"
-"PO-Revision-Date: 2020-08-07 19:13+0000\n"
+"POT-Creation-Date: 2020-09-13 08:48+0000\n"
+"PO-Revision-Date: 2020-09-13 08:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: Deutsch (Sie)\n"
 "Language: de_DE_formal\n"
@@ -12,48 +12,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.4.1; wp-5.4.2"
+"X-Loco-Version: 2.4.3; wp-5.5.1"
 
-#: foldergallery.php:407 foldergallery.php:583 foldergallery.php:591
+#: foldergallery.php:406 foldergallery.php:582 foldergallery.php:590
 #: foldergallery.php:607
 msgid "Folder Gallery Error:"
 msgstr "Folder Galerie Fehler: "
 
-#: foldergallery.php:408 foldergallery.php:584
+#: foldergallery.php:407 foldergallery.php:583
 #, php-format
 msgid "Unable to find the directory %s."
 msgstr "Kann Verzeichnis %s nicht finden."
 
-#: foldergallery.php:526 foldergallery.php:665 foldergallery.php:1083
+#: foldergallery.php:525 foldergallery.php:665 foldergallery.php:1083
 #: foldergallery.php:1138 foldergallery.php:1656
 msgid "Filename"
 msgstr "Dateiname"
 
-#: foldergallery.php:529 foldergallery.php:668 foldergallery.php:1086
+#: foldergallery.php:528 foldergallery.php:668 foldergallery.php:1086
 msgid "Filename (descending)"
 msgstr "Dateiname (absteigend)"
 
-#: foldergallery.php:532 foldergallery.php:671 foldergallery.php:1089
+#: foldergallery.php:531 foldergallery.php:671 foldergallery.php:1089
 msgid "Date"
 msgstr "Datum"
 
-#: foldergallery.php:535 foldergallery.php:674 foldergallery.php:1092
+#: foldergallery.php:534 foldergallery.php:674 foldergallery.php:1092
 msgid "Date (descending)"
 msgstr "Datum (absteigend)"
 
-#: foldergallery.php:538 foldergallery.php:677 foldergallery.php:1095
+#: foldergallery.php:537 foldergallery.php:677 foldergallery.php:1095
 msgid "Size"
 msgstr "Dateigröße"
 
-#: foldergallery.php:541 foldergallery.php:680 foldergallery.php:1098
+#: foldergallery.php:540 foldergallery.php:680 foldergallery.php:1098
 msgid "Size (descending)"
 msgstr "Dateigröße (absteigend)"
 
-#: foldergallery.php:544 foldergallery.php:683 foldergallery.php:1101
+#: foldergallery.php:543 foldergallery.php:683 foldergallery.php:1101
 msgid "Random"
 msgstr "zufällig"
 
-#: foldergallery.php:592
+#: foldergallery.php:591
 #, php-format
 msgid "No picture available inside %s."
 msgstr "Keine Bilder im Verzeichnis %s."
@@ -72,15 +72,29 @@ msgstr ""
 msgid "FGal Settings"
 msgstr "FGal Einstellungen"
 
-#: foldergallery.php:998
-msgid "Folder Gallery Settings"
-msgstr "Folder Galerie Einstellungen"
+#: foldergallery.php:999
+msgid "Folder Gallery Slider Settings"
+msgstr "Folder Galerie Slider Einstellungen"
+
+#: foldergallery.php:1000
+msgid "Shortcodes"
+msgstr "verfügbare Shortvodes"
+
+#: foldergallery.php:1001
+msgid "shortcode to display folder contents as a responsive paged gallery"
+msgstr ""
+"Shortcode zum Anzeigen von Ordnerinhalten als resposive Galerie mit "
+"Pagination"
+
+#: foldergallery.php:1002
+msgid ""
+"shortcode to display folder document contents as a table - protect=1 "
+"disables deep links and protects folder"
+msgstr ""
+"Shortcode zum Anzeigen des Inhalts von Ordnerdokumenten als Tabelle - "
+"protected = 1 deaktiviert Deep Links und schützt Ordner"
 
 #: foldergallery.php:1003
-msgid "html table from the file sweden.csv that exists in"
-msgstr "HTML-Tabelle aus der Datei sweden.csv, die im Ordner liegt: "
-
-#: foldergallery.php:1004
 msgid ""
 "html table from the files sweden.csv, norway.csv and iceland.csv that exists "
 "in"
@@ -88,13 +102,22 @@ msgstr ""
 "HTML-Tabelle aus den Dateien sweden.csv, norway.csv und iceland.csv, die im "
 "Ordner liegt:"
 
+#: foldergallery.php:1004
+msgid "html table from the file if exists on the root of domain"
+msgstr ""
+"HTML-Tabelle aus der Datei, falls im Stammverzeichnis der Domäne vorhanden"
+
 #: foldergallery.php:1005
 msgid ""
-"html table from the file sweden.csv if it exists on the root of wibergsweb."
-"se - domain"
+"shortcode to display rss feed in short or long form in pages/posts/html "
+"widgets"
 msgstr ""
-"HTML-Tabelle aus der Datei sweden.csv, falls sie im Stammverzeichnis der "
-"Domäne wibergsweb.se vorhanden ist"
+"Shortcode zum Anzeigen von RSS-Feeds in Kurz- oder Langform in Seiten / "
+"Posts / HTML-Widgets"
+
+#: foldergallery.php:1006
+msgid "Folder Gallery Settings"
+msgstr "Folder Galerie Einstellungen"
 
 #: foldergallery.php:1012
 msgid "Gallery Engine"
@@ -434,6 +457,14 @@ msgstr "Link zum Bild"
 msgid "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
 msgstr "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
 
+#: foldergallery.php:2611
+msgid "Feed display Error"
+msgstr "Feed Anzeigefehler"
+
+#: foldergallery.php:2613
+msgid "Feed is down"
+msgstr "RSS Feed nicht erreichbar"
+
 #. Name of the plugin
 msgid "Folder Gallery Slider"
 msgstr "Folder Gallery Slider"
@@ -456,3 +487,7 @@ msgstr "https://github.com/svenbolte/foldergallery"
 #. Author of the plugin
 msgid "PBMod"
 msgstr "PBMod"
+
+#. Author URI of the plugin
+msgid "https://github.com/svenbolte"
+msgstr "https://github.com/svenbolte"

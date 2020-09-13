@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Folder Gallery\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-07 19:09+0000\n"
+"POT-Creation-Date: 2020-09-13 08:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,46 +15,46 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.4.0; wp-5.4.2"
 
-#: foldergallery.php:407 foldergallery.php:583 foldergallery.php:591
+#: foldergallery.php:406 foldergallery.php:582 foldergallery.php:590
 #: foldergallery.php:607
 msgid "Folder Gallery Error:"
 msgstr ""
 
-#: foldergallery.php:408 foldergallery.php:584
+#: foldergallery.php:407 foldergallery.php:583
 #, php-format
 msgid "Unable to find the directory %s."
 msgstr ""
 
-#: foldergallery.php:526 foldergallery.php:665 foldergallery.php:1083
+#: foldergallery.php:525 foldergallery.php:665 foldergallery.php:1083
 #: foldergallery.php:1138 foldergallery.php:1656
 msgid "Filename"
 msgstr ""
 
-#: foldergallery.php:529 foldergallery.php:668 foldergallery.php:1086
+#: foldergallery.php:528 foldergallery.php:668 foldergallery.php:1086
 msgid "Filename (descending)"
 msgstr ""
 
-#: foldergallery.php:532 foldergallery.php:671 foldergallery.php:1089
+#: foldergallery.php:531 foldergallery.php:671 foldergallery.php:1089
 msgid "Date"
 msgstr ""
 
-#: foldergallery.php:535 foldergallery.php:674 foldergallery.php:1092
+#: foldergallery.php:534 foldergallery.php:674 foldergallery.php:1092
 msgid "Date (descending)"
 msgstr ""
 
-#: foldergallery.php:538 foldergallery.php:677 foldergallery.php:1095
+#: foldergallery.php:537 foldergallery.php:677 foldergallery.php:1095
 msgid "Size"
 msgstr ""
 
-#: foldergallery.php:541 foldergallery.php:680 foldergallery.php:1098
+#: foldergallery.php:540 foldergallery.php:680 foldergallery.php:1098
 msgid "Size (descending)"
 msgstr ""
 
-#: foldergallery.php:544 foldergallery.php:683 foldergallery.php:1101
+#: foldergallery.php:543 foldergallery.php:683 foldergallery.php:1101
 msgid "Random"
 msgstr ""
 
-#: foldergallery.php:592
+#: foldergallery.php:591
 #, php-format
 msgid "No picture available inside %s."
 msgstr ""
@@ -72,24 +72,42 @@ msgstr ""
 msgid "FGal Settings"
 msgstr ""
 
-#: foldergallery.php:998
-msgid "Folder Gallery Settings"
+#: foldergallery.php:999
+msgid "Folder Gallery Slider Settings"
+msgstr ""
+
+#: foldergallery.php:1000
+msgid "Shortcodes"
+msgstr ""
+
+#: foldergallery.php:1001
+msgid "shortcode to display folder contents as a responsive paged gallery"
+msgstr ""
+
+#: foldergallery.php:1002
+msgid ""
+"shortcode to display folder document contents as a table - protect=1 "
+"disables deep links and protects folder"
 msgstr ""
 
 #: foldergallery.php:1003
-msgid "html table from the file sweden.csv that exists in"
-msgstr ""
-
-#: foldergallery.php:1004
 msgid ""
 "html table from the files sweden.csv, norway.csv and iceland.csv that exists "
 "in"
 msgstr ""
 
+#: foldergallery.php:1004
+msgid "html table from the file if exists on the root of domain"
+msgstr ""
+
 #: foldergallery.php:1005
 msgid ""
-"html table from the file sweden.csv if it exists on the root of wibergsweb."
-"se - domain"
+"shortcode to display rss feed in short or long form in pages/posts/html "
+"widgets"
+msgstr ""
+
+#: foldergallery.php:1006
+msgid "Folder Gallery Settings"
 msgstr ""
 
 #: foldergallery.php:1012
@@ -424,6 +442,14 @@ msgstr ""
 msgid "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
 msgstr ""
 
+#: foldergallery.php:2611
+msgid "Feed display Error"
+msgstr ""
+
+#: foldergallery.php:2613
+msgid "Feed is down"
+msgstr ""
+
 #. Name of the plugin
 msgid "Folder Gallery Slider"
 msgstr ""
@@ -441,4 +467,8 @@ msgstr ""
 
 #. Author of the plugin
 msgid "PBMod"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/svenbolte"
 msgstr ""

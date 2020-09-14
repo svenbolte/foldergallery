@@ -243,6 +243,10 @@ You can click on the header titles to sort toggling from asc to desc or give url
 
 == Changelog ==
 
+= 9.7.5.48
+sorting bug fixed
+you can set html_class="small" to display table in smaller font 0.8em
+
 = 9.7.5.42-47
 Translations updated (de-de and de-de-formal
 

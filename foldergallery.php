@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.5.47
-Stable tag: 9.7.5.47
+Version: 9.7.5.48
+Stable tag: 9.7.5.48
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2176,12 +2176,8 @@ if( !class_exists('csvtohtmlwp') ) {
         extract ( $args );
 		
 		// Sort order from url parameter
-		if (isset($_GET['sort'])) { $sort_cols = $_GET['sort']; } else { $sort_cols = ''; }
-		if (isset($_GET['order'])) {
-		  if ( $_GET['order'] == 'desc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } 
-		  $sort_cols_order = $sortorder;
-		  
-		}
+		if (isset($_GET['sort'])) { $sort_cols = $_GET['sort']; }
+		if (isset($_GET['order'])) { $sort_cols_order = $_GET['order']; }
 		
         $this->csv_delimit = $csv_delimiter; //Use this char as delimiter
       
@@ -2538,9 +2534,9 @@ if( !class_exists('csvtohtmlwp') ) {
 
 		foreach( $header_values as $hv) 
         {
-			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sort_cols_order = 'desc'; } else { $sort_cols_order='asc'; } } else { $sort_cols_order = 'desc'; }
+			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
 			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
 			if (isset($_GET['order']) && $_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
 			$html.= '</a></th>';
@@ -2604,7 +2600,7 @@ function t5_feed_shortcode( $attrs )
     );
 	global $excerpt;
     // a SimplePie instance
-    $feed = fetch_feed( $args[ 'url' ] );
+    $feed = fetch_feed( sanitize_url( $args[ 'url' ] ) );
 	$excerpt = $args[ 'excerpt' ];
 	$wordcount= $args['wordcount'];
     if ( is_wp_error( $feed ) )

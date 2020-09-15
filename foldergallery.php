@@ -1003,6 +1003,7 @@ function fg_init_handle_download() {
 		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code><br>'. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
 		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code><br>'. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
 		echo '<p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
+		echo '<p><code>[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]</code><br>'. __('shortcode to display ICS or ical events in list or calendar on pages/shortcodes or html widget', 'foldergallery' ) . '</p>';
 		echo '<h3>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h3>\n";
 		echo '<form method="post" action="options.php">' . "\n";
 		settings_fields( 'FolderGallery' );

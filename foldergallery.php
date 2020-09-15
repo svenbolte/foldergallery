@@ -2601,7 +2601,7 @@ function t5_feed_shortcode( $attrs )
     );
 	global $excerpt;
     // a SimplePie instance
-    $feed = fetch_feed( sanitize_url( $args[ 'url' ] ) );
+    $feed = fetch_feed( esc_url_raw( $args[ 'url' ] ) );
 	$excerpt = $args[ 'excerpt' ];
 	$wordcount= $args['wordcount'];
     if ( is_wp_error( $feed ) )

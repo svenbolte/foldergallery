@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.5.48
-Stable tag: 9.7.5.48
+Version: 9.7.6.7
+Stable tag: 9.7.6.7
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2626,5 +2626,155 @@ function t5_feed_shortcode( $attrs )
     }
     return '<ul class="'.$compactcss.'"><li>' . join( '</li><li>', $lis ) . '</ul>';
 }
+
+// 
+// ----------------------------- Shortcode, um ICS und ICAL Kalender einzuzeigen (6h Cached) auf einer Seite/ Beitrag anzuzeigen --------------------------
+//
+
+require_once 'class.iCalReader.php';
+
+// Calendar display month
+/* draws a calendar */
+function draw_calendar($month,$year,$eventarray){
+
+	/* days and weeks vars now ... */
+	$calheader = date('Y-m-d',mktime(0,0,0,$month,1,$year));
+	$running_day = date('w',mktime(0,0,0,$month,1,$year));
+	$days_in_month = date('t',mktime(0,0,0,$month,1,$year));
+	$days_in_this_week = 1;
+	$day_counter = 0;
+	$dates_array = array();
+
+	/* draw table */
+	$calendar = '<table class="calendar"><thead><th style="text-align:center" colspan=8>' . strftime('%B %Y', mktime(0,0,0,$month,1,$year) ) . '</th></thead>';
+	/* table headings */
+	$headings = array('SO','MO','DI','MI','DO','FR','SA','Kw');
+	$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
+	
+	/* row for week one */
+	$calendar.= '<tr class="calendar-row">';
+
+	/* print "blank" days until the first of the current week */
+	for($x = 0; $x < $running_day; $x++):
+		$calendar.= '<td class="calendar-day-np"> </td>';
+		$days_in_this_week++;
+	endfor;
+
+	/* keep going with days.... */
+	for($list_day = 1; $list_day <= $days_in_month; $list_day++):
+		$calendar.= '<td class="calendar-day">';
+			/* add in the day number */
+			$running_week = date('W',mktime(0,0,0,$month,$list_day,$year));
+			$calendar.= '<div class="day-number">'.$list_day.'</div>';
+
+			/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
+			foreach ($eventarray as $calevent) {
+				if ( substr($calevent['DTSTART'],0,8) == date('Ymd',mktime(0,0,0,$month,$list_day,$year)) ) {
+					$calendar.= '<span style="word-break:break-all" title="'.$calevent['SUMMARY'].'">'.substr($calevent['SUMMARY'],0,40) . '</span> <br> ';
+				}	
+			}	
+		$calendar.= '</td>';
+		if($running_day == 6):
+			$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
+			if(($day_counter+1) != $days_in_month):
+				$calendar.= '<tr class="calendar-row">';
+			endif;
+			$running_day = -1;
+			$days_in_this_week = 0;
+		endif;
+		$days_in_this_week++; $running_day++; $day_counter++;
+	endfor;
+	/* finish the rest of the days in the week */
+	if($days_in_this_week < 8):
+		for($x = 1; $x <= (8 - $days_in_this_week); $x++):
+			$calendar.= '<td class="calendar-day-np"> </td>';
+		endfor;
+	endif;
+	/* final row */
+	$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
+	/* end the table */
+	$calendar.= '</table>';
+	/* all done, return result */
+	return $calendar;
+}
+
+
+/**
+ * Display events
+ * 
+ * @param array $atts Shortcode attributes
+ * @return void
+ * */
+function ICSEvents($atts) {
+	extract( shortcode_atts( array(
+		'title' => '', 	  // Set a title if you want to. it will be displayed as table header
+		'url'  => '',	  // URL with the ics file - required parameter
+		'items'  => 5,	  // set a number to limit number of items displayed in listings/calendars
+		'sumonly' => 0,	  // set to "1" if you do not want to list description and location
+		'showold' => 0,   // set to "1" to list older entries (happened before today)
+		'view' => 'list', // list or calendar display or list,calendar for both
+		'noeventsmessage' => '',  //if no events found nothing or this text will be displayed
+	), $atts ) );
+	// check if url is valid	
+	$wp_response = wp_remote_get($url);
+	$ret_code = wp_remote_retrieve_response_code( $wp_response );
+	$ret_message = wp_remote_retrieve_response_message( $wp_response );
+	//200 OK               
+	if ( $ret_code === 200) {
+		$ical = new ical($url);
+		$events = $ical->sortEventsWithOrder($ical->events());
+		date_default_timezone_set('Europe/Berlin');
+		setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');
+		// $now = time();
+		$now = mktime(0,0,0,date("m"),date("d"),date("Y")); 
+		$eventsToDisplay = array();
+		foreach ($events as $event) {
+			if ($showold==1 || $ical->iCalDateToUnixTimestamp( $event['DTSTART'] ) >= $now && count($eventsToDisplay) < $items) {
+				$eventsToDisplay[] = $event;
+			}
+		}
+		$wtage = array(  0 => "SO", 1 => "MO", 2 => "DI", 3 => "MI", 4 => "DO", 5 => "FR", 6 => "SA", 7 => "SO"  );
+		$html = '<table>';
+		if ( !empty($title) ) { $html .= '<thead><th colspan="2">'.$title.'</th></thead>'; }
+		if (empty($eventsToDisplay)) {
+			if (isset($noeventsmsg)) {	$html .= $noeventsmsg;  }
+		} else {
+			if ( strpos($view,"list") !== false ) {
+				foreach ($eventsToDisplay as $event) {
+					$timestamp = $ical->iCalDateToUnixTimestamp($event['DTSTART']);
+					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
+					$wielangeher = $prepo . human_time_diff($timestamp,$now);
+					if ( $wielangeher == 'vor 1 Sekunde' ) { $wielangeher = 'heute'; }
+					$html .= '<tr><td><nobr><abbr title="'.strftime('%a %e. %B %Y, %W. Kw', $timestamp).'">'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).'</nobr><br>' . $wielangeher;
+					$html .= '</td><td>';
+					if ( $sumonly==0 ) { $html .= '<span class="headline">'; }
+					$html .= $event['SUMMARY'] . '</span>';
+					if ( $sumonly==0 ) { $html .= '</span>'; }
+					if ( $sumonly==0 && !empty($event['DESCRIPTION']) ) {
+						$html .= '<br><small>'.$event['DESCRIPTION'].'</small>';
+					}
+					if ( $sumonly==0 && !empty($event['LOCATION']) && '-' !== $event['LOCATION'] ) {
+						$html .= '<br>'.$event['LOCATION'].'';
+					}
+					if (strlen($event['DTSTART']) > 8) {
+						$html .= '<br>'.strftime('%a %d. %b %Y %H:%M', $timestamp).' Uhr';
+					}
+					if (strlen($event['DTEND']) > 8) {
+						$timeend = $ical->iCalDateToUnixTimestamp($event['DTEND']);
+						$html .= ' - '.strftime('%a %d. %b %Y %H:%M', $timeend).' Uhr';
+					}
+					$html .= '</tr>';
+				}
+			}       // List view	
+		}
+		$html .= '</tr></table>';
+		if ( strpos($view,"calendar") !== false ) {
+			$html .= draw_calendar(date("m"),date("Y"),$eventsToDisplay);
+			// if ( date("m", strtotime("+2 week", $now)) > date("m", $now) ) { $html .= draw_calendar(date("m", strtotime("+2 week", $now)),date("Y", strtotime("+2 week", $now)),$eventsToDisplay); }
+		}
+	}
+	return $html;
+}
+add_shortcode('ics_events', 'ICSEvents');
 
 ?>

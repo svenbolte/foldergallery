@@ -1,11 +1,12 @@
-# Folder Gallery, FGSlider, Folder documentlist, csv table display and RSS display shortcodes
+# Folder Gallery, FGSlider, Folder documentlist, csv table display, ics icalendar display shortcodes
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
 Descriptions can be uploaded in a text file with format: filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
-Display csv files from external url or from the uploads folder
-Display RSS feeds from external URL as list in long or shortened excerpt form
+shortcode to display csv files from external url or from the uploads folder
+shortcode to display RSS feeds from external URL as list in long or shortened excerpt form
+Shortcode to display ICS and icalendar events from the web in lists
 
 
 To show a documents list for download pdf files use shortcode
@@ -33,3 +34,7 @@ To display csv from file(s) located in wordpress upload/mapfiles dir: (content w
 To display an RSS Feed from given URL use the following shortcode:	
 	
 	[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]
+	
+"ics-shortcode" shortcode that allows you to import events from an iCalendar file.
+
+	[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]

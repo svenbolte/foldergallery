@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.5.47
-Stable tag: 9.7.5.47
+Version: 9.7.6.7
+Stable tag: 9.7.6.7
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -239,9 +239,54 @@ You can click on the header titles to sort toggling from asc to desc or give url
             'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
 			'excerpt' => '0',
 
+=
+========================================= iCalendar Shortcode ics event =================================================================================
+=
+
+== Description ==
+adds an "ics-shortcode" shortcode that allows you to import events from an iCalendar file and view them as list or in month calendar.
+
+== Usage and Shortcode parameters ==
+* Add the [ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"] shortcode to page or post or html widget
+* Shortcode Parameters:
+	'title' => '',   // Set a title if you want to. it will be displayed as table header
+	'url'  => '',  // URL with the ics file - required parameter
+	'items'  => 5, // set a number to limit number of items displayed in listings/calendars
+	'sumonly' => 0, // set to "1" if you do not want to list description and location
+	'showold' => 0, // set to "1" to list older entries (happened before today)
+	'view' => 'list', // list or calendar display or list,calendar for both
+	'noeventsmessage' => '',  //if no events found nothing or this text will be displayed
+
+============================================================================================================================================================
 
 
 == Changelog ==
+
+= 9.7.6.7 = 
+ICS Shortcode plugin merged to the foldergallery plugin shortcodes toolbox
+
+= 9.7.6.6 = 
+ICS download will be cached for 6 hrs now
+
+= 9.7.6.5 = 
+ics shortcode - bugfixes
+ics shortcode - view calendar and or list option, calendar lists all events in the ics file limited to items value
+
+= 9.7.6.4 = 
+ics shortcode - parameter: view choose to display current months events as calendar.
+ics shortcode - coding for event array to display in calandar still under construction
+
+= 9.7.6.3 = 
+ics shortcode - showold parameter lists entries from ics that are in the past
+
+= 9.7.6.2 = PBMod
+ics shortcode - Update ics parser files from project
+ics shortcode - Add url check and error bypass
+ics shortcode - Display results as table
+ics shortcode - use in html widget (if theme supports this)
+ics shortcode - modified and added shortcode parameters
+ics shortcode - set timezone and location to europe/berlin / de_DE
+ics shortcode - fix date display localized
 
 = 9.7.5.48
 sorting bug fixed

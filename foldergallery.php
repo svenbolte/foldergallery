@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.7
-Stable tag: 9.7.6.7
+Version: 9.7.6.8
+Stable tag: 9.7.6.8
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2528,6 +2528,7 @@ if( !class_exists('csvtohtmlwp') ) {
         $nr_col = 1;
 
 		// Page navigation
+		$sortorder='asc';
 		$nb_elem_per_page = 20;
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
 		$page = isset($_GET['seite'])?intval($_GET['seite']):0;
@@ -2536,14 +2537,13 @@ if( !class_exists('csvtohtmlwp') ) {
         {
 			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$key, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
 			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
 			if (isset($_GET['order']) && $_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
 			$html.= '</a></th>';
             $nr_col++;
         }
         $html .= '</tr></thead><tbody>';
-  
         $nr_row = 1;
         
 		// Suchfilter, wenn filter gesetzt, nicht paginieren
@@ -2571,7 +2571,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		if ( empty($search)) {
 			for($i=0;$i<$number_of_pages;$i++){
 				$seitennummer = $i+1;
-				$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), $wp->request ).'">'.$seitennummer.'</a>';
+				$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), home_url($wp->request) ).'">'.$seitennummer.'</a>';
 			}	
 		}
 		$html .= '<br>';

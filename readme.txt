@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.7
-Stable tag: 9.7.6.7
+Version: 9.7.6.8
+Stable tag: 9.7.6.8
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -261,6 +261,9 @@ adds an "ics-shortcode" shortcode that allows you to import events from an iCale
 
 
 == Changelog ==
+
+= 9.7.6.8 = 
+sorting bugfixes and optimizations csv listing
 
 = 9.7.6.7 = 
 ICS Shortcode plugin merged to the foldergallery plugin shortcodes toolbox

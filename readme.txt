@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.8
-Stable tag: 9.7.6.8
+Version: 9.7.6.9
+Stable tag: 9.7.6.9
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -261,6 +261,10 @@ adds an "ics-shortcode" shortcode that allows you to import events from an iCale
 
 
 == Changelog ==
+
+= 9.7.6.9 = 
+New version of bxslider 4.2.14 added
+style optimizations
 
 = 9.7.6.8 = 
 sorting bugfixes and optimizations csv listing

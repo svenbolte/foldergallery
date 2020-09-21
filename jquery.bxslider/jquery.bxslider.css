@@ -57,7 +57,7 @@ ul.bxslider {
 .bx-wrapper .bx-pager {
   text-align: center;
   font-size: .85em;
-  font-family: inherit;
+  font-family: Arial;
   font-weight: bold;
   color: #666;
   padding-top: 20px;
@@ -172,7 +172,7 @@ ul.bxslider {
 }
 .bx-wrapper .bx-caption span {
   color: #fff;
-  font-family: inherit;
+  font-family: Arial;
   display: block;
   font-size: .85em;
   padding: 10px;

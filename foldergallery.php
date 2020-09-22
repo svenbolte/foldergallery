@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.9
-Stable tag: 9.7.6.9
+Version: 9.7.6.10
+Stable tag: 9.7.6.10
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -1433,20 +1433,20 @@ class folderslider{
 				'category__not_in'		 => $hidecat,
 				'showposts'				 => '8'
 			);
+			global $post;
 			query_posts( $args );
 			$slider_code = '<div class="bx-wrapper-noborder" style="font-size:1.6em;text-align:center">'. "\n";
 			$slider_code .= '<ul class="bxslider bxslider' . $this->slider_no . '">';
 			while (have_posts()) : the_post();
 				$category = get_the_category(); 
 				$cuttext = get_the_title();
-				// $cuttext .= ' - '. ago(get_the_modified_time( 'U, d.m.Y H:i:s', false, $post, true ));
+				// $cuttext .= '<small> - '. ago(get_the_modified_time( 'U, d.m.Y H:i:s', false, $post, true )) . '</small>';
 				if ( class_exists('ZCategoriesImages') && z_taxonomy_image_url($category[0]->term_id) != NULL ) {
-					$cuttitle = '<img  style="max-height:280px;min-height:190px" title="'.$cuttext.'" src="' . z_taxonomy_image_url($category[0]->term_id) . '" ' .$picture_size.'>';
+					$cuttitle = '<img style="max-height:280px;min-height:190px" title="'.$cuttext.'" src="' . z_taxonomy_image_url($category[0]->term_id) . '" ' .$picture_size.'>';
 				} else {
-					$cuttitle = '';
+					$cuttitle = '<img style="max-height:280px;min-height:190px" title="'.$cuttext.'" src="' . esc_url( plugin_dir_url(__FILE__). 'icons/slider-newsposts.jpg' ) . '" ' .$picture_size.'>';
 				}
 				$slider_code .= '<li><a href="'.get_the_permalink().'">'. $cuttitle.'</a></li>';
-				// $slider_code .= '<li><a href="'.the_permalink().'" rel="bookmark" title="'.the_title().'&#10;Aktualisiert:'. get_the_modified_time( 'l, d.m.Y H:i:s', false, $post, true ) . '&#10;' . ago(get_the_modified_time( 'U, d.m.Y H:i:s', false, $post, true )).'Beitrag aufrufen">'. $cuttitle.'</a></li>';
 			endwhile;
 			wp_reset_query();
 			$slider_code .= "</ul>\n</div>\n";

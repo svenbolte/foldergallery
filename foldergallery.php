@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.10
-Stable tag: 9.7.6.10
+Version: 9.7.6.11
+Stable tag: 9.7.6.11
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -997,6 +997,7 @@ function fg_init_handle_download() {
 		$upload_basedir = $upload_dir['basedir'];
 		echo '<div class="wrap">' . "\n";
 		echo '<h2>' . __( 'Folder Gallery Slider Settings', 'foldergallery' ) . "</h2>\n";
+		rssnews_admin_options();
 		echo '<h3>' . __( 'Shortcodes', 'foldergallery' ) . "</h3>\n";
 		echo '<div class="postbox">' . "\n";
 		echo '<p><code>[foldergallery folder="wp-content/uploads/../bilder/" title="Foto-Galerie" columns=auto width=280 height=200 thumbnails="all" show_thumbnail_captions=1 border=0 padding=0 margin=0]</code><br>' . __('shortcode to display folder contents as a responsive paged gallery', 'foldergallery' ).'</p>';
@@ -2777,4 +2778,232 @@ function ICSEvents($atts) {
 }
 add_shortcode('ics_events', 'ICSEvents');
 
+// 
+// ----------------------------- Scheduled RSS to Posts Importer ----------------------------------------------------
+//
+
+global $wpdb, $wp_version, $number;
+
+// Plugin installation and default value
+function rssnews_install() {
+	$rss2_url = "https://www.wordpress.org/news/feed/"; 
+	add_option('rssnews_rss1', $rss2_url);
+	add_option('rssnews_direction1', "Off");
+	add_option('rssnews_rss2', $rss2_url);
+	add_option('rssnews_direction2', "Off");
+	add_option('rssnews_rss3', $rss2_url);
+	add_option('rssnews_direction3', "Off");
+	add_option('rssnews_rss4', $rss2_url);
+	add_option('rssnews_direction4', "Off");
+	add_option('rssnews_rss5', $rss2_url);
+	add_option('rssnews_direction5', "Off");
+	add_option('pbrss-latestpostdate1', "01 September 1990, 5:18 pm");
+	add_option('pbrss-latestpostdate2', "01 September 1990, 5:18 pm");
+	add_option('pbrss-latestpostdate3', "01 September 1990, 5:18 pm");
+	add_option('pbrss-latestpostdate4', "01 September 1990, 5:18 pm");
+	add_option('pbrss-latestpostdate5', "01 September 1990, 5:18 pm");
+}
+
+function val_default_direction($value) {
+	$returnvalue = "Off";
+	if( $value == "Off" || $value == "On" )	{
+		$returnvalue = $value;
+	}	
+	return $returnvalue;
+}
+
+
+//  Schedule and update pbrss news with the news rss feed
+if (!wp_next_scheduled('update_feed1')  && get_option('rssnews_direction1') =='On') { wp_schedule_event(current_time('timestamp',true), 'daily', 'update_feed1'); }
+add_action('update_feed1', function() { $numer=1; update_pbrss_news($numer); } );
+if (!wp_next_scheduled('update_feed2')  && get_option('rssnews_direction2') =='On') { wp_schedule_event(current_time('timestamp',true), 'daily', 'update_feed2'); }
+add_action('update_feed2',  function() { $numer=2; update_pbrss_news($numer); } );
+if (!wp_next_scheduled('update_feed3')  && get_option('rssnews_direction3') =='On') { wp_schedule_event(current_time('timestamp',true), 'daily', 'update_feed3'); }
+add_action('update_feed3',  function() { $numer=3; update_pbrss_news($numer); } );
+if (!wp_next_scheduled('update_feed4')  && get_option('rssnews_direction4') =='On') { wp_schedule_event(current_time('timestamp',true), 'daily', 'update_feed4'); }
+add_action('update_feed4',  function() { $numer=4; update_pbrss_news($numer); } );
+if (!wp_next_scheduled('update_feed5')  && get_option('rssnews_direction5') =='On') { wp_schedule_event(current_time('timestamp',true), 'daily', 'update_feed5'); }
+add_action('update_feed5',  function() { $numer=5; update_pbrss_news($numer); } );
+// ---- clean the scheduler
+for ($i = 1; $i <= 10; $i++) {
+	if ( get_option('rssnews_direction'.$i) =='Off' ) { wp_clear_scheduled_hook( 'update_feed'.$i ); }
+}	
+
+function update_pbrss_news($number) {
+    // To reset set this one (for debugging)
+	// update_option( 'pbrss-latestpostdate'.$number, '01 September 1990, 5:18 pm' );
+	if (file_exists (ABSPATH.'/wp-admin/includes/taxonomy.php')) {
+			require_once (ABSPATH.'/wp-admin/includes/taxonomy.php'); 
+	}
+	include_once( ABSPATH . WPINC . '/feed.php' );
+    // retrieve the previous date from database
+        $time = get_option('pbrss-latestpostdate'.$number);
+		if ( empty($time) ) { $time = '01 September 1990, 5:18 pm'; }
+
+        //read the feed
+        if(function_exists('fetch_feed')){
+            // $uri = 'https://ssl.pbcs.de/dcounter/softwareverzeichnis.asp?action=rss&items=5';
+			if ( $number == 1 ) { $uri=esc_url_raw(get_option('rssnews_rss1')); }
+			if ( $number == 2 ) { $uri=esc_url_raw(get_option('rssnews_rss2')); }
+			if ( $number == 3 ) { $uri=esc_url_raw(get_option('rssnews_rss3')); }
+			if ( $number == 4 ) { $uri=esc_url_raw(get_option('rssnews_rss4')); }
+			if ( $number == 5 ) { $uri=esc_url_raw(get_option('rssnews_rss5')); }
+            $feed = fetch_feed($uri);
+        }
+
+        if($feed) {
+            foreach ($feed->get_items() as $item){
+                $titlepost = $item->get_title();
+                $content = $item->get_content();
+                $description = $item->get_description();
+                // $description = str_replace( 'https://ssl.pbcs.de/dcounter/journal','http://localhost:888/worpdress/wp_content/uploads/bilder', $description );
+                $itemdate = $item->get_date();
+				$cat_terms = array();
+				$categorien = $item->get_categories();
+				foreach ($categorien as $cat) {
+					$cat_terms[] = $cat->get_term();
+				}
+                $media_group = $item->get_item_tags('', 'enclosure');
+                $img = $media_group[0]['attribs']['']['url'];
+                $width = $media_group[0]['attribs']['']['width'];           
+                // $latestItemDate = $feed->get_item()->get_date();
+
+                // --- if the date is < than the date we have in database, get out of the loop
+                if( $itemdate <= $time) break;
+
+                // prepare values for inserting
+				$catid = wp_create_category( $cat_terms[0] );
+				$post_information = array(
+                    'post_title' => $titlepost,
+                    'post_content' => $description,
+                    'post_type' => 'post',
+					'post_author' => 1,
+                    'post_status' => 'publish',
+					'post_category' => array($catid),
+					'post_date' => date('Y-m-d H:i:s'),
+                );
+                wp_insert_post( $post_information );    
+            }
+        }
+        // update the new date in database to the date of the first item in the loop        
+        update_option( 'pbrss-latestpostdate'.$number, $feed->get_item()->get_date() );
+}
+
+
+// Admin update option for default value
+function rssnews_admin_options() {
+	?>
+	<div class="wrap">
+	<div class="form-wrap">
+	<div id="icon-plugins" class="icon32 icon32-posts-post"></div>
+	<?php	
+	$rssnews_rss1 = get_option('rssnews_rss1');
+	$rssnews_rss2 = get_option('rssnews_rss2');
+	$rssnews_rss3 = get_option('rssnews_rss3');
+	$rssnews_rss4 = get_option('rssnews_rss4');
+	$rssnews_rss5 = get_option('rssnews_rss5');
+	$rssnews_direction1 = get_option('rssnews_direction1');
+	$rssnews_direction2 = get_option('rssnews_direction2');
+	$rssnews_direction3 = get_option('rssnews_direction3');
+	$rssnews_direction4 = get_option('rssnews_direction4');
+	$rssnews_direction5 = get_option('rssnews_direction5');
+	if (isset($_POST['rssnews_submit'])) {
+		check_admin_referer('rssnews_form_setting');
+		$rssnews_rss1 		= esc_url_raw($_POST['rssnews_rss1']);
+		$rssnews_rss2 		= esc_url_raw($_POST['rssnews_rss2']);
+		$rssnews_rss3	 	= esc_url_raw($_POST['rssnews_rss3']);
+		$rssnews_rss4 		= esc_url_raw($_POST['rssnews_rss4']);
+		$rssnews_rss5 		= esc_url_raw($_POST['rssnews_rss5']);
+		$rssnews_direction1 = sanitize_text_field($_POST['rssnews_direction1']);
+		$rssnews_direction2 = sanitize_text_field($_POST['rssnews_direction2']);
+		$rssnews_direction3 = sanitize_text_field($_POST['rssnews_direction3']);
+		$rssnews_direction4 = sanitize_text_field($_POST['rssnews_direction4']);
+		$rssnews_direction5 = sanitize_text_field($_POST['rssnews_direction5']);
+		// Set default value for direction (schedule)
+		$rssnews_direction1 = val_default_direction($rssnews_direction1);
+		$rssnews_direction2 = val_default_direction($rssnews_direction2);
+		$rssnews_direction3 = val_default_direction($rssnews_direction3);
+		$rssnews_direction4 = val_default_direction($rssnews_direction4);
+		$rssnews_direction5 = val_default_direction($rssnews_direction5);
+		update_option('rssnews_rss1', $rssnews_rss1 );
+		update_option('rssnews_rss2', $rssnews_rss2 );
+		update_option('rssnews_rss3', $rssnews_rss3 );
+		update_option('rssnews_rss4', $rssnews_rss4 );
+		update_option('rssnews_rss5', $rssnews_rss5 );
+		update_option('rssnews_direction1', $rssnews_direction1 );
+		update_option('rssnews_direction2', $rssnews_direction2 );
+		update_option('rssnews_direction3', $rssnews_direction3 );
+		update_option('rssnews_direction4', $rssnews_direction4 );
+		update_option('rssnews_direction5', $rssnews_direction5 );
+		?>
+		<div class="updated fade">
+			<p><strong><?php _e('Details successfully updated.','foldergallery'); ?></strong></p>
+		</div>
+		<?php
+	}
+	?>
+	<h2><?php _e('FG RssToPosts','foldergallery'); ?></h2>
+	<form name="rssnews_form" method="post" action="">
+	<div class="postbox" style="padding:10px">
+	<p>Import up to five rss feeds and create posts from the feeds. date of the newest rss entry will be set to avoid duplicates.<br>
+	When set to "on" a daily schedule is created on wp-cron. toggle off&save/on&save will run the task now</p>
+	<label for="tag-title"><?php _e('Rss link and schedule','foldergallery'); ?> 1
+	<?php echo ' newest '. get_option('pbrss-latestpostdate1').' vor ' . human_time_diff( strtotime(get_option('pbrss-latestpostdate1')),current_time( 'timestamp' )); ?></label>
+	<input name="rssnews_rss1" type="text" id="rssnews_rss1" value="<?php echo $rssnews_rss1; ?>" size="100" maxlength="1000" />
+	<select name="rssnews_direction1" id="rssnews_direction1">
+		<option value='Off' <?php if($rssnews_direction1 == 'Off') { echo 'selected' ; } ?>>Off</option>
+		<option value='On' <?php if($rssnews_direction1 == 'On') { echo 'selected' ; } ?>>On</option>
+    </select>
+	
+	<label for="tag-title"><?php _e('Rss link and schedule','foldergallery'); ?> 2
+	<?php echo ' newest '. get_option('pbrss-latestpostdate2').' vor ' . human_time_diff( strtotime(get_option('pbrss-latestpostdate2')),current_time( 'timestamp' )); ?></label>
+	<input name="rssnews_rss2" type="text" id="rssnews_rss2" value="<?php echo $rssnews_rss2; ?>" size="100" maxlength="1000" />
+	<select name="rssnews_direction2" id="rssnews_direction2">
+		<option value='Off' <?php if($rssnews_direction2 == 'Off') { echo 'selected' ; } ?>>Off</option>
+		<option value='On' <?php if($rssnews_direction2 == 'On') { echo 'selected' ; } ?>>On</option>
+    </select>
+	
+	<label for="tag-title"><?php _e('Rss link and schedule','foldergallery'); ?> 3
+	<?php echo ' newest '. get_option('pbrss-latestpostdate3').' vor ' . human_time_diff( strtotime(get_option('pbrss-latestpostdate3')),current_time( 'timestamp' )); ?></label>
+	<input name="rssnews_rss3" type="text" id="rssnews_rss3" value="<?php echo $rssnews_rss3; ?>" size="100" maxlength="1000" />
+	<select name="rssnews_direction3" id="rssnews_direction3">
+		<option value='Off' <?php if($rssnews_direction3 == 'Off') { echo 'selected' ; } ?>>Off</option>
+		<option value='On' <?php if($rssnews_direction3 == 'On') { echo 'selected' ; } ?>>On</option>
+    </select>
+	
+	<label for="tag-title"><?php _e('Rss link and schedule','foldergallery'); ?> 4
+	<?php echo ' newest '. get_option('pbrss-latestpostdate4').' vor ' . human_time_diff( strtotime(get_option('pbrss-latestpostdate4')),current_time( 'timestamp' )); ?></label>
+	<input name="rssnews_rss4" type="text" id="rssnews_rss4" value="<?php echo $rssnews_rss4; ?>" size="100" maxlength="1000" />
+	<select name="rssnews_direction4" id="rssnews_direction4">
+		<option value='Off' <?php if($rssnews_direction4 == 'Off') { echo 'selected' ; } ?>>Off</option>
+		<option value='On' <?php if($rssnews_direction4 == 'On') { echo 'selected' ; } ?>>On</option>
+    </select>
+	
+	<label for="tag-title"><?php _e('Rss link and schedule','foldergallery'); ?> 5
+	<?php echo ' newest '. get_option('pbrss-latestpostdate5').' vor ' . human_time_diff( strtotime(get_option('pbrss-latestpostdate5')),current_time( 'timestamp' )); ?></label>
+	<input name="rssnews_rss5" type="text" id="rssnews_rss5" value="<?php echo $rssnews_rss5; ?>" size="100" maxlength="1000" />
+	<select name="rssnews_direction5" id="rssnews_direction5">
+		<option value='Off' <?php if($rssnews_direction5 == 'Off') { echo 'selected' ; } ?>>Off</option>
+		<option value='On' <?php if($rssnews_direction5 == 'On') { echo 'selected' ; } ?>>On</option>
+    </select>
+	</div>
+	
+	<div style="height:10px;"></div>
+	<input type="hidden" name="rssnews_form_submit" value="yes"/>
+	<input name="rssnews_submit" id="rssnews_submit" class="button-primary" value="<?php _e('Update RSS import settings','foldergallery'); ?>" type="submit" />
+	<?php wp_nonce_field('rssnews_form_setting'); ?>
+	</form>
+	</div>
+	</div>
+    <?php
+}
+
+// Function to call at the time of deactivation
+function rssnews_deactivation() {
+	// No action
+}
+
+// Plugin hook
+register_activation_hook(__FILE__, 'rssnews_install');
+register_deactivation_hook(__FILE__, 'rssnews_deactivation');
 ?>

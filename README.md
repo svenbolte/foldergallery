@@ -7,7 +7,11 @@ Descriptions can be uploaded in a text file with format: filename.jpg,descrition
 shortcode to display csv files from external url or from the uploads folder
 shortcode to display RSS feeds from external URL as list in long or shortened excerpt form
 Shortcode to display ICS and icalendar events from the web in lists
+Wp schedule function to import up to 5 external rss feeds to posts.
 
+## How to ... ##
+
+To import rss feeds to posts Goto Admin and Settings FG Rss2Posts, enter wanted rss feeds and thew will be imported to posts once a day if set to "on" 
 
 To show a documents list for download pdf files use shortcode
 

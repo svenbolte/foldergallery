@@ -1,9 +1,9 @@
-=== Folder Gallery and Slider with documentlist and csv from file/url table and rssdisplay shortcodes ===
+=== Folder Gallery and Slider with documentlist, csv from file/url table and rssdisplay shortcodes, RSStoPosts ===
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.10
-Stable tag: 9.7.6.10
+Version: 9.7.6.11
+Stable tag: 9.7.6.11
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -243,7 +243,6 @@ You can click on the header titles to sort toggling from asc to desc or give url
 ========================================= iCalendar Shortcode ics event =================================================================================
 =
 
-== Description ==
 adds an "ics-shortcode" shortcode that allows you to import events from an iCalendar file and view them as list or in month calendar.
 
 == Usage and Shortcode parameters ==
@@ -257,10 +256,24 @@ adds an "ics-shortcode" shortcode that allows you to import events from an iCale
 	'view' => 'list', // list or calendar display or list,calendar for both
 	'noeventsmessage' => '',  //if no events found nothing or this text will be displayed
 
+=
+============================================================================================================================================================
+=
+
+RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled daily with on/off toggle
+* Goto Admin and Settings FG Rss2Posts, enter wanted rss feeds and thew will be imported to posts once a day if set to "on" 
+
 ============================================================================================================================================================
 
 
 == Changelog ==
+
+= 9.7.6.11 =	RSSToposts function with wp schedule added
+RSStoposts Admin area modern style
+RSStoposts integrate wp cron schedule daily and on/off toggle
+RSStoposts 5 rss feeds can be given and wp integrated simplepie is used to fetch them
+RSStoposts They are imported as posts, categories are created, if not present
+RSStoposts *** Todo: Picture upload if external url links to pictures are in the rss feeds
 
 = 9.7.6.10 = 
 Add dummy background icon (news-tablet) for recent post slider (if no category icon is set)
@@ -356,84 +369,3 @@ A Select box is displayed on top of the table to invoke sorting from the fronten
 * FancyBox 3 support (see FAQ)
 * WPML fix option
 * Misc bugs fixed
-
-= 1.7.3 [2017-08-12] =
-* PHP7 compatibility
-
-= 1.7.2 [2014-12-21] =
-* Support for Slenderbox plugin
-
-= 1.7.1 [2014-11-28] =
-* Compatibility with WPML plugin
-* Date and time caption formats
-
-= 1.7 [2014-09-04] =
-* Option to correct picture orientation according to EXIF tag. Require PHP with EXIF library. Rotated pictures will be overwritten.
-* Support for Nivo Lightbox in Responsive Lightbox Plugin
-
-= 1.6 [2014-07-17] =
-* Because of license issue, Lightbox 2 is not included in Folder Gallery anymore. You have to install it yourself (see FAQ)
-* Folder Gallery doesn't include any JS lightbox engine anymore. You have to install one yourself (see FAQ)
-* Reorganize Settings page
-* Add an option to force 777 permissions to cache folders
-* Workaround for unactive glob function
-
-= 1.5b2 [2014-02-22] =
-* Because of license compatibility, Fancybox 2 is not included in Folder Gallery anymore. You have to install it yourself or use a Fancybox plugin (see FAQ)
-* Change the location of Lightview 3 installation (see FAQ)
-* Support for Responsive Lightbox Plugin
-* Support for Easy Fancybox Plugin
-* Global option to set transition effect when Fancybox 2 engine is selected
-* Option (and attribute) to sort pictures randomly
-* Rewrite directory scan : support for gif, bmp pictures ; sort by date option
-
-= 1.4 [2013-08-31] =
-* Global option to display the caption under the picture thumbnail.
-* Several changes in layout and CSS. Hopefully it breaks nothing!
-* New 'smartfilename' option for caption style
-* Option (and attribute) to sort pictures by filename in reverse order
-* Improved captions support
-* Compatibility with PhotoSwipe WP plugin
-* Minor bug fixes
-
-= 1.3 [2013-08-05] =
-* Update Lightbox 2 JS to 2.6 (JQuery/Wordpress 3.6 compatibility)
-* Update Fancybox JS to 2.1.5
-* Global option to set picture's caption style (default, filename, filenamewithoutextension, none)
-* Global option to set autoplay speed when Fancy Box engine is selected.
-* Option to display the thumbnails of the first pictures only. Read the FAQ!
-* Several changes and improvements related to single-thumbnail-gallery (thumbnails="single"). Read the FAQ!
-* Misc bug corrections
-
-= 1.2 [2013-03-16] =
-* Pictures are now sorted alphabetically
-* Global option to change title style when fancybox engine is selected
-* Misc changes to support a forthcoming plugin
-
-= 1.1 [2013-02-18] =
-* Add a 'thumbnails' option/attribute to set how many thumbnails should be displayed in the gallery : all (default), single or none (display a link instead).
-* Improved error messages
-* Update FAQ
-
-= 1.0 [2013-02-03] =
-* Fix a problem with case of file extension of thumbnails.
-* Update Fancybox to 2.1.4
-
-= 0.97 [2013-01-16] =
-* Scripts are only loaded on pages with galleries
-* Add support for fancybox (included)
-* Add an option to change gallery 'engine' (Lightbox, Fancybox, Lightview when installed or None)
-* Misc changes 
-
-= 0.95 [2013-01-10] =
-* Internationalization (English, French)
-* Support for Lightview 3 (see FAQ)
-* Code cleaning
-* Small improvements
-
-= 0.92 [2013-01-05] =
-* Add a 0-column option (When 'Images per Row' is set to 0, the number of columns is set automatically.)
-* Misc changes
-
-= 0.90 [2013-01-05] =
-* First released version

@@ -100,8 +100,8 @@ left: 0px;
 .fancybox-toolbar, .fancybox-infobar {
 	top:40px!important;
 }
-.csvtohtml table { overflow-wrap:anywhere }
-.csvtohtml td { min-width:100px }
+.csvtohtml table, .icsevents table { overflow-wrap:anywhere }
+.csvtohtml td, .icsevents td { min-width:80px }
 .rssdisplay li {
 list-style:none;padding-bottom:3em;border-bottom:1px solid #efefef;padding-top:1em;
 }

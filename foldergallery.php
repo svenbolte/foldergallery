@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.11
-Stable tag: 9.7.6.11
+Version: 9.7.6.12
+Stable tag: 9.7.6.12
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2237,8 +2237,6 @@ if( !class_exists('csvtohtmlwp') ) {
             if ( $local_file === false ) 
             {         
                 $file_arr = false;
-
-				
                 //Check if (external) file exists
                 $wp_response = wp_remote_get($file);
                 $ret_code = wp_remote_retrieve_response_code( $wp_response );
@@ -2735,7 +2733,7 @@ function ICSEvents($atts) {
 			}
 		}
 		$wtage = array(  0 => "SO", 1 => "MO", 2 => "DI", 3 => "MI", 4 => "DO", 5 => "FR", 6 => "SA", 7 => "SO"  );
-		$html = '<table>';
+		$html = '<table style="overflow-wrap:anywhere">';
 		if ( !empty($title) ) { $html .= '<thead><th colspan="2">'.$title.'</th></thead>'; }
 		if (empty($eventsToDisplay)) {
 			if (isset($noeventsmsg)) {	$html .= $noeventsmsg;  }

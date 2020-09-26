@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.11
-Stable tag: 9.7.6.11
+Version: 9.7.6.12
+Stable tag: 9.7.6.12
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -268,7 +268,11 @@ RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled
 
 == Changelog ==
 
-= 9.7.6.11 =	RSSToposts function with wp schedule added
+= 9.7.6.12 =
+style wordbreaks ics table fixed 
+
+= 9.7.6.11 =
+* RSSToposts function with wp schedule added
 RSStoposts Admin area modern style
 RSStoposts integrate wp cron schedule daily and on/off toggle
 RSStoposts 5 rss feeds can be given and wp integrated simplepie is used to fetch them

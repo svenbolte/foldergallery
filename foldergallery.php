@@ -2632,8 +2632,7 @@ function t5_feed_shortcode( $attrs )
 
 require_once 'class.iCalReader.php';
 
-// Calendar display month
-/* draws a calendar */
+// Calendar display month - draws a calendar
 function draw_calendar($month,$year,$eventarray){
 
 	/* days and weeks vars now ... */
@@ -2652,7 +2651,6 @@ function draw_calendar($month,$year,$eventarray){
 	
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
-
 	/* print "blank" days until the first of the current week */
 	for($x = 0; $x < $running_day; $x++):
 		$calendar.= '<td class="calendar-day-np"> </td>';
@@ -2683,17 +2681,7 @@ function draw_calendar($month,$year,$eventarray){
 		endif;
 		$days_in_this_week++; $running_day++; $day_counter++;
 	endfor;
-	/* finish the rest of the days in the week */
-	if($days_in_this_week < 8):
-		for($x = 1; $x <= (8 - $days_in_this_week); $x++):
-			$calendar.= '<td class="calendar-day-np"> </td>';
-		endfor;
-	endif;
-	/* final row */
-	$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
-	/* end the table */
-	$calendar.= '</table>';
-	/* all done, return result */
+	$calendar.= '</tr></table>';
 	return $calendar;
 }
 

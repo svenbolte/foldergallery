@@ -3,7 +3,6 @@ while ( eval( 'typeof FSDparam' + i ) != 'undefined' ) {
 	fsd_bxslider( '.bxslider' + i,  eval( 'FSDparam' + i ) );
 	i++;
 }
-
 function fsd_bxslider ( selector, Param ) {
 	jQuery(document).ready(function(){
 	  jQuery( selector ).bxSlider({

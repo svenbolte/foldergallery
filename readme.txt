@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.12
-Stable tag: 9.7.6.12
+Version: 9.7.6.13
+Stable tag: 9.7.6.13
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -267,6 +267,9 @@ RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled
 
 
 == Changelog ==
+
+= 9.7.6.13 =
+ics - calendar display fixes, sanitatizing
 
 = 9.7.6.12 =
 style wordbreaks ics table fixed 

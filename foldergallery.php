@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.12
-Stable tag: 9.7.6.12
+Version: 9.7.6.13
+Stable tag: 9.7.6.13
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -2634,7 +2634,6 @@ require_once 'class.iCalReader.php';
 
 // Calendar display month - draws a calendar
 function draw_calendar($month,$year,$eventarray){
-
 	/* days and weeks vars now ... */
 	$calheader = date('Y-m-d',mktime(0,0,0,$month,1,$year));
 	$running_day = date('w',mktime(0,0,0,$month,1,$year));
@@ -2642,19 +2641,17 @@ function draw_calendar($month,$year,$eventarray){
 	$days_in_this_week = 1;
 	$day_counter = 0;
 	$dates_array = array();
-
 	/* draw table */
 	setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge'); 
 	$calendar = '<table class="calendar"><thead><th style="text-align:center" colspan=8>' . strftime('%B %Y', mktime(0,0,0,$month,1,$year) ) . '</th></thead>';
 	/* table headings */
 	$headings = array('SO','MO','DI','MI','DO','FR','SA','Kw');
 	$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
-	
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
 	/* print "blank" days until the first of the current week */
 	for($x = 0; $x < $running_day; $x++):
-		$calendar.= '<td class="calendar-day-np"> </td>';
+		$calendar.= '<td class="calendar-day-np"></td>';
 		$days_in_this_week++;
 	endfor;
 
@@ -2668,7 +2665,7 @@ function draw_calendar($month,$year,$eventarray){
 			/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
 			foreach ($eventarray as $calevent) {
 				if ( substr($calevent['DTSTART'],0,8) == date('Ymd',mktime(0,0,0,$month,$list_day,$year)) ) {
-					$calendar.= '<span style="word-break:break-all" title="'.$calevent['SUMMARY'].'">'.substr($calevent['SUMMARY'],0,40) . '</span> <br> ';
+					$calendar.= '<span style="word-break:break-all" title="'.esc_html($calevent['SUMMARY']).'">' . esc_html(substr($calevent['SUMMARY'],0,40)) . '</span> <br> ';
 				}	
 			}	
 		$calendar.= '</td>';
@@ -2682,10 +2679,18 @@ function draw_calendar($month,$year,$eventarray){
 		endif;
 		$days_in_this_week++; $running_day++; $day_counter++;
 	endfor;
-	$calendar.= '</tr></table>';
+	/* finish the rest of the days in the week */
+	if($days_in_this_week < 8 && $days_in_this_week > 1):
+		for($x = 1; $x <= (8 - $days_in_this_week); $x++):
+			$calendar.= '<td class="calendar-day-np"></td>';
+		endfor;
+	$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
+	endif;
+	/* end the table */
+	$calendar.= '</table>';
+	/* all done, return result */
 	return $calendar;
 }
-
 
 /**
  * Display events
@@ -2758,7 +2763,7 @@ function ICSEvents($atts) {
 		$html .= '</tr></table>';
 		if ( strpos($view,"calendar") !== false ) {
 			$html .= draw_calendar(date("m"),date("Y"),$eventsToDisplay);
-			// if ( date("m", strtotime("+2 week", $now)) > date("m", $now) ) { $html .= draw_calendar(date("m", strtotime("+2 week", $now)),date("Y", strtotime("+2 week", $now)),$eventsToDisplay); }
+			 if ( date("m", strtotime("+2 week", $now)) > date("m", $now) ) { $html .= draw_calendar(date("m", strtotime("+2 week", $now)),date("Y", strtotime("+2 week", $now)),$eventsToDisplay); }
 		}
 	}
 	return $html;

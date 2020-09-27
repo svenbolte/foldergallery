@@ -60,7 +60,7 @@ class ICal
 				 $lines = null;
 				 error_log('Keine Datei gefunden bei:  ' . $filename);
 			 } else {
-				 set_site_transient($cache_key, $lines, 21600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
+				set_site_transient($cache_key, $lines, 21600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
 			 }
 		 }
 	

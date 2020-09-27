@@ -2634,47 +2634,46 @@ require_once 'class.iCalReader.php';
 
 // Calendar display month - draws a calendar
 function draw_calendar($month,$year,$eventarray){
+	setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge'); 
 	/* days and weeks vars now ... */
 	$calheader = date('Y-m-d',mktime(0,0,0,$month,1,$year));
 	$running_day = date('w',mktime(0,0,0,$month,1,$year));
+	if ( $running_day == 0 ) { $running_day = 7; }
 	$days_in_month = date('t',mktime(0,0,0,$month,1,$year));
 	$days_in_this_week = 1;
 	$day_counter = 0;
 	$dates_array = array();
 	/* draw table */
-	setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge'); 
-	$calendar = '<table class="calendar"><thead><th style="text-align:center" colspan=8>' . strftime('%B %Y', mktime(0,0,0,$month,1,$year) ) . '</th></thead>';
+	$calendar = '<table><thead><th style="text-align:center" colspan=8>' . strftime('%B %Y', mktime(0,0,0,$month,1,$year) ) . '</th></thead>';
 	/* table headings */
-	$headings = array('SO','MO','DI','MI','DO','FR','SA','Kw');
-	$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
+	$headings = array('MO','DI','MI','DO','FR','SA','SO','Kw');
+	$calendar.= '<tr><td style="padding:2px;text-align:center">'.implode('</td><td style="padding:2px;text-align:center">',$headings).'</td></tr>';
 	/* row for week one */
 	$calendar.= '<tr class="calendar-row">';
 	/* print "blank" days until the first of the current week */
-	for($x = 0; $x < $running_day; $x++):
+	for($x = 1; $x < $running_day; $x++):
 		$calendar.= '<td class="calendar-day-np"></td>';
 		$days_in_this_week++;
 	endfor;
-
 	/* keep going with days.... */
 	for($list_day = 1; $list_day <= $days_in_month; $list_day++):
 		$calendar.= '<td class="calendar-day">';
-			/* add in the day number */
-			$running_week = date('W',mktime(0,0,0,$month,$list_day,$year));
-			$calendar.= '<div class="day-number">'.$list_day.'</div>';
-
-			/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
-			foreach ($eventarray as $calevent) {
-				if ( substr($calevent['DTSTART'],0,8) == date('Ymd',mktime(0,0,0,$month,$list_day,$year)) ) {
-					$calendar.= '<span style="word-break:break-all" title="'.esc_html($calevent['SUMMARY']).'">' . esc_html(substr($calevent['SUMMARY'],0,40)) . '</span> <br> ';
-				}	
+		/* add in the day number */
+		$running_week = date('W',mktime(0,0,0,$month,$list_day,$year));
+		$calendar.= '<div class="day-number">'.$list_day.'</div>';
+		/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
+		foreach ($eventarray as $calevent) {
+			if ( substr($calevent['DTSTART'],0,8) == date('Ymd',mktime(0,0,0,$month,$list_day,$year)) ) {
+				$calendar.= '<span style="word-break:break-all" title="'.esc_html($calevent['SUMMARY']).'">' . esc_html(substr($calevent['SUMMARY'],0,40)) . '</span> <br> ';
 			}	
+		}	
 		$calendar.= '</td>';
-		if($running_day == 6):
-			$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
+		if($running_day == 7):
+			$calendar.= '<td style="text-align:center;font-size:0.9em;padding:2px">'.$running_week.'</td></tr>';
 			if(($day_counter+1) != $days_in_month):
 				$calendar.= '<tr class="calendar-row">';
 			endif;
-			$running_day = -1;
+			$running_day = 0;
 			$days_in_this_week = 0;
 		endif;
 		$days_in_this_week++; $running_day++; $day_counter++;
@@ -2684,7 +2683,7 @@ function draw_calendar($month,$year,$eventarray){
 		for($x = 1; $x <= (8 - $days_in_this_week); $x++):
 			$calendar.= '<td class="calendar-day-np"></td>';
 		endfor;
-	$calendar.= '<td style="text-align:center">'.$running_week.'</td></tr>';
+	$calendar.= '<td style="text-align:center;font-size:0.9em;padding:2px">'.$running_week.'</td></tr>';
 	endif;
 	/* end the table */
 	$calendar.= '</table>';
@@ -2762,8 +2761,17 @@ function ICSEvents($atts) {
 		}
 		$html .= '</tr></table>';
 		if ( strpos($view,"calendar") !== false ) {
-			$html .= draw_calendar(date("m"),date("Y"),$eventsToDisplay);
-			 if ( date("m", strtotime("+2 week", $now)) > date("m", $now) ) { $html .= draw_calendar(date("m", strtotime("+2 week", $now)),date("Y", strtotime("+2 week", $now)),$eventsToDisplay); }
+			/** Get all months with ical events **/
+			$outputed_values = array();
+			foreach ($eventsToDisplay as $calevent) {
+				$workername = substr($calevent['DTSTART'],0,6);
+				if (!in_array($workername, $outputed_values)){
+					$mdatum = substr($calevent['DTSTART'],0,4).'-'. substr($calevent['DTSTART'],4,2).'-'.substr($calevent['DTSTART'],6,2);
+					$html .= draw_calendar(date("m", strtotime($mdatum)),date("Y", strtotime($mdatum)),$eventsToDisplay);
+					array_push($outputed_values, $workername);
+				}	
+			}
+			//$html .= draw_calendar(date("m"),date("Y"),$eventsToDisplay);
 		}
 	}
 	return $html;

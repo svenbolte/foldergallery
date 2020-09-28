@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Folder Gallery\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-23 14:07+0000\n"
-"PO-Revision-Date: 2020-09-23 14:09+0000\n"
+"POT-Creation-Date: 2020-09-28 17:52+0000\n"
+"PO-Revision-Date: 2020-09-28 17:53+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -25,7 +25,7 @@ msgid "Unable to find the directory %s."
 msgstr "Kann Verzeichnis %s nicht finden."
 
 #: foldergallery.php:525 foldergallery.php:665 foldergallery.php:1088
-#: foldergallery.php:1143 foldergallery.php:1657
+#: foldergallery.php:1143 foldergallery.php:1678
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -132,7 +132,7 @@ msgid "Gallery Engine"
 msgstr "Galerie Engine"
 
 #: foldergallery.php:1061 foldergallery.php:1079 foldergallery.php:1170
-#: foldergallery.php:1208 foldergallery.php:1654
+#: foldergallery.php:1208 foldergallery.php:1675
 msgid "None"
 msgstr "kein"
 
@@ -160,8 +160,8 @@ msgstr "Bilder sortieren nach"
 msgid "Columns"
 msgstr "Spalten"
 
-#: foldergallery.php:1110 foldergallery.php:1112 foldergallery.php:1693
-#: foldergallery.php:1694
+#: foldergallery.php:1110 foldergallery.php:1112 foldergallery.php:1719
+#: foldergallery.php:1720
 msgid "(0 = auto)"
 msgstr "(0 = auto)"
 
@@ -201,7 +201,7 @@ msgstr "Ja"
 msgid "Lightbox Settings"
 msgstr "Lightbox Einstellungen"
 
-#: foldergallery.php:1136 foldergallery.php:1650
+#: foldergallery.php:1136 foldergallery.php:1671
 msgid "Caption Format"
 msgstr "Titel Format"
 
@@ -209,11 +209,11 @@ msgstr "Titel Format"
 msgid "Default (title number size date description)"
 msgstr "Standard (Titel Nummer Größe Datum Beschreibung)"
 
-#: foldergallery.php:1146 foldergallery.php:1660
+#: foldergallery.php:1146 foldergallery.php:1681
 msgid "Filename without extension"
 msgstr "Dateiname ohne Erweiterung"
 
-#: foldergallery.php:1149 foldergallery.php:1663
+#: foldergallery.php:1149 foldergallery.php:1684
 msgid "Smart Filename"
 msgstr "Smarter Dateiname"
 
@@ -345,7 +345,7 @@ msgid ""
 "overwritten.)"
 msgstr "Bild nach EXIF-Datei ausrichten (Bilder werden überschrieben)"
 
-#: foldergallery.php:1265 foldergallery.php:1726
+#: foldergallery.php:1265 foldergallery.php:1752
 msgid "WPML"
 msgstr "WPML Übersetzung"
 
@@ -353,140 +353,148 @@ msgstr "WPML Übersetzung"
 msgid "Fix WPML paths"
 msgstr "WPML Pfade korrigieren"
 
-#: foldergallery.php:1582
+#: foldergallery.php:1603
 msgid "FSlider Settings"
 msgstr "FSlider Einstellungen"
 
-#: foldergallery.php:1623
+#: foldergallery.php:1644
 msgid "Folder Slider Settings"
 msgstr "Folder Slider Einstellungen"
 
-#: foldergallery.php:1634
+#: foldergallery.php:1655
 msgid "Transition Mode"
 msgstr "Blendeffekt"
 
-#: foldergallery.php:1638
+#: foldergallery.php:1659
 msgid "Horizontal"
 msgstr "horizontal"
 
-#: foldergallery.php:1641
+#: foldergallery.php:1662
 msgid "Vertical"
 msgstr "vertikal"
 
-#: foldergallery.php:1644
+#: foldergallery.php:1665
 msgid "Fade"
 msgstr "Ausblenden"
 
-#: foldergallery.php:1670
+#: foldergallery.php:1687
+msgid "Filename, size"
+msgstr "Dateiname, Größe"
+
+#: foldergallery.php:1690
+msgid "Filename, Size, Pic-Index, Filedate, humandate"
+msgstr "Dateiname, Größe, Bildindex, Datum, wie lange her"
+
+#: foldergallery.php:1696
 msgid "CSS"
 msgstr "CSS Stylesheet"
 
-#: foldergallery.php:1674
+#: foldergallery.php:1700
 msgid "No border"
 msgstr "kein Rahmen"
 
-#: foldergallery.php:1677
+#: foldergallery.php:1703
 msgid "Border with shadow"
 msgstr "Rahmen mit Schatten"
 
-#: foldergallery.php:1680
+#: foldergallery.php:1706
 msgid "Shadow without border"
 msgstr "Schatten ohne Rahmen"
 
-#: foldergallery.php:1683
+#: foldergallery.php:1709
 msgid "Black border"
 msgstr "schwarzer Rahmen"
 
-#: foldergallery.php:1686
+#: foldergallery.php:1712
 msgid "White border"
 msgstr "weißer Rahmen"
 
-#: foldergallery.php:1689
+#: foldergallery.php:1715
 msgid "Gray border"
 msgstr "grauer Rahmen"
 
-#: foldergallery.php:1693
+#: foldergallery.php:1719
 msgid "Width"
 msgstr "Breite in px"
 
-#: foldergallery.php:1694
+#: foldergallery.php:1720
 msgid "Height"
 msgstr "Höhe in px"
 
-#: foldergallery.php:1695
+#: foldergallery.php:1721
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: foldergallery.php:1695
+#: foldergallery.php:1721
 msgid "seconds"
 msgstr "Sekunden"
 
-#: foldergallery.php:1696
+#: foldergallery.php:1722
 msgid "Carousel"
 msgstr "Karussell"
 
-#: foldergallery.php:1696
+#: foldergallery.php:1722
 msgid "Bild(er) nebeneinander"
 msgstr "Bild(er) nebeneinander"
 
-#: foldergallery.php:1699
+#: foldergallery.php:1725
 msgid "Controls"
 msgstr "Schaltflächen"
 
-#: foldergallery.php:1704
+#: foldergallery.php:1730
 msgid "Show Previous/Next Buttons"
 msgstr "Vorherige / Nächste Schaltflächen anzeigen"
 
-#: foldergallery.php:1708
+#: foldergallery.php:1734
 msgid "Auto Adjust Height"
 msgstr "Höhe automatisch anpassen"
 
-#: foldergallery.php:1712
+#: foldergallery.php:1738
 msgid "Show Play/Pause Button"
 msgstr "Show Play / Pause-Taste anzeigen"
 
-#: foldergallery.php:1716
+#: foldergallery.php:1742
 msgid "Start Slider Automatically"
 msgstr "Slider automatisch starten"
 
-#: foldergallery.php:1720
+#: foldergallery.php:1746
 msgid "Show Pager"
 msgstr "Seitennavigation anzeigen"
 
-#: foldergallery.php:1730
+#: foldergallery.php:1756
 msgid "Fix WPML Paths"
 msgstr "WPML-Pfade reparieren"
 
-#: foldergallery.php:1735
+#: foldergallery.php:1761
 msgid "Link zum Bild"
 msgstr "Link zum Bild"
 
-#: foldergallery.php:1739
+#: foldergallery.php:1765
 msgid "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
 msgstr "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
 
-#: foldergallery.php:2608
+#: foldergallery.php:2632
 msgid "Feed display Error"
 msgstr "Feed Anzeigefehler"
 
-#: foldergallery.php:2610
+#: foldergallery.php:2634
 msgid "Feed is down"
 msgstr "RSS Feed nicht erreichbar"
 
-#: foldergallery.php:2940
+#: foldergallery.php:2966
 msgid "Details successfully updated."
 msgstr "RSS Einstellungen aktualisiert."
 
-#: foldergallery.php:2945
+#: foldergallery.php:2971
 msgid "FG RssToPosts"
 msgstr "FG RSS to Posts"
 
-#: foldergallery.php:2950 foldergallery.php:2958 foldergallery.php:2966
-#: foldergallery.php:2974 foldergallery.php:2982
+#: foldergallery.php:2976 foldergallery.php:2984 foldergallery.php:2992
+#: foldergallery.php:3000 foldergallery.php:3008
 msgid "Rss link and schedule"
 msgstr "RSS Link und Zeitplan"
 
-#: foldergallery.php:2993
+#: foldergallery.php:3019
 msgid "Update RSS import settings"
 msgstr "RSS Einstellungen aktualisieren"
 

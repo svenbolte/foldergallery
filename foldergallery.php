@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.13
-Stable tag: 9.7.6.13
+Version: 9.7.6.14
+Stable tag: 9.7.6.14
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -1334,6 +1334,18 @@ class folderslider{
 		wp_localize_script( 'fsd_slider-script', 'FSDparam' . $num , $param );
 	}
 
+	public function file_size($size_in_bytes ) {
+		if ($size_in_bytes < 1000) {
+			return $size_in_bytes . ' B';
+		} elseif ($size_in_bytes < 1000*1000) {
+			$size_in_kb = (int) ($size_in_bytes/1000);
+			return $size_in_kb . ' KB';	
+		} else {
+			$size_in_mb = (int) ($size_in_bytes/1000/1000);
+			return $size_in_mb . 'MB';
+		}
+	}
+
 	public function file_array( $directory ) { // List all JPG & PNG & GIF files in $directory
 		$files = array();
 		if( $handle = opendir( $directory ) ) {
@@ -1518,7 +1530,16 @@ class folderslider{
 					$title = $this->filename_without_extension( $pictures[ $idx ] );
 					break;
 				case 'smartfilename':
-					$title = $this->smartfilename( $pictures[ $idx ] );
+					$title = strtoupper($this->smartfilename( $pictures[ $idx ] ) );
+					break;
+				case 'filenamesize':
+					$title = strtoupper($this->smartfilename( $pictures[ $idx ] ) ) . ' - ' . $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
+					break;
+				case 'filenamesizedate':
+					$moddate = filectime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600;
+					$thecaption = date_i18n( get_option( 'date_format' ) . ', ' . get_option( 'time_format' ) , $moddate);					
+					$title = strtoupper($this->smartfilename( $pictures[ $idx ] ) ) . ' - ' . $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
+					$title .= ' <br> Bild '.($idx+1) .' - '. $thecaption . ' <br> vor '. human_time_diff($moddate,current_time('U'));
 					break;
 				default:
 					$title = '';
@@ -1594,7 +1615,7 @@ class folderslider{
 		$input['width']  = intval( $input['width'] );
 		$input['height'] = intval( $input['height'] );
 		if ( ! in_array( $input['mode'], array( 'horizontal','vertical','fade' ) ) ) $input['mode'] = 'horizontal';
-		if ( ! in_array( $input['captions'], array( 'none','filename','filenamewithoutextension','smartfilename' ) ) ) $input['captions'] = 'none';
+		if ( ! in_array( $input['captions'], array( 'none','filename','filenamewithoutextension','smartfilename','filenamesize,','filenamesizedate' ) ) ) $input['captions'] = 'none';
 		if ( ! in_array( $input['css'], array( 'noborder','shadow','shadownoborder','black-border','white-border','gray-border' ) ) ) $input['css'] = 'noborder';
 		$input['speed']          = floatval( $input['speed'] );
 		if ( 0 == $input['speed'] ) $input['speed'] = 5;
@@ -1661,9 +1682,14 @@ class folderslider{
 			echo "\t" .	'<option value="smartfilename"';
 				if ( 'smartfilename' == $fsd_options['captions'] ) echo ' selected="selected"';
 				echo '>' . __('Smart Filename', 'foldergallery' ) . "</option>\n";	
+			echo "\t" .	'<option value="filenamesize"';
+				if ( 'filenamesize' == $fsd_options['captions'] ) echo ' selected="selected"';
+				echo '>' . __('Filename, size', 'foldergallery' ) . "</option>\n";	
+			echo "\t" .	'<option value="filenamesizedate"';
+				if ( 'filenamesizedate' == $fsd_options['captions'] ) echo ' selected="selected"';
+				echo '>' . __('Filename, Size, Pic-Index, Filedate, humandate', 'foldergallery' ) . "</option>\n";	
 		echo "</select>\n";
 		echo "</td>\n</tr>\n";
-		
 		
 		// CSS
 		echo '<tr valign="top">' . "\n";

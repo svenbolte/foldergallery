@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.13
-Stable tag: 9.7.6.13
+Version: 9.7.6.14
+Stable tag: 9.7.6.14
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -148,7 +148,10 @@ To include a slider in a post or a page, you have to use the following shortcode
 An Options page allow to set the default paramaters of the sliders :
 
 * Transition Mode (mode): horizontal, vertical, fade
-* Caption Format (captions): none, filename, filenamewithoutextension, smartfilename (filename with underscores, extension and front numbers removed)
+* Caption Format (captions): none, filename, filenamewithoutextension,
+		'smartfilename' : (filename with underscores, extension and front numbers removed), 
+		'filenamesize': filename and file size
+		'filenamesizedate': filename, filesize, picture index number, regional date (l18n Format)
 * CSS (css): change the frame around slider: 'noborder', 'shadow', 'shadownoborder', 'black-border', 'white-border', 'gray-border'
 * Width and Height of the slider (width and height)
 * Speed (speed):  time between slides in seconds
@@ -268,8 +271,12 @@ RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled
 
 == Changelog ==
 
+= 9.7.6.14 =
+Folder Slider: additional captions selectable (file, size, date with human date), Styling caption centered
+Translations updated
+
 = 9.7.6.13 =
-ics - calendar display fixes, sanitatizing
+ics - calendar display fixes, sanitizing
 
 = 9.7.6.12 =
 style wordbreaks ics table fixed 

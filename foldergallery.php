@@ -852,7 +852,7 @@ function fg_init_handle_download() {
 		if ( intval($thumbpagination) > 1 ) {
 			for ( $plink = 0 ; $plink < $NoP ; $plink++ ) {
 				if ( ($plink/intval($thumbpagination) + 1) <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-				if ($plink % intval($thumbpagination) == 0 ) { $gallery_code .= " &nbsp;<a title='Fotos ".($plink + 1)."-".($plink + intval($thumbpagination))."' class='".$klasse."' href='".add_query_arg( array(), $wp->request )."?seite=".($plink/intval($thumbpagination) + 1) ."&sort=".$sort ."'>". ($plink/intval($thumbpagination) + 1) ."</a>"; }
+				if ($plink % intval($thumbpagination) == 0 ) { $gallery_code .= " &nbsp;<a title='Fotos ".($plink + 1)."-".($plink + intval($thumbpagination))."' class='".$klasse."' href='".add_query_arg( array(), home_url($wp->request) )."?seite=".($plink/intval($thumbpagination) + 1) ."&sort=".$sort ."'>". ($plink/intval($thumbpagination) + 1) ."</a>"; }
 			}	
 			$gallery_code .= "\n</div>\n";	
 		}	
@@ -2562,7 +2562,7 @@ if( !class_exists('csvtohtmlwp') ) {
         {
 			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), $wp->request ).'">' . $hv;
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), home_url($wp->request) ).'">' . $hv;
 			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
 			if (isset($_GET['order']) && $_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
 			$html.= '</a></th>';

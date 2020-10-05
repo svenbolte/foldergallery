@@ -292,7 +292,7 @@ function fg_init_handle_download() {
 			return $size_in_kb . ' KB';	
 		} else {
 			$size_in_mb = (int) ($size_in_bytes/1000/1000);
-			return $size_in_mb . 'MB';
+			return $size_in_mb . ' MB';
 		}
 	}
 	
@@ -391,6 +391,11 @@ function fg_init_handle_download() {
 	}
 
 
+	// Für Dirlist Search Parameter Wert in Zeile suchen - search function fulltext
+	function in_array_reg($item , $array){
+		return preg_match('/'.preg_quote($item, '/').'/i' , json_encode($array, JSON_UNESCAPED_SLASHES));
+	}            
+	
 	// Verzeichnisliste ausgeben mit Erstelldatum und Moddatum [folderdir folder="wp-content/uploads/bilder/]" 
 	public function meinedirliste( $atts ) {  // generate document/file download list
 		extract( shortcode_atts( array(
@@ -466,7 +471,7 @@ function fg_init_handle_download() {
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
 						}
 						$dateigroesse = $this->file_size(filesize($directory ."/". $file));
-						$mtime = date("Y.m.d H:i:s", filemtime($directory ."/". $file));
+						$mtime = date("Y-m-d H:i:s", filemtime($directory ."/". $file));
 						$mtimed = date("d.m.y, H:i:s", filemtime($directory ."/". $file));
 						$ctime = date("Y.m.d H:i:s", filectime($directory ."/". $file));
 						$ctimed = date("d.m.Y, H:i:s", filectime($directory ."/". $file));
@@ -480,7 +485,7 @@ function fg_init_handle_download() {
 							$dllink = '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
 						}
 						$content .= $dllink . '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
-						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed . ' &nbsp; ' . $description . '</td></tr>';
+						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed .' ' . ago(strtotime($mtime)). ' &nbsp; ' . $description . '</td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),
@@ -518,9 +523,18 @@ function fg_init_handle_download() {
 				array_multisort(array_column($files, 'name'), SORT_ASC, $files);
 		}
 		
+		// Zeilen filtern, wenn Suchbegriff gesetzt
+		$search='';
+		if (isset($_GET['search'])) {
+		  $search = sanitize_text_field( $_GET['search'] );
+		}
+		$nb_elem_per_page = 25;
+		$number_of_pages = intval(count($files)/$nb_elem_per_page)+1;
+		$page = isset($_GET['seite'])?intval($_GET['seite']):0;
 		// ausgeben
-		$gallery_code= '<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
-		$gallery_code.=	'<option value="filename"';
+		$gallery_code = '<div style="text-align:right"><form name="sorter" method="get"> '.intval(count($files)).' Dateien';
+		$gallery_code.= ' <input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"> &nbsp; ';
+		$gallery_code.= '<select name="sort"><option value="filename"';
 		if ( 'filename' == $sort ) $gallery_code.= ' selected="selected"';
 		$gallery_code.= '>' . __( 'Filename', 'foldergallery' ) . '</option>' ;		
 		$gallery_code.=	'<option value="filename_desc"';
@@ -541,12 +555,33 @@ function fg_init_handle_download() {
 		$gallery_code.=	'<option value="random"';
 		if ( 'random' == $sort ) $gallery_code.= ' selected="selected"';
 		$gallery_code.= '>' . __( 'Random', 'foldergallery' ) . '</option>' ;
-		$gallery_code.='</select><input type="submit" value="sortieren" /></form></div>';
+		$gallery_code.='</select><input type="submit" value="'. __( 'search and sort', 'foldergallery' ).'" /></form></div>';
 		$gallery_code.='<table>';
-		foreach( $files as $fout ) {
-			$gallery_code.= $fout['content'];
+
+		// Suchfilter, wenn filter gesetzt, nicht paginieren
+		$fcount=0;
+		$totalsize=0;
+		if ( !empty($search)) { $nb_elem_per_page = 1000; $page = 0; }
+		
+		foreach (array_slice($files, $page*$nb_elem_per_page, $nb_elem_per_page) as $fout) { 
+		// foreach( $files as $fout ) {
+			 if ( !isset( $search ) || isset( $search ) && $this->in_array_reg($search, $fout) ) {
+				 $fcount += 1;
+				 $totalsize += intval($fout['size']);
+				 $gallery_code.= $fout['content'];
+			 }
+			
 		}	
 		$gallery_code.='</table>';
+		$gallery_code .= $fcount.' '.__( 'files with', 'foldergallery' ). ' '.$this->file_size($totalsize);
+		// Page Navigation Footer
+		if ( empty($search)) {
+			for($i=0;$i<$number_of_pages;$i++){
+				$seitennummer = intval($i+1);
+				if ( $i !== $page ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .= ' &nbsp;<a class="'.$klasse.'" href="'.add_query_arg( array('sort'=>$sortorder,'search'=>$search,'seite'=>$i), home_url($wp->request) ).'">'.$seitennummer.'</a>';
+			}	
+		} 
 		return $gallery_code;
 	}
 
@@ -848,6 +883,7 @@ function fg_init_handle_download() {
 			$gallery_code .= '<br style="clear: both" />';
 		}
 		// Pagination links //
+		global $wp;
 		$gallery_code .= "\n\n<div class='nav-links'>";
 		if ( intval($thumbpagination) > 1 ) {
 			for ( $plink = 0 ; $plink < $NoP ; $plink++ ) {
@@ -2553,6 +2589,7 @@ if( !class_exists('csvtohtmlwp') ) {
         $nr_col = 1;
 
 		// Page navigation
+		global $wp;
 		$sortorder='asc';
 		$nb_elem_per_page = 20;
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;

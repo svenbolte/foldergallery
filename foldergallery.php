@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.14
-Stable tag: 9.7.6.14
+Version: 9.7.6.15
+Stable tag: 9.7.6.15
 Requires at least: 5.1
 Tested up to: 5.5.1
 Requires PHP: 7.2
@@ -820,11 +820,12 @@ function fg_init_handle_download() {
 				default :
 					// Komplette Caption mit allen Daten anzeigen: Name Nummer, Size, Moddatum, Beschreibung
 					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
-					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
+					$thecaption = strtoupper( $this->filename_without_extension( $pictures[ $idx ]) ) ;
 					if ( 'lightbox2' != $fg_options['engine'] ) {
 						$moddate = date("d.m.Y H:i:s", filemtime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600);
+						$bildher = human_time_diff(filectime( $folder . '/' . $pictures[ $idx ] ) + get_option( 'gmt_offset' ) * 3600,current_time('U'));
 						// $moddate = date("d.m.Y H:i:s", filemtime( $folder . ' / ' . $pictures[ $idx ] ) );
-						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . ' &nbsp;' . $moddate . ' &nbsp; ' . $this->filedescription($folder,$pictures[ $idx ]);
+						$thecaption .= ' &nbsp;(' . ($idx+1) . '/' . ($NoP) . ') ' . $filesizer . '&#10;<br>' . $moddate . ' vor ' . $bildher . '&#10;<br>&nbsp;' . $this->filedescription($folder,$pictures[ $idx ]);
 					}	
 			}		
 			// Let's start
@@ -838,7 +839,7 @@ function fg_init_handle_download() {
 					$gallery_code.= '<a class="fancybox-gallery" title="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-fancybox-group="' . $lightbox_id . '">';
 				break;
 				case 'fancybox3' :				
-					$gallery_code.= '<a class="fancybox-gallery" title="' . $thecaption . '" data-caption="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-fancybox="' . $lightbox_id . '">';
+					$gallery_code.= '<a class="fancybox-gallery" title="' . wp_strip_all_tags($thecaption) . '" data-caption="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-fancybox="' . $lightbox_id . '">';
 				break;
 				case 'lightview' :
 					if ( $options ) $options = " data-lightview-group-options=\"$options\"";

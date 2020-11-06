@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.16
-Stable tag: 9.7.6.16
+Version: 9.7.6.17
+Stable tag: 9.7.6.17
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -271,6 +271,9 @@ RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled
 
 == Changelog ==
 
+= 9.7.6.17 =
+ICS Import now takes X-ALT-DESC;FMTTYPE=text/html from ical files and displays the link in calendar and list views.
+for list views sumonly needs to be set to 0, on calendar view summary will be replaced by link whenever field is not empty
 = 9.7.6.15 =
 folder gallery - add human date to caption
 expand caption size to 3 lines and remove html tags from title tag of thumbnail div

@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.16
-Stable tag: 9.7.6.16
+Version: 9.7.6.17
+Stable tag: 9.7.6.17
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -2728,8 +2728,12 @@ function draw_calendar($month,$year,$eventarray){
 		/** QUERY THE DATABASE FOR AN ENTRY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
 		foreach ($eventarray as $calevent) {
 			if ( substr($calevent['DTSTART'],0,8) == date('Ymd',mktime(0,0,0,$month,$list_day,$year)) ) {
-				$calendar.= '<span style="word-break:break-all" title="'.esc_html($calevent['SUMMARY']).'">' . esc_html(substr($calevent['SUMMARY'],0,40)) . '</span> <br> ';
-			}	
+				if ( !empty($calevent['X-ALT-DESC;FMTTYPE=text/html']) ) {
+					$calendar .= '<span style="word-break:break-all" title="'.esc_html($calevent['X-ALT-DESC;FMTTYPE=text/html']).'">' . $calevent['X-ALT-DESC;FMTTYPE=text/html'] . '</span> <br> ';
+				} else {
+					$calendar.= '<span style="word-break:break-all" title="'.esc_html($calevent['SUMMARY']).'">' . esc_html(substr($calevent['SUMMARY'],0,40)) . '</span> <br> ';
+				}	
+			}
 		}	
 		$calendar.= '</td>';
 		if($running_day == 7):
@@ -2807,10 +2811,13 @@ function ICSEvents($atts) {
 					$html .= $event['SUMMARY'] . '</span>';
 					if ( $sumonly==0 ) { $html .= '</span>'; }
 					if ( $sumonly==0 && !empty($event['DESCRIPTION']) ) {
-						$html .= '<br><small>'.$event['DESCRIPTION'].'</small>';
+						$html .= '<br><small>' .$event['DESCRIPTION'].'</small>';
+					}
+					if ( $sumonly==0 && !empty($event['X-ALT-DESC;FMTTYPE=text/html']) ) {
+						$html .= ' <br>Link: '. $event['X-ALT-DESC;FMTTYPE=text/html'];
 					}
 					if ( $sumonly==0 && !empty($event['LOCATION']) && '-' !== $event['LOCATION'] ) {
-						$html .= '<br>'.$event['LOCATION'].'';
+						$html .= ' <br>'.$event['LOCATION'].'';
 					}
 					if (strlen($event['DTSTART']) > 8) {
 						$html .= '<br>'.strftime('%a %d. %b %Y %H:%M', $timestamp).' Uhr';

@@ -47,24 +47,24 @@ class ICal
         if (!$filename) {
             return false;
         }
-
  		
 		// Download der ICS Datei 5 Stunden cachen	
 		if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()) . get_the_ID(); }
 		$cache_key = 'ics-shortcode-' . $iswidget . '-' . md5($filename);
+		 delete_site_transient($cache_key);  // zum Cache löschen die folgende Zeile aktivieren
 		$lines = get_site_transient($cache_key);
-		 if ($lines === False) {
-			 $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-			 if ($lines === False) {
-				 $failed = True;
-				 $lines = null;
-				 error_log('Keine Datei gefunden bei:  ' . $filename);
-			 } else {
+		if (empty($lines)) {
+			$lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			if (empty($lines)) {
+				$failed = True;
+				$lines = null;
+				error_log('Keine Datei gefunden bei:  ' . $filename);
+			} else {
 				set_site_transient($cache_key, $lines, 21600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
-			 }
-		 }
+			}
+		}
 	
-        // $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+         $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);  // Direktaufruf ohne Cache
         if (stristr($lines[0], 'BEGIN:VCALENDAR') === false) {
             return false;
         } else {

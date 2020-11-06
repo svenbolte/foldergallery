@@ -2793,7 +2793,7 @@ function ICSEvents($atts) {
 				$eventsToDisplay[] = $event;
 			}
 		}
-		$wtage = array(  0 => "SO", 1 => "MO", 2 => "DI", 3 => "MI", 4 => "DO", 5 => "FR", 6 => "SA", 7 => "SO"  );
+		$wtage = array(  0 => "Sonntag", 1 => "Montag", 2 => "Dienstag", 3 => "Mittwoch", 4 => "Donnerstag", 5 => "Freitag", 6 => "Samstag", 7 => "Sonntag"  );
 		$html = '<table style="overflow-wrap:anywhere">';
 		if ( !empty($title) ) { $html .= '<thead><th colspan="2">'.$title.'</th></thead>'; }
 		if (empty($eventsToDisplay)) {
@@ -2805,13 +2805,16 @@ function ICSEvents($atts) {
 					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
 					$wielangeher = $prepo . human_time_diff($timestamp,$now);
 					if ( $wielangeher == 'vor 1 Sekunde' ) { $wielangeher = 'heute'; }
-					$html .= '<tr><td><nobr><abbr title="'.strftime('%a %e. %B %Y, %W. Kw', $timestamp).'">'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).'</nobr><br>' . $wielangeher;
+					$tcolor = get_theme_mod( 'link-color', '#aaaaaa' );
+					list($r, $g, $b) = sscanf($tcolor, '#%02x%02x%02x');
+					$html .= '<tr><td style="width:95px;min-width:95px;max-width:95px;border-radius:8px;background-color:rgba('.$r.','.$g.','.$b.',.2);border-left:3px solid '.$tcolor.'"><abbr title="'.strftime('%a %e. %B %Y, %W. Kw', $timestamp).'">';
+					$html .= $wtage[date('N', $timestamp)].'<br><span style="font-size:1.3em;font-weight:700">' . strftime('%e. %b', $timestamp).'</span><br>' . $wielangeher;
 					$html .= '</td><td>';
 					if ( $sumonly==0 ) { $html .= '<span class="headline">'; }
 					$html .= $event['SUMMARY'] . '</span>';
 					if ( $sumonly==0 ) { $html .= '</span>'; }
 					if ( $sumonly==0 && !empty($event['DESCRIPTION']) ) {
-						$html .= '<br><small>' .$event['DESCRIPTION'].'</small>';
+						$html .= '<br><abbr>' .$event['DESCRIPTION'].'</abbr>';
 					}
 					if ( $sumonly==0 && !empty($event['X-ALT-DESC;FMTTYPE=text/html']) ) {
 						$html .= ' <br>Link: '. $event['X-ALT-DESC;FMTTYPE=text/html'];

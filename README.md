@@ -1,4 +1,4 @@
-# Folder Gallery, FGSlider, Folder documentlist, csv table display, ics icalendar display shortcodes
+### Folder Gallery, Slider, documentlist, csv from file/url table, RSSDisplay, RSStoPosts, Adventcalendar ###
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
 The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. wp-content/upload). It must be writable (chmod 777).
@@ -42,3 +42,8 @@ To display an RSS Feed from given URL use the following shortcode:
 "ics-shortcode" shortcode that allows you to import events from an iCalendar file.
 
 	[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]
+	
+To display the advent calendar in december (or a to come message on other months use shortcode:
+
+	[pbadventskalender pages="adventsgeschichte,sonderangebot,uhrzeit-stellen,23,422,11,20344"]
+

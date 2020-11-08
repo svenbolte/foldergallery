@@ -1043,6 +1043,7 @@ function fg_init_handle_download() {
 		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code><br>'. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
 		echo '<p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
 		echo '<p><code>[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]</code><br>'. __('shortcode to display ICS or ical events in list or calendar on pages/shortcodes or html widget', 'foldergallery' ) . '</p>';
+		echo '<p><code>[pbadventskalender pages="4236,4237,4238,4239,4225"]</code><br>'. __('shortcode to display an advent calendar in december, links can be given on parameter (permalinks or post IDs)', 'foldergallery' ) . '</p>';
 		echo '</div>';
 		echo '<h3>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h3>\n";
 		echo '<div class="postbox">' . "\n";
@@ -3102,6 +3103,7 @@ function pb_adventscal($atts) {
 	$daynum = strtolower(date("d",strtotime($tody)));
 	$monnum = strtolower(date("m",strtotime($tody)));
 	$output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
+	// $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren
 	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
 		$output='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
@@ -3140,9 +3142,9 @@ function pb_adventscal($atts) {
 			} else {
 				$output .= '<div title="Tür noch nicht geöffnet" class="layer1"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
 			}	
+			$output .= '</div></td>';
+			$lauftag += 1;
 		  }	
-		$output .= '</div></td>';
-		$lauftag += 1;
 	    }
 		$output .= '</tr>';
 		$output .= '</table></div>';  
@@ -3150,6 +3152,5 @@ function pb_adventscal($atts) {
 return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
-
 
 ?>

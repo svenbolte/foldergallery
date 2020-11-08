@@ -8,7 +8,7 @@ vertical-align: middle;
 background-color: rgba(255,0,0,.6);
 padding-left:5px;
 padding-right:5px;
-line-height:0.9em;
+line-height:0.9em
 } 
 .illustration {height:100%}
 .imagebox {
@@ -18,12 +18,12 @@ margin-right:100%;
 overflow:hidden;
 position:relative;
 width:100%;
+background-size:cover	
 }
-.imagebox .tr-slideIn {transition: transform 2s;transform: rotate(0deg);transition: .75s;
-}	
+.imagebox .tr-slideIn {transition: transform 2s;transform: rotate(0deg);transition: .75s}	
 .imagebox .tr-slideIn:hover {
 background-color: rgba(0,255,0,.6);
 transform: rotate(180deg);
-transition: .55s;
+transition: .55s
 }
 .advtuer {display:inline-block;width:15%;height:100px;margin:0.8%;border:1px dotted #fff}

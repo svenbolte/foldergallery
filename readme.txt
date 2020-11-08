@@ -1,9 +1,9 @@
-=== Folder Gallery and Slider with documentlist, csv from file/url table and rssdisplay shortcodes, RSStoPosts ===
+=== Folder Gallery, Slider, documentlist, csv from file/url table, RSSDisplay, RSStoPosts, Adventcalendar ===
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.17
-Stable tag: 9.7.6.17
+Version: 9.7.6.20
+Stable tag: 9.7.6.20
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -13,7 +13,6 @@ The pictures folder must be uploaded (using FTP) somewhere on the server (e.g. w
 Folder Gallery Plugin does not include any lightbox JS engine anymore. You have to install one or use a compatible lightbox plugin. See FAQ.
 Descriptions can be uploaded in a text file with filename.jpg,descritiontext. Once found in the folder desriptions will be displayed in dirlist an in gallery.
 You can display rss feeds at shortcode position 'rssdisplay' in shortened or full display
-
 
 To show a documents list for download pdf files use shortcode
 
@@ -264,12 +263,49 @@ adds an "ics-shortcode" shortcode that allows you to import events from an iCale
 =
 
 RSStoPosts is a simple plug-in to import up to 5 rss feeds into posts, scheduled daily with on/off toggle
-* Goto Admin and Settings FG Rss2Posts, enter wanted rss feeds and thew will be imported to posts once a day if set to "on" 
+* Goto Admin and Settings Folder Gallery, enter wanted rss feeds and thew will be imported to posts once a day if set to "on" 
+* Cron jobs will be created and removed on on/off toggle and newer posts will be imported daily 
 
+
+=
 ============================================================================================================================================================
+=
+
+## PBAdvent Description ##
+
+PB Advent stellt einen Shortcode für Wordpress bereit, der einen Adventskalender in Seiten oder Beiträgen darstellt.
+SEO optimiert: Dabei wird minimaler Code verwendet und optimiertes minimales css, das nur geladen wird, wenn der Shortcode verwendet wird
+Als Hintergrundbild wird jeweils eins von 10 Motiven
+Mit responsiver Darstellung auch auf Mobilgeräten. Die Lösung ist rein HTML / PHP und CSS3 basiert.
+Zuordnung der aufrufbaren Seiten nach Zufallsprinzip oder linear (auf den Tag genau)
+Öffnen des Türchens nur am jeweiligen Tag oder danach möglich - und nur im Dezember
+aufrufbaren Seiten können normale, vorhandene oder neu zu erstellende Posts sein. 
+Um zu verhindern, dass diese Posts zu früh aufgerufen werden, gibt man ihnen ein Veröffentlichungsdatum vom gewünschten Tag
+
+## Usage ##
+
+[pbadventskalender pages="adventsgeschichte,sonderangebot,uhrzeit-stellen,23,422,11,20344"]
+
+* pages können bis zu 24 komma-getrennte Werte sein:
+  * Ist der Wert eine Zahl (integer), so wird der Beitrag mit der ID dieser Zahl aufgerufen (Shortlink: ?p= wird automatisch ergänzt)
+  * Alternativ kann der Wert der relative Permalink (slug) zur Seite/Beitrag/Produkt oder custom post type sein (z. B. staubsauger-w600)
+  Werden weniger als 24 Werte übergeben, erfolgt die Zuordnung zu den Seiten nach Zufallsprinzip
+
+## Background images (advanced users) ##
+
+Enthaltene Bilder sind von mir erstellt und CC0-lizensiert, frei verwendbar. Im Ordner /images unter dem Plugin zu finden.
+Für eigene Motive bitte ein Child-Plugin erstellen
+
+
+=
+============================================================================================================================================================
+=
 
 
 == Changelog ==
+
+= 9.7.6.20 =
+added pbadventskalender Shortcode that will display an advent calendar with urls given as shortcode parameter and 12 background pictures
 
 = 9.7.6.17 =
 ICS Import now takes X-ALT-DESC;FMTTYPE=text/html from ical files and displays the link in calendar and list views.

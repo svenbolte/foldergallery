@@ -5,13 +5,13 @@ Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
 Author: PBMod
 Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
-Tags: gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
+Tags: advent,adventskalender,gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.17
-Stable tag: 9.7.6.17
+Version: 9.7.6.20
+Stable tag: 9.7.6.20
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -3079,4 +3079,77 @@ function rssnews_deactivation() {
 // Plugin hook
 register_activation_hook(__FILE__, 'rssnews_install');
 register_deactivation_hook(__FILE__, 'rssnews_deactivation');
+
+// 
+// =================================   Adventskalender Shortcode ========================================================
+//
+
+// Zufallstüren eindeutig erzeugen
+function UniqueRandomNumbersWithinRange($min, $max, $quantity) {
+    $numbers = range($min, $max);
+    shuffle($numbers);
+    return array_slice($numbers, 0, $quantity);
+}
+
+// Shortcode für Adventskalender
+function pb_adventscal($atts) {
+	date_default_timezone_set('Europe/Berlin');
+	setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');
+    $args = shortcode_atts(
+        array ( 'pages' => '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24' ), $atts
+    );
+	$tody=date('d-m-Y');
+	$daynum = strtolower(date("d",strtotime($tody)));
+	$monnum = strtolower(date("m",strtotime($tody)));
+	$output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
+	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
+		$output='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
+		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
+		wp_enqueue_style( 'advent-style', plugins_url( 'pbadvent.css', __FILE__ ) );
+		$plugin_pfad = plugin_dir_url( __FILE__ );
+		$wphome = get_home_url();
+		$zuftuer = UniqueRandomNumbersWithinRange(1,24,24);	
+		$lauftag = 0;
+		$zufbild = random_int(1, 11);
+		$adv2 = date("d",strtotime("+2 sunday",mktime(0,0,0,11,27,date("Y"))));
+		$adv3 = date("d",strtotime("+3 sunday",mktime(0,0,0,11,27,date("Y"))));
+		$adv4 = date("d",strtotime("+4 sunday",mktime(0,0,0,11,27,date("Y"))));
+		$output .= '<div id="kasten" class="illustration" style="background-image: url('.$plugin_pfad.'images/px-weihnachten'.$zufbild.'.jpg)">';
+		$output .= '<table style="white-space: nowrap;">';
+		for ($ya=1; $ya<5; $ya++) {
+		  $output .= '<tr>';
+		  for ($xa=1; $xa<7; $xa++) {
+			$wotag = strftime("%a", mktime(0, 0, 0, $monnum, $zuftuer[$lauftag], date("Y")));
+			$output .= '<td class="advtuer"><div class="imagebox">';
+			$ftg = '';
+			if ( $zuftuer[$lauftag] == $adv2 ) $ftg = '<span style="font-size:10px">2.Advent<br></span>';
+			if ( $zuftuer[$lauftag] == $adv3 ) $ftg = '<span style="font-size:10px">3.Advent<br></span>';
+			if ( $zuftuer[$lauftag] == $adv4 ) $ftg = '<span style="font-size:10px">4.Advent<br></span>';
+			if ( $zuftuer[$lauftag] == 6 ) $ftg = '<span style="font-size:10px">Nikolaus<br></span>';
+			if ( $zuftuer[$lauftag] == 24 ) $ftg = '<span style="font-size:10px">XMAS<br></span>';
+			if ( intval($zuftuer[$lauftag]) <= $daynum ) {
+				if ( count($advarray) !== 24 ) { 
+					$zufseite = random_int(0, count($advarray)-1);
+				} else {
+					$zufseite = $zuftuer[$lauftag] - 1;
+				}	
+				if ( is_numeric($advarray[$zufseite]) ) { $shortl = '?p='; } else { $shortl = ''; }
+				$output .= '<a href="'.$wphome.'/' . $shortl . $advarray[$zufseite] . '">';
+				$output .= '<div class="layer1"><small>' .$ftg.$wotag . '</small><br>' . $zuftuer[$lauftag] . '</div>';
+				$output .= '<div class="tr-slideIn"><img src="'.$plugin_pfad.'images/iconblank.gif" width="100" title="'.$zuftuer[$lauftag].' .Dez - Tür öffnen"></div></a>';
+			} else {
+				$output .= '<div title="Tür noch nicht geöffnet" class="layer1"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
+			}	
+		  }	
+		$output .= '</div></td>';
+		$lauftag += 1;
+	    }
+		$output .= '</tr>';
+		$output .= '</table></div>';  
+	}	  
+return $output;
+} 
+add_shortcode( 'pbadventskalender', 'pb_adventscal' );
+
+
 ?>

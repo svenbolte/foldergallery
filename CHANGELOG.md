@@ -1,9 +1,5 @@
 # Changelog
 
-## [9.7.6.20](https://github.com/svenbolte/foldergallery/tree/9.7.6.20) (2020-11-08)
-
-[Full Changelog](https://github.com/svenbolte/foldergallery/compare/9.7.6.7...9.7.6.20)
-
 ## [9.7.6.7](https://github.com/svenbolte/foldergallery/tree/9.7.6.7) (2020-09-15)
 
 [Full Changelog](https://github.com/svenbolte/foldergallery/compare/1.2...9.7.6.7)

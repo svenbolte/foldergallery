@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.20
-Stable tag: 9.7.6.20
+Version: 9.7.6.21
+Stable tag: 9.7.6.21
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -303,6 +303,9 @@ Für eigene Motive bitte ein Child-Plugin erstellen
 
 
 == Changelog ==
+
+= 9.7.6.21 =
+labels on advent calendar doors get theme accent color (penguin mod) else set to red
 
 = 9.7.6.20 =
 added pbadventskalender Shortcode that will display an advent calendar with urls given as shortcode parameter and 12 background pictures

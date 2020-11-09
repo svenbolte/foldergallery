@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.20
-Stable tag: 9.7.6.20
+Version: 9.7.6.21
+Stable tag: 9.7.6.21
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -3122,6 +3122,8 @@ function pb_adventscal($atts) {
 		  $output .= '<tr>';
 		  for ($xa=1; $xa<7; $xa++) {
 			$wotag = strftime("%a", mktime(0, 0, 0, $monnum, $zuftuer[$lauftag], date("Y")));
+			$tcolor = get_theme_mod( 'link-color', '#ff0000' );
+			list($r, $g, $b) = sscanf($tcolor, '#%02x%02x%02x');
 			$output .= '<td class="advtuer"><div class="imagebox">';
 			$ftg = '';
 			if ( $zuftuer[$lauftag] == $adv2 ) $ftg = '<span style="font-size:10px">2.Advent<br></span>';
@@ -3137,10 +3139,10 @@ function pb_adventscal($atts) {
 				}	
 				if ( is_numeric($advarray[$zufseite]) ) { $shortl = '?p='; } else { $shortl = ''; }
 				$output .= '<a href="'.$wphome.'/' . $shortl . $advarray[$zufseite] . '">';
-				$output .= '<div class="layer1"><small>' .$ftg.$wotag . '</small><br>' . $zuftuer[$lauftag] . '</div>';
+				$output .= '<div class="layer1" style="background-color:rgba('.$r.','.$g.','.$b.',.4)"><small>' .$ftg.$wotag . '</small><br>' . $zuftuer[$lauftag] . '</div>';
 				$output .= '<div class="tr-slideIn"><img src="'.$plugin_pfad.'images/iconblank.gif" width="100" title="'.$zuftuer[$lauftag].' .Dez - Tür öffnen"></div></a>';
 			} else {
-				$output .= '<div title="Tür noch nicht geöffnet" class="layer1"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
+				$output .= '<div title="Tür noch nicht geöffnet" class="layer1" style="background-color:rgba('.$r.','.$g.','.$b.',.4)"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
 			}	
 			$output .= '</div></td>';
 			$lauftag += 1;

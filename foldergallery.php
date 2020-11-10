@@ -3112,7 +3112,7 @@ function pb_adventscal($atts) {
 		$wphome = get_home_url();
 		$zuftuer = UniqueRandomNumbersWithinRange(1,24,24);	
 		$lauftag = 0;
-		$zufbild = random_int(1, 11);
+		$zufbild = random_int(1, 14);
 		$adv2 = date("d",strtotime("+2 sunday",mktime(0,0,0,11,27,date("Y"))));
 		$adv3 = date("d",strtotime("+3 sunday",mktime(0,0,0,11,27,date("Y"))));
 		$adv4 = date("d",strtotime("+4 sunday",mktime(0,0,0,11,27,date("Y"))));

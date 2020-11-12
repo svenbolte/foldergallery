@@ -10,7 +10,7 @@ padding-left:5px;
 padding-right:5px;
 line-height:0.9em
 } 
-.illustration {height:100%;background-size:cover}
+.illustration {height:100%;background-size: 100% 100%}
 .imagebox {
 float:left;
 height:100%;
@@ -21,7 +21,7 @@ width:100%
 }
 .imagebox .tr-slideIn {transition: transform 2s;transform: rotate(0deg);transition: .75s}	
 .imagebox .tr-slideIn:hover {
-background-color: rgba(0,255,0,.6);
+background-color: rgba(0,0,0,.75);
 transform: rotate(180deg);
 transition: .75s
 }

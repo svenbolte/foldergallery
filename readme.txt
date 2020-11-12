@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.21
-Stable tag: 9.7.6.21
+Version: 9.7.6.22
+Stable tag: 9.7.6.22
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -290,11 +290,14 @@ Um zu verhindern, dass diese Posts zu früh aufgerufen werden, gibt man ihnen ei
   * Ist der Wert eine Zahl (integer), so wird der Beitrag mit der ID dieser Zahl aufgerufen (Shortlink: ?p= wird automatisch ergänzt)
   * Alternativ kann der Wert der relative Permalink (slug) zur Seite/Beitrag/Produkt oder custom post type sein (z. B. staubsauger-w600)
   Werden weniger als 24 Werte übergeben, erfolgt die Zuordnung zu den Seiten nach Zufallsprinzip
+* debug=1 added to show calendar in other months than dec, default=0 it omitted
+* folder="wp-content/plugins/foldergallery/images"  findet alle JPG PNG Bilder im Ordner und ermittelöt Zufallszahl background image zur Anzeige. Defaults to plugins image folder
+
 
 ## Background images (advanced users) ##
 
 Enthaltene Bilder sind von mir erstellt und CC0-lizensiert, frei verwendbar. Im Ordner /images unter dem Plugin zu finden.
-Für eigene Motive bitte ein Child-Plugin erstellen
+Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 
 
 =
@@ -303,6 +306,10 @@ Für eigene Motive bitte ein Child-Plugin erstellen
 
 
 == Changelog ==
+
+= 9.7.6.22 =
+advent calendar: shortcode attribute debug=1 added to show calendar in other months than dec
+shortcode-attr folder="wp-content/plugins/foldergallery/images"  finds all JPG PNG images in the folder and chooses a random background image to display
 
 = 9.7.6.21 =
 labels on advent calendar doors get theme accent color (penguin mod) else set to red

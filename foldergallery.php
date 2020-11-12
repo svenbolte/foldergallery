@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.21
-Stable tag: 9.7.6.21
+Version: 9.7.6.22
+Stable tag: 9.7.6.22
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -3097,13 +3097,38 @@ function pb_adventscal($atts) {
 	date_default_timezone_set('Europe/Berlin');
 	setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');
     $args = shortcode_atts(
-        array ( 'pages' => '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24' ), $atts
+        array (	'debug' => 0 ,'folder'  => 'wp-content/plugins/foldergallery/images', 'pages' => '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24' ), $atts
     );
 	$tody=date('d-m-Y');
 	$daynum = strtolower(date("d",strtotime($tody)));
 	$monnum = strtolower(date("m",strtotime($tody)));
+	
+	// Zufallsbild aus angegebenen Ordner ermitteln
+	$folder = rtrim( $args['folder'], '/' ); // Remove trailing / from path
+	if ( !is_dir( $folder ) ) {
+		return '<p style="color:red;"><strong>' . __( 'Folder Gallery Error:', 'foldergallery' ) . '</strong> ' .
+			sprintf( __( 'Unable to find the directory %s.', 'foldergallery' ), $folder ) . '</p>';	
+	}
+	$filetypes="jpg png";
+	$directory=$folder;
+	$extensions = explode(" ", $filetypes);
+	$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
+	$files = array();
+	if( $handle = opendir( $directory ) ) {
+		while ( false !== ( $file = readdir( $handle ) ) ) {
+			$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+			if ( in_array( $ext, $extensions ) ) {
+				if ($file != '.' && $file != '..') {
+					$files[] = $file;
+				}	
+			}	
+		}
+		closedir( $handle );
+	}
+	$zufbild = random_int(0, count($files)-1);
+	
 	$output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
-	// $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren
+	if ( $args[ 'debug' ] == 1) $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren debug=1 im shortcode
 	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
 		$output='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
@@ -3112,11 +3137,10 @@ function pb_adventscal($atts) {
 		$wphome = get_home_url();
 		$zuftuer = UniqueRandomNumbersWithinRange(1,24,24);	
 		$lauftag = 0;
-		$zufbild = random_int(1, 14);
 		$adv2 = date("d",strtotime("+2 sunday",mktime(0,0,0,11,27,date("Y"))));
 		$adv3 = date("d",strtotime("+3 sunday",mktime(0,0,0,11,27,date("Y"))));
 		$adv4 = date("d",strtotime("+4 sunday",mktime(0,0,0,11,27,date("Y"))));
-		$output .= '<div id="kasten" class="illustration" style="background-image: url('.$plugin_pfad.'images/px-weihnachten'.$zufbild.'.jpg)">';
+		$output .= '<div class="illustration" style="background-image: url('.$wphome.'/'.$folder.'/'.$files[$zufbild].')">';
 		$output .= '<table style="white-space: nowrap;">';
 		for ($ya=1; $ya<5; $ya++) {
 		  $output .= '<tr>';

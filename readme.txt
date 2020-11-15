@@ -2,10 +2,10 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.22
-Stable tag: 9.7.6.22
+Version: 9.7.6.23
+Stable tag: 9.7.6.23
 Requires at least: 5.1
-Tested up to: 5.5.3
+Tested up to: 5.6
 Requires PHP: 7.2
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
@@ -306,6 +306,10 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 
 
 == Changelog ==
+
+= 9.7.6.23 =
+RSS to Post import uploads external image(s) in rss feed to wordpress upload folder uploads/pbrss and replaces their url to the new one
+before creating the post.
 
 = 9.7.6.22 =
 advent calendar: shortcode attribute debug=1 added to show calendar in other months than dec

@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.22
-Stable tag: 9.7.6.22
+Version: 9.7.6.23
+Stable tag: 9.7.6.23
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -2903,7 +2903,49 @@ for ($i = 1; $i <= 10; $i++) {
 	if ( get_option('rssnews_direction'.$i) =='Off' ) { wp_clear_scheduled_hook( 'update_feed'.$i ); }
 }	
 
+
+function show_post_images($input) {
+    $wp_upload_dir = wp_upload_dir();
+    preg_match_all('/<img(.+?)src=[\'\"](.+?)[\'\"](.*?)>/is', $input, $matches);
+    $image_urls = $matches[2];
+    foreach ($matches[2] as $scrset) {
+        $srcset_images = explode(',', $scrset);
+        foreach ($srcset_images as $image) {
+            if (strpos($image, ' ') !== false) {
+                $image = substr($image, 0, strrpos($image, ' '));
+            }
+            $image_urls[] = trim($image);
+        }
+    }
+    $image_urls = array_values(array_unique($image_urls));
+    if (count($image_urls)) {
+        $image_urls = array_unique($image_urls);
+        foreach ($image_urls as $url) {
+			// hochladen und attachen
+			$image_url = $url;
+			$upload_dir = wp_upload_dir();
+			$image_data = file_get_contents( $image_url );
+			$filename = basename( $image_url );
+			if ( wp_mkdir_p( $upload_dir['basedir']. '/pbrss/' ) ) {
+			  $file = $upload_dir['basedir'] . '/pbrss/' . $filename;
+			  $fileurl = $upload_dir['baseurl'] . '/pbrss/' . $filename;
+			}
+			else {
+			  $file = $upload_dir['basedir'] . '/' . $filename;
+			  $fileurl = $upload_dir['baseurl'] . '/' . $filename;
+			}
+			file_put_contents( $file, $image_data );
+			// Pfad ändern
+            $input = str_replace( $url,$fileurl, $input );
+        }
+    }
+	return $input;
+}
+
+
+
 function update_pbrss_news($number) {
+	$upload_dir = wp_upload_dir();
     // To reset set this one (for debugging)
 	// update_option( 'pbrss-latestpostdate'.$number, '01 September 1990, 5:18 pm' );
 	if (file_exists (ABSPATH.'/wp-admin/includes/taxonomy.php')) {
@@ -2929,9 +2971,9 @@ function update_pbrss_news($number) {
             foreach ($feed->get_items() as $item){
                 $titlepost = $item->get_title();
                 $content = $item->get_content();
-                $description = $item->get_description();
-                // $description = str_replace( 'https://ssl.pbcs.de/dcounter/journal','http://localhost:888/worpdress/wp_content/uploads/bilder', $description );
-                $itemdate = $item->get_date();
+                // $description = $item->get_description();
+                $description .= show_post_images( $item->get_description() );
+				$itemdate = $item->get_date();
 				$cat_terms = array();
 				$categorien = $item->get_categories();
 				foreach ($categorien as $cat) {

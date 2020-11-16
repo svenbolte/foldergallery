@@ -2972,7 +2972,7 @@ function update_pbrss_news($number) {
                 $titlepost = $item->get_title();
                 $content = $item->get_content();
                 // $description = $item->get_description();
-                $description .= show_post_images( $item->get_description() );
+                $description = show_post_images( $item->get_description() );
 				$itemdate = $item->get_date();
 				$cat_terms = array();
 				$categorien = $item->get_categories();

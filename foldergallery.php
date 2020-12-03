@@ -2699,7 +2699,7 @@ require_once 'class.iCalReader.php';
 
 // Calendar display month - draws a calendar
 function draw_calendar($month,$year,$eventarray,$sumonly){
-	setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge'); 
+	setlocale (LC_ALL, 'de_DE.utf8', 'de_DE@euro', 'de_DE', 'de', 'ge'); 
 	/* days and weeks vars now ... */
 	$calheader = date('Y-m-d',mktime(0,0,0,$month,1,$year));
 	$running_day = date('w',mktime(0,0,0,$month,1,$year));

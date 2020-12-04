@@ -21,7 +21,7 @@ width:100%
 }
 .imagebox .tr-slideIn {transition: transform 2s;transform: rotate(0deg);transition: .75s}	
 .imagebox .tr-slideIn:hover {
-background-color: rgba(0,0,0,.75);
+background-color: rgba(0,255,0,.75);
 transform: rotate(180deg);
 transition: .75s
 }

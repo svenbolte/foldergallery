@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.23
-Stable tag: 9.7.6.23
+Version: 9.7.6.24
+Stable tag: 9.7.6.24
 Requires at least: 5.1
 Tested up to: 5.6
 Requires PHP: 7.2
@@ -306,6 +306,9 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 
 
 == Changelog ==
+
+= 9.7.6.24 =
+Display message of advent calender appearing only in november, else empty string
 
 = 9.7.6.23 =
 RSS to Post import uploads external image(s) in rss feed to wordpress upload folder uploads/pbrss and replaces their url to the new one

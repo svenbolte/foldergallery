@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.23
-Stable tag: 9.7.6.23
+Version: 9.7.6.24
+Stable tag: 9.7.6.24
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -3168,11 +3168,11 @@ function pb_adventscal($atts) {
 		closedir( $handle );
 	}
 	$zufbild = random_int(0, count($files)-1);
-	
-	$output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
+	$output = '';
 	if ( $args[ 'debug' ] == 1) $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren debug=1 im shortcode
-	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
-		$output='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
+	if ( $monnum = 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
+	if ( $monnum = 12 ) {      // Nur im Dezember ausführen, Monat 12
+		$output ='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
 		wp_enqueue_style( 'advent-style', plugins_url( 'pbadvent.css', __FILE__ ) );
 		$plugin_pfad = plugin_dir_url( __FILE__ );

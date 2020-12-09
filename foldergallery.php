@@ -217,6 +217,7 @@ function fg_init_handle_download() {
 		$fg_options = get_option( 'FolderGallery' );
 		// Get picture
 		$image = wp_get_image_editor( $path );
+		// print_r($image);
 		if ( is_wp_error( $image ) ) return;		
 		// Correct EXIF orientation	(of main picture)
 		if ( function_exists( 'exif_read_data' ) && $fg_options['orientation'] == 1 ) {	
@@ -661,7 +662,7 @@ function fg_init_handle_download() {
 					$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 					if ( in_array( $ext, $extensions ) ) {
 						$filed[] = $file;
-						//$content .= $file . ",\n";
+						// $content .= $file . ",\n";
 					}	
 				}
 				closedir( $handle );
@@ -877,14 +878,14 @@ function fg_init_handle_download() {
 			$gallery_code .= '</div>';
 
 			if ( $columns > 0 && $idx < $NoP-1 ) {
-				if ( ( $idx + 1 - $start_idx) % $columns == 0 ) $gallery_code .= "\n" . '<br style="clear: both" />';
+				if ( ( (int)$idx + 1 - (int)$start_idx) && $columns == 0 ) $gallery_code .= "\n" . '<br style="clear: both" />';
 			}
 		}
 		if ( 'all' == $thumbnails ) {
 			$gallery_code .= '<br style="clear: both" />';
 		}
 		// Pagination links //
-		global $wp;
+		global $wp,$seite;
 		$gallery_code .= "\n\n<div class='nav-links'>";
 		if ( intval($thumbpagination) > 1 ) {
 			for ( $plink = 0 ; $plink < $NoP ; $plink++ ) {
@@ -1587,7 +1588,7 @@ class folderslider{
 			if ( $fsd_options['lightboxlink'] == 1 ) {
 				$sliderlink ='<a title="Doppelklicken zum Zoomen" style="cursor:zoom-in" href="' . $this->fsd_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '">';
 				$sliderlinkend = '</a>';
-			}	
+			} else { $sliderlink =''; $sliderlinkend =''; }	
 			$slider_code .= '<li>' . $sliderlink . '<img src="' . $this->fsd_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '"';
 			$slider_code .= $picture_size;
 			if ( $title ) {

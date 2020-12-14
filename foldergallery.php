@@ -3171,9 +3171,10 @@ function pb_adventscal($atts) {
 	$zufbild = random_int(0, count($files)-1);
 	$output = '';
 	if ( $args[ 'debug' ] == 1) $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren debug=1 im shortcode
-	if ( $monnum = 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) );
+	if ( $monnum = 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) ) . '.';
 	if ( $monnum = 12 ) {      // Nur im Dezember ausführen, Monat 12
-		$output ='Weihnachten ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen';
+		$xmastag = strftime("%A %d. %B %Y", mktime(0, 0, 0, 12, 25, date("Y")));
+		$output ='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.';
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
 		wp_enqueue_style( 'advent-style', plugins_url( 'pbadvent.css', __FILE__ ) );
 		$plugin_pfad = plugin_dir_url( __FILE__ );

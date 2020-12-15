@@ -1769,7 +1769,7 @@ class folderslider{
 			echo '> ' . __('Show Previous/Next Buttons', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="controls">';
 			echo '<input name="FolderSlider[activeheight]" type="checkbox" id="FolderSlider[activeheight]" value="1"';
-			if ( $fsd_options['activeheight'] ) echo ' checked="checked"';
+			if ( @$fsd_options['activeheight'] ) echo ' checked="checked"';
 			echo '> ' . __('Auto Adjust Height', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="playcontrol">';
 			echo '<input name="FolderSlider[playcontrol]" type="checkbox" id="FolderSlider[playcontrol]" value="1"';

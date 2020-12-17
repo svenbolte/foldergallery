@@ -1769,7 +1769,7 @@ class folderslider{
 			echo '> ' . __('Show Previous/Next Buttons', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="controls">';
 			echo '<input name="FolderSlider[activeheight]" type="checkbox" id="FolderSlider[activeheight]" value="1"';
-			if ( @$fsd_options['activeheight'] ) echo ' checked="checked"';
+			if ( $fsd_options['activeheight'] ) echo ' checked="checked"';
 			echo '> ' . __('Auto Adjust Height', 'foldergallery' ) . "</label><br />\n";
 		echo '<label for="playcontrol">';
 			echo '<input name="FolderSlider[playcontrol]" type="checkbox" id="FolderSlider[playcontrol]" value="1"';
@@ -3171,19 +3171,18 @@ function pb_adventscal($atts) {
 	$zufbild = random_int(0, count($files)-1);
 	$output = '';
 	if ( $args[ 'debug' ] == 1) $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren debug=1 im shortcode
-	if ( $monnum = 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) ) . '.';
-	if ( $monnum = 12 ) {      // Nur im Dezember ausführen, Monat 12
+	if ( $monnum <= 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) ) . '.';
+	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
 		$xmastag = strftime("%A %d. %B %Y", mktime(0, 0, 0, 12, 25, date("Y")));
-		$output ='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.';
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
 		wp_enqueue_style( 'advent-style', plugins_url( 'pbadvent.css', __FILE__ ) );
 		$plugin_pfad = plugin_dir_url( __FILE__ );
 		$wphome = get_home_url();
 		$zuftuer = UniqueRandomNumbersWithinRange(1,24,24);	
 		$lauftag = 0;
-		$adv2 = date("d",strtotime("+2 sunday",mktime(0,0,0,11,27,date("Y"))));
-		$adv3 = date("d",strtotime("+3 sunday",mktime(0,0,0,11,27,date("Y"))));
-		$adv4 = date("d",strtotime("+4 sunday",mktime(0,0,0,11,27,date("Y"))));
+		$adv2 = date("d",strtotime("+2 sunday",mktime(0,0,0,12,27,date("Y"))));
+		$adv3 = date("d",strtotime("+3 sunday",mktime(0,0,0,12,27,date("Y"))));
+		$adv4 = date("d",strtotime("+4 sunday",mktime(0,0,0,12,27,date("Y"))));
 		$output .= '<div class="illustration" style="background-image: url('.$wphome.'/'.$folder.'/'.$files[$zufbild].')">';
 		$output .= '<table style="white-space: nowrap;">';
 		for ($ya=1; $ya<5; $ya++) {
@@ -3216,11 +3215,10 @@ function pb_adventscal($atts) {
 			$lauftag += 1;
 		  }	
 	    }
-		$output .= '</tr>';
-		$output .= '</table></div>';  
+		$output .= '</tr></table></div>';  
+		$output .='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.';
 	}	  
 return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
-
 ?>

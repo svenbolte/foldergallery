@@ -3218,6 +3218,16 @@ function pb_adventscal($atts) {
 		$output .= '</tr></table></div>';  
 		$output .='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.';
 	}	  
+	// Sticky in allen Posts mit dem Advcal Shortcode rücksetzen wenn Datum größer als 24.12.
+    if ( $monnum == 12 && $daynum > 24 ) {
+		global $wpdb;
+		$xposts = $wpdb->get_results("SELECT ID FROM {$wpdb->posts} WHERE post_content LIKE '%[pbadventskalender%' AND post_type = 'post' AND (post_status = 'publish') ");
+		foreach ( $xposts as $xpost ) {
+			// echo 'Marke: ' . $xpost->ID;
+			unstick_post( $xpost->ID );
+		}
+	}	
+	
 return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );

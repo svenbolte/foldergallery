@@ -4,14 +4,14 @@ Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
 Author: PBMod
-Description: This plugin creates picture galleries and sliders from a folder or from recent posts. It can output directory contents with secure download links. csv files can bis displayed as table and csv files read from external url.
-Tags: advent,adventskalender,gallery, folder, lightbox, lightview, bxslider, slideshow, image sliders, csv-folder-to-table, csv-to-table-from-url
+Description: Shortcodes for galleries and sliders from a folder or from recent posts. output directory contents with secure download links. show csv files from url or file as table, import rss-feeds as posts and store their images locally. Display ics from url as calendar. flexible advent calendar locally hosted.
+Tags: advent,adventskalender,gallery,folder,lightbox,lightview,bxslider,slideshow,image sliders,csv-folder-to-table,csv-to-table-from-url,rss-to-posts,ics-to-calendar
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.24
-Stable tag: 9.7.6.24
+Version: 9.7.6.26
+Stable tag: 9.7.6.26
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2

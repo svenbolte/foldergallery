@@ -3,106 +3,244 @@ msgstr ""
 "Project-Id-Version: Folder Gallery\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-08 14:28+0000\n"
-"PO-Revision-Date: 2020-11-08 14:29+0000\n"
-"Last-Translator: Patrick Bärenfänger Admin\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2020-12-21 09:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: Deutsch\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.4.4; wp-5.5.3"
+"X-Loco-Version: 2.5.0; wp-5.6"
 
-#: foldergallery.php:411 foldergallery.php:617 foldergallery.php:625
-#: foldergallery.php:642
-msgid "Folder Gallery Error:"
-msgstr "Folder Galerie Fehler: "
+#: foldergallery.php:1283
+msgid " seconds "
+msgstr "Sekunden"
 
-#: foldergallery.php:412 foldergallery.php:618
-#, php-format
-msgid "Unable to find the directory %s."
-msgstr "Kann Verzeichnis %s nicht finden."
+#: foldergallery.php:1149 foldergallery.php:1151 foldergallery.php:1758
+#: foldergallery.php:1759
+msgid "(0 = auto)"
+msgstr "(0 = auto)"
 
-#: foldergallery.php:539 foldergallery.php:700 foldergallery.php:1126
-#: foldergallery.php:1181 foldergallery.php:1716
-msgid "Filename"
-msgstr "Dateiname"
+#: foldergallery.php:1263
+msgid "(0 = off)"
+msgstr "(0 = aus)"
 
-#: foldergallery.php:542 foldergallery.php:703 foldergallery.php:1129
-msgid "Filename (descending)"
-msgstr "Dateiname (absteigend)"
+#: foldergallery.php:1112
+msgid "All"
+msgstr "Alle"
 
-#: foldergallery.php:545 foldergallery.php:706 foldergallery.php:1132
+#: foldergallery.php:1773
+msgid "Auto Adjust Height"
+msgstr "Höhe automatisch anpassen"
+
+#: foldergallery.php:1263
+msgid "Autoplay Speed"
+msgstr "Autoplay Geschwindigkeit"
+
+#: foldergallery.php:1761
+msgid "Bild(er) nebeneinander"
+msgstr "Bild(er) nebeneinander"
+
+#: foldergallery.php:1748
+msgid "Black border"
+msgstr "schwarzer Rahmen"
+
+#: foldergallery.php:1742
+msgid "Border with shadow"
+msgstr "Rahmen mit Schatten"
+
+#: foldergallery.php:1175 foldergallery.php:1710
+msgid "Caption Format"
+msgstr "Titel Format"
+
+#: foldergallery.php:1761
+msgid "Carousel"
+msgstr "Karussell"
+
+#: foldergallery.php:1149
+msgid "Columns"
+msgstr "Spalten"
+
+#: foldergallery.php:1764
+msgid "Controls"
+msgstr "Schaltflächen"
+
+#: foldergallery.php:1302
+msgid ""
+"Correct picture orientation according to EXIF tag. (Pictures will be "
+"overwritten.)"
+msgstr "Bild nach EXIF-Datei ausrichten (Bilder werden überschrieben)"
+
+#: foldergallery.php:1735
+msgid "CSS"
+msgstr "CSS Stylesheet"
+
+#: foldergallery.php:546 foldergallery.php:707 foldergallery.php:1133
 msgid "Date"
 msgstr "Datum"
 
-#: foldergallery.php:548 foldergallery.php:709 foldergallery.php:1135
+#: foldergallery.php:549 foldergallery.php:710 foldergallery.php:1136
 msgid "Date (descending)"
 msgstr "Datum (absteigend)"
 
-#: foldergallery.php:551 foldergallery.php:712 foldergallery.php:1138
-msgid "Size"
-msgstr "Dateigröße"
+#: foldergallery.php:1179
+msgid "Default (title number size date description)"
+msgstr "Standard (Titel Nummer Größe Datum Beschreibung)"
 
-#: foldergallery.php:554 foldergallery.php:715 foldergallery.php:1141
-msgid "Size (descending)"
-msgstr "Dateigröße (absteigend)"
+#: foldergallery.php:3057
+msgid "Details successfully updated."
+msgstr "RSS Einstellungen aktualisiert."
 
-#: foldergallery.php:557 foldergallery.php:718 foldergallery.php:1144
-msgid "Random"
-msgstr "zufällig"
+#: foldergallery.php:1280
+msgid "Display images fullscreen"
+msgstr "als Vollbild anzeigen"
 
-#: foldergallery.php:558
-msgid "search and sort"
-msgstr "suchen und sortieren"
+#: foldergallery.php:1278
+msgid "Display infobar (counter and arrows at the top)"
+msgstr "Infobalken anzeigen"
 
-#: foldergallery.php:576
-msgid "files with"
-msgstr "Datei(en) mit"
+#: foldergallery.php:1279
+msgid "Display navigation arrows at the screen edges"
+msgstr "Navigationspfeile rechts und links"
 
-#: foldergallery.php:626
-#, php-format
-msgid "No picture available inside %s."
-msgstr "Keine Bilder im Verzeichnis %s."
+#: foldergallery.php:1108
+msgid "Display Thumbnails"
+msgstr "Voransichten anzeigen"
 
-#: foldergallery.php:643
-#, php-format
-msgid "Unable to create the thumbnails directory inside %s."
-msgstr "Kann Vorschau Verzeichnis nicht erstellen innerhalb %s."
+#: foldergallery.php:1277
+msgid "Display toolbar (buttons at the top)"
+msgstr "Werkzeugleiste anzeigen"
 
-#: foldergallery.php:644
-msgid "Verify that this directory is writable (chmod 777)."
+#: foldergallery.php:1276
+msgid "Enable infinite gallery navigation"
+msgstr "Aktivieren Sie die unendliche Galerie-Navigation"
+
+#: foldergallery.php:1704
+msgid "Fade"
+msgstr "Ausblenden"
+
+#: foldergallery.php:1231
+msgid "Fancybox Caption Style"
+msgstr "Fancybox-Beschriftungsstil"
+
+#: foldergallery.php:1252
+msgid "Fancybox Transition"
 msgstr ""
-"Stellen Sie sicher, dass dieses Verzeichnis beschreibbar ist (chmod 777)."
+"\n"
+"Fancybox-Übergang"
 
-#: foldergallery.php:938
+#: foldergallery.php:2672
+msgid "Feed display Error"
+msgstr "Feed Anzeigefehler"
+
+#: foldergallery.php:2674
+msgid "Feed is down"
+msgstr "RSS Feed nicht erreichbar"
+
+#: foldergallery.php:3062
+msgid "FG RssToPosts"
+msgstr "FG RSS to Posts"
+
+#: foldergallery.php:939
 msgid "FGal Settings"
 msgstr "FGal Einstellungen"
 
-#: foldergallery.php:1036
+#: foldergallery.php:540 foldergallery.php:701 foldergallery.php:1127
+#: foldergallery.php:1182 foldergallery.php:1717
+msgid "Filename"
+msgstr "Dateiname"
+
+#: foldergallery.php:543 foldergallery.php:704 foldergallery.php:1130
+msgid "Filename (descending)"
+msgstr "Dateiname (absteigend)"
+
+#: foldergallery.php:1185 foldergallery.php:1720
+msgid "Filename without extension"
+msgstr "Dateiname ohne Erweiterung"
+
+#: foldergallery.php:1726
+msgid "Filename, size"
+msgstr "Dateiname, Größe"
+
+#: foldergallery.php:1729
+msgid "Filename, Size, Pic-Index, Filedate, humandate"
+msgstr "Dateiname, Größe, Bildindex, Datum, wie lange her"
+
+#: foldergallery.php:577
+msgid "files with"
+msgstr "Datei(en) mit"
+
+#: foldergallery.php:1795
+msgid "Fix WPML Paths"
+msgstr "WPML-Pfade reparieren"
+
+#: foldergallery.php:1304
+msgid "Fix WPML paths"
+msgstr "WPML Pfade korrigieren"
+
+#: foldergallery.php:1244
+msgid "Float"
+msgstr "fließend"
+
+#: foldergallery.php:412 foldergallery.php:618 foldergallery.php:626
+#: foldergallery.php:643 foldergallery.php:3152
+msgid "Folder Gallery Error:"
+msgstr "Folder Galerie Fehler: "
+
+#: foldergallery.php:1049
+msgid "Folder Gallery Settings"
+msgstr "Folder Galerie Einstellungen"
+
+#. Name of the plugin
+msgid "Folder Gallery Slider"
+msgstr "Folder Gallery Slider"
+
+#: foldergallery.php:1037
 msgid "Folder Gallery Slider Settings"
 msgstr "Folder Galerie Slider Einstellungen"
 
-#: foldergallery.php:1038
-msgid "Shortcodes"
-msgstr "verfügbare Shortcodes"
+#: foldergallery.php:1683
+msgid "Folder Slider Settings"
+msgstr "Folder Slider Einstellungen"
 
-#: foldergallery.php:1040
-msgid "shortcode to display folder contents as a responsive paged gallery"
+#: foldergallery.php:1221
+msgid "For details, see:"
+msgstr "Einzelheiten finden Sie unter:"
+
+#: foldergallery.php:1300
+msgid "Force 777 permissions on cache folders"
 msgstr ""
-"Shortcode zum Anzeigen von Ordnerinhalten als resposive Galerie mit "
-"Pagination"
+"\n"
+"Erzwingen Sie 777-Berechtigungen für Cache-Ordner"
 
-#: foldergallery.php:1041
-msgid ""
-"shortcode to display folder document contents as a table - protect=1 "
-"disables deep links and protects folder"
+#: foldergallery.php:1642
+msgid "FSlider Settings"
+msgstr "FSlider Einstellungen"
+
+#: foldergallery.php:1056
+msgid "Gallery Engine"
+msgstr "Galerie Engine"
+
+#: foldergallery.php:1754
+msgid "Gray border"
+msgstr "grauer Rahmen"
+
+#: foldergallery.php:1759
+msgid "Height"
+msgstr "Höhe in px"
+
+#: foldergallery.php:1698
+msgid "Horizontal"
+msgstr "horizontal"
+
+#: foldergallery.php:1044
+msgid "html table from the file if exists on the root of domain"
 msgstr ""
-"Shortcode zum Anzeigen des Inhalts von Ordnerdokumenten als Tabelle - "
-"protected = 1 deaktiviert Deep Links und schützt Ordner"
+"HTML-Tabelle aus der Datei, falls im Stammverzeichnis der Domäne vorhanden"
 
-#: foldergallery.php:1042
+#: foldergallery.php:1043
 msgid ""
 "html table from the files sweden.csv, norway.csv and iceland.csv that exists "
 "in"
@@ -110,28 +248,136 @@ msgstr ""
 "HTML-Tabelle aus den Dateien sweden.csv, norway.csv und iceland.csv, die im "
 "Ordner liegt:"
 
-#: foldergallery.php:1043
-msgid "html table from the file if exists on the root of domain"
-msgstr ""
-"HTML-Tabelle aus der Datei, falls im Stammverzeichnis der Domäne vorhanden"
+#. Author URI of the plugin
+msgid "https://github.com/svenbolte"
+msgstr "https://github.com/svenbolte"
 
-#: foldergallery.php:1044
-msgid ""
-"shortcode to display rss feed in short or long form in pages/posts/html "
-"widgets"
-msgstr ""
-"Shortcode zum Anzeigen von RSS-Feeds in Kurz- oder Langform in Seiten / "
-"Posts / HTML-Widgets"
+#. URI of the plugin
+msgid "https://github.com/svenbolte/foldergallery"
+msgstr "https://github.com/svenbolte/foldergallery"
 
-#: foldergallery.php:1045
-msgid ""
-"shortcode to display ICS or ical events in list or calendar on "
-"pages/shortcodes or html widget"
-msgstr ""
-"Shortcode zum Anzeigen von ICS- oder medizinischen Ereignissen in einer "
-"Liste oder einem Kalender auf Seiten / Shortcodes oder einem HTML-Widget"
+#: foldergallery.php:1235
+msgid "Inside"
+msgstr "innerhalb"
 
-#: foldergallery.php:1046
+#: foldergallery.php:1170
+msgid "Lightbox Settings"
+msgstr "Lightbox Einstellungen"
+
+#: foldergallery.php:1219
+msgid "Lightview default options, comma-separated."
+msgstr "Lightview-Standardoptionen, durch Kommas getrennt."
+
+#: foldergallery.php:1217
+msgid "Lightview Options"
+msgstr "Lightview-Optionen"
+
+#: foldergallery.php:1800
+msgid "Link zum Bild"
+msgstr "Link zum Bild"
+
+#: foldergallery.php:1154
+msgid "Margin"
+msgstr "Rand"
+
+#: foldergallery.php:1298
+msgid "Misc Settings"
+msgstr "verschiedene Einstellungen"
+
+#: foldergallery.php:1191
+msgid "Modification date"
+msgstr "Änderungsdatum"
+
+#: foldergallery.php:1206
+msgid "Modification date (ISO 8601)"
+msgstr "Änderungsdatum (ISO 8601)"
+
+#: foldergallery.php:1203
+msgid "Modification date (RFC 2822)"
+msgstr "Änderungsdatum (RFC 2822)"
+
+#: foldergallery.php:1194
+msgid "Modification date and time"
+msgstr ""
+"\n"
+"Änderungsdatum und -zeit"
+
+#: foldergallery.php:1197
+msgid "Name Number Filesize"
+msgstr "Name Nummer Dateigröße"
+
+#: foldergallery.php:1200
+msgid "Name Number Filesize Description"
+msgstr "Name Nummer Dateigröße Beschreibung"
+
+#: foldergallery.php:1162
+msgid "No"
+msgstr "Nein"
+
+#: foldergallery.php:1739
+msgid "No border"
+msgstr "kein Rahmen"
+
+#: foldergallery.php:627
+#, php-format
+msgid "No picture available inside %s."
+msgstr "Keine Bilder im Verzeichnis %s."
+
+#: foldergallery.php:1100 foldergallery.php:1118 foldergallery.php:1209
+#: foldergallery.php:1247 foldergallery.php:1714
+msgid "None"
+msgstr "kein"
+
+#: foldergallery.php:1302
+msgid "Orientation"
+msgstr "Ausrichtung"
+
+#: foldergallery.php:1238
+msgid "Outside"
+msgstr "außerhalb"
+
+#: foldergallery.php:1241
+msgid "Over"
+msgstr "Über"
+
+#: foldergallery.php:1153
+msgid "Padding"
+msgstr "Padding (Abstand)"
+
+#. Author of the plugin
+msgid "PBMod"
+msgstr "PBMod"
+
+#: foldergallery.php:1300
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+#: foldergallery.php:1152
+msgid "Picture Border"
+msgstr "Bild Rahmen"
+
+#: foldergallery.php:558 foldergallery.php:719 foldergallery.php:1145
+msgid "Random"
+msgstr "zufällig"
+
+#: foldergallery.php:3067 foldergallery.php:3075 foldergallery.php:3083
+#: foldergallery.php:3091 foldergallery.php:3099
+msgid "Rss link and schedule"
+msgstr "RSS Link und Zeitplan"
+
+#: foldergallery.php:559
+msgid "search and sort"
+msgstr "suchen und sortieren"
+
+#: foldergallery.php:1760
+msgid "seconds"
+msgstr "Sekunden"
+
+#: foldergallery.php:1745
+msgid "Shadow without border"
+msgstr "Schatten ohne Rahmen"
+
+#: foldergallery.php:1047
 msgid ""
 "shortcode to display an advent calendar in december, links can be given on "
 "parameter (permalinks or post IDs)"
@@ -139,404 +385,161 @@ msgstr ""
 "Shortcode zur Anzeige eines Adventskalenders im Dezember. Links können zu "
 "Parametern angegeben werden (Permalinks oder Post-IDs)."
 
-#: foldergallery.php:1048
-msgid "Folder Gallery Settings"
-msgstr "Folder Galerie Einstellungen"
-
-#: foldergallery.php:1055
-msgid "Gallery Engine"
-msgstr "Galerie Engine"
-
-#: foldergallery.php:1099 foldergallery.php:1117 foldergallery.php:1208
-#: foldergallery.php:1246 foldergallery.php:1713
-msgid "None"
-msgstr "kein"
-
-#: foldergallery.php:1103
-msgid "Thumbnail Settings"
-msgstr "Vorschau Einstellungen"
-
-#: foldergallery.php:1107
-msgid "Display Thumbnails"
-msgstr "Voransichten anzeigen"
-
-#: foldergallery.php:1111
-msgid "All"
-msgstr "Alle"
-
-#: foldergallery.php:1114
-msgid "Single"
-msgstr "Einzel"
-
-#: foldergallery.php:1122
-msgid "Sort Pictures by"
-msgstr "Bilder sortieren nach"
-
-#: foldergallery.php:1148
-msgid "Columns"
-msgstr "Spalten"
-
-#: foldergallery.php:1148 foldergallery.php:1150 foldergallery.php:1757
-#: foldergallery.php:1758
-msgid "(0 = auto)"
-msgstr "(0 = auto)"
-
-#: foldergallery.php:1149
-msgid "Thumbnails Width"
-msgstr "Vorschau Breite"
-
-#: foldergallery.php:1150
-msgid "Thumbnails Height"
-msgstr "Vorschau Höhe"
-
-#: foldergallery.php:1151
-msgid "Picture Border"
-msgstr "Bild Rahmen"
-
-#: foldergallery.php:1152
-msgid "Padding"
-msgstr "Padding (Abstand)"
-
-#: foldergallery.php:1153
-msgid "Margin"
-msgstr "Rand"
-
-#: foldergallery.php:1157
-msgid "Show Thumbnail Captions"
-msgstr "Miniaturansichten-Untertitel anzeigen"
-
-#: foldergallery.php:1161
-msgid "No"
-msgstr "Nein"
-
-#: foldergallery.php:1164
-msgid "Yes"
-msgstr "Ja"
-
-#: foldergallery.php:1169
-msgid "Lightbox Settings"
-msgstr "Lightbox Einstellungen"
-
-#: foldergallery.php:1174 foldergallery.php:1709
-msgid "Caption Format"
-msgstr "Titel Format"
-
-#: foldergallery.php:1178
-msgid "Default (title number size date description)"
-msgstr "Standard (Titel Nummer Größe Datum Beschreibung)"
-
-#: foldergallery.php:1184 foldergallery.php:1719
-msgid "Filename without extension"
-msgstr "Dateiname ohne Erweiterung"
-
-#: foldergallery.php:1187 foldergallery.php:1722
-msgid "Smart Filename"
-msgstr "Smarter Dateiname"
-
-#: foldergallery.php:1190
-msgid "Modification date"
-msgstr "Änderungsdatum"
-
-#: foldergallery.php:1193
-msgid "Modification date and time"
+#: foldergallery.php:1041
+msgid "shortcode to display folder contents as a responsive paged gallery"
 msgstr ""
-"\n"
-"Änderungsdatum und -zeit"
+"Shortcode zum Anzeigen von Ordnerinhalten als resposive Galerie mit "
+"Pagination"
 
-#: foldergallery.php:1196
-msgid "Name Number Filesize"
-msgstr "Name Nummer Dateigröße"
-
-#: foldergallery.php:1199
-msgid "Name Number Filesize Description"
-msgstr "Name Nummer Dateigröße Beschreibung"
-
-#: foldergallery.php:1202
-msgid "Modification date (RFC 2822)"
-msgstr "Änderungsdatum (RFC 2822)"
-
-#: foldergallery.php:1205
-msgid "Modification date (ISO 8601)"
-msgstr "Änderungsdatum (ISO 8601)"
-
-#: foldergallery.php:1216
-msgid "Lightview Options"
-msgstr "Lightview-Optionen"
-
-#: foldergallery.php:1218
-msgid "Lightview default options, comma-separated."
-msgstr "Lightview-Standardoptionen, durch Kommas getrennt."
-
-#: foldergallery.php:1220
-msgid "For details, see:"
-msgstr "Einzelheiten finden Sie unter:"
-
-#: foldergallery.php:1230
-msgid "Fancybox Caption Style"
-msgstr "Fancybox-Beschriftungsstil"
-
-#: foldergallery.php:1234
-msgid "Inside"
-msgstr "innerhalb"
-
-#: foldergallery.php:1237
-msgid "Outside"
-msgstr "außerhalb"
-
-#: foldergallery.php:1240
-msgid "Over"
-msgstr "Über"
-
-#: foldergallery.php:1243
-msgid "Float"
-msgstr "fließend"
-
-#: foldergallery.php:1251
-msgid "Fancybox Transition"
-msgstr ""
-"\n"
-"Fancybox-Übergang"
-
-#: foldergallery.php:1262
-msgid "Autoplay Speed"
-msgstr "Autoplay Geschwindigkeit"
-
-#: foldergallery.php:1262
-msgid "(0 = off)"
-msgstr "(0 = aus)"
-
-#: foldergallery.php:1275
-msgid "Enable infinite gallery navigation"
-msgstr "Aktivieren Sie die unendliche Galerie-Navigation"
-
-#: foldergallery.php:1276
-msgid "Display toolbar (buttons at the top)"
-msgstr "Werkzeugleiste anzeigen"
-
-#: foldergallery.php:1277
-msgid "Display infobar (counter and arrows at the top)"
-msgstr "Infobalken anzeigen"
-
-#: foldergallery.php:1278
-msgid "Display navigation arrows at the screen edges"
-msgstr "Navigationspfeile rechts und links"
-
-#: foldergallery.php:1279
-msgid "Display images fullscreen"
-msgstr "als Vollbild anzeigen"
-
-#: foldergallery.php:1280
-msgid "Start slideshow automatically"
-msgstr "Diaschau automatisch starten"
-
-#: foldergallery.php:1281
-msgid "Slideshow speed"
-msgstr "Diashow Geschwindigkeit"
-
-#: foldergallery.php:1282
-msgid " seconds "
-msgstr "Sekunden"
-
-#: foldergallery.php:1297
-msgid "Misc Settings"
-msgstr "verschiedene Einstellungen"
-
-#: foldergallery.php:1299
-msgid "Permissions"
-msgstr "Berechtigungen"
-
-#: foldergallery.php:1299
-msgid "Force 777 permissions on cache folders"
-msgstr ""
-"\n"
-"Erzwingen Sie 777-Berechtigungen für Cache-Ordner"
-
-#: foldergallery.php:1301
-msgid "Orientation"
-msgstr "Ausrichtung"
-
-#: foldergallery.php:1301
+#: foldergallery.php:1042
 msgid ""
-"Correct picture orientation according to EXIF tag. (Pictures will be "
-"overwritten.)"
-msgstr "Bild nach EXIF-Datei ausrichten (Bilder werden überschrieben)"
+"shortcode to display folder document contents as a table - protect=1 "
+"disables deep links and protects folder"
+msgstr ""
+"Shortcode zum Anzeigen des Inhalts von Ordnerdokumenten als Tabelle - "
+"protected = 1 deaktiviert Deep Links und schützt Ordner"
 
-#: foldergallery.php:1303 foldergallery.php:1790
-msgid "WPML"
-msgstr "WPML Übersetzung"
+#: foldergallery.php:1046
+msgid ""
+"shortcode to display ICS or ical events in list or calendar on "
+"pages/shortcodes or html widget"
+msgstr ""
+"Shortcode zum Anzeigen von ICS- oder medizinischen Ereignissen in einer "
+"Liste oder einem Kalender auf Seiten / Shortcodes oder einem HTML-Widget"
 
-#: foldergallery.php:1303
-msgid "Fix WPML paths"
-msgstr "WPML Pfade korrigieren"
+#: foldergallery.php:1045
+msgid ""
+"shortcode to display rss feed in short or long form in pages/posts/html "
+"widgets"
+msgstr ""
+"Shortcode zum Anzeigen von RSS-Feeds in Kurz- oder Langform in Seiten / "
+"Posts / HTML-Widgets"
 
-#: foldergallery.php:1641
-msgid "FSlider Settings"
-msgstr "FSlider Einstellungen"
-
-#: foldergallery.php:1682
-msgid "Folder Slider Settings"
-msgstr "Folder Slider Einstellungen"
-
-#: foldergallery.php:1693
-msgid "Transition Mode"
-msgstr "Blendeffekt"
-
-#: foldergallery.php:1697
-msgid "Horizontal"
-msgstr "horizontal"
-
-#: foldergallery.php:1700
-msgid "Vertical"
-msgstr "vertikal"
-
-#: foldergallery.php:1703
-msgid "Fade"
-msgstr "Ausblenden"
-
-#: foldergallery.php:1725
-msgid "Filename, size"
-msgstr "Dateiname, Größe"
-
-#: foldergallery.php:1728
-msgid "Filename, Size, Pic-Index, Filedate, humandate"
-msgstr "Dateiname, Größe, Bildindex, Datum, wie lange her"
-
-#: foldergallery.php:1734
-msgid "CSS"
-msgstr "CSS Stylesheet"
-
-#: foldergallery.php:1738
-msgid "No border"
-msgstr "kein Rahmen"
-
-#: foldergallery.php:1741
-msgid "Border with shadow"
-msgstr "Rahmen mit Schatten"
-
-#: foldergallery.php:1744
-msgid "Shadow without border"
-msgstr "Schatten ohne Rahmen"
-
-#: foldergallery.php:1747
-msgid "Black border"
-msgstr "schwarzer Rahmen"
-
-#: foldergallery.php:1750
-msgid "White border"
-msgstr "weißer Rahmen"
-
-#: foldergallery.php:1753
-msgid "Gray border"
-msgstr "grauer Rahmen"
-
-#: foldergallery.php:1757
-msgid "Width"
-msgstr "Breite in px"
-
-#: foldergallery.php:1758
-msgid "Height"
-msgstr "Höhe in px"
-
-#: foldergallery.php:1759
-msgid "Speed"
-msgstr "Geschwindigkeit"
-
-#: foldergallery.php:1759
-msgid "seconds"
-msgstr "Sekunden"
-
-#: foldergallery.php:1760
-msgid "Carousel"
-msgstr "Karussell"
-
-#: foldergallery.php:1760
-msgid "Bild(er) nebeneinander"
-msgstr "Bild(er) nebeneinander"
-
-#: foldergallery.php:1763
-msgid "Controls"
-msgstr "Schaltflächen"
-
-#: foldergallery.php:1768
-msgid "Show Previous/Next Buttons"
-msgstr "Vorherige / Nächste Schaltflächen anzeigen"
-
-#: foldergallery.php:1772
-msgid "Auto Adjust Height"
-msgstr "Höhe automatisch anpassen"
-
-#: foldergallery.php:1776
-msgid "Show Play/Pause Button"
-msgstr "Show Play / Pause-Taste anzeigen"
-
-#: foldergallery.php:1780
-msgid "Start Slider Automatically"
-msgstr "Slider automatisch starten"
-
-#: foldergallery.php:1784
-msgid "Show Pager"
-msgstr "Seitennavigation anzeigen"
-
-#: foldergallery.php:1794
-msgid "Fix WPML Paths"
-msgstr "WPML-Pfade reparieren"
-
-#: foldergallery.php:1799
-msgid "Link zum Bild"
-msgstr "Link zum Bild"
-
-#: foldergallery.php:1803
-msgid "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
-msgstr "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
-
-#: foldergallery.php:2671
-msgid "Feed display Error"
-msgstr "Feed Anzeigefehler"
-
-#: foldergallery.php:2673
-msgid "Feed is down"
-msgstr "RSS Feed nicht erreichbar"
-
-#: foldergallery.php:3014
-msgid "Details successfully updated."
-msgstr "RSS Einstellungen aktualisiert."
-
-#: foldergallery.php:3019
-msgid "FG RssToPosts"
-msgstr "FG RSS to Posts"
-
-#: foldergallery.php:3024 foldergallery.php:3032 foldergallery.php:3040
-#: foldergallery.php:3048 foldergallery.php:3056
-msgid "Rss link and schedule"
-msgstr "RSS Link und Zeitplan"
-
-#: foldergallery.php:3067
-msgid "Update RSS import settings"
-msgstr "RSS Einstellungen aktualisieren"
-
-#. Name of the plugin
-msgid "Folder Gallery Slider"
-msgstr "Folder Gallery Slider"
+#: foldergallery.php:1039
+msgid "Shortcodes"
+msgstr "verfügbare Shortcodes"
 
 #. Description of the plugin
 msgid ""
-"This plugin creates picture galleries and sliders from a folder or from "
-"recent posts. It can output directory contents with secure download links. "
-"csv files can bis displayed as table and csv files read from external url."
+"Shortcodes for galleries and sliders from a folder or from recent posts. "
+"output directory contents with secure download links. show csv files from "
+"url or file as table, import rss-feeds as posts and store their images "
+"locally. Display ics from url as calendar. flexible advent calendar locally "
+"hosted."
 msgstr ""
-"Dieses Plugin erstellt Bildergalerien und Schieberegler aus einem Ordner "
-"oder aus aktuellen Beiträgen. Es kann Verzeichnisinhalte mit sicheren "
-"Download-Links ausgeben. CSV-Dateien können als Tabelle angezeigt werden und "
-"CSV-Dateien können von einer externen URL gelesen werden."
+"Shortcodes für Galerien und Slider aus einem Ordner oder aus aktuellen "
+"Beiträgen. Inhalt des Verzeichnisses mit sicheren Download-Links. CSV-"
+"Dateien von URL oder Datei als Tabelle anzeigen, RSS-Feeds als Beiträge "
+"importieren und ihre Bilder lokal speichern. Zeigen Sie ics von der URL als "
+"Kalender an. flexibler Adventskalender lokal gehostet."
 
-#. URI of the plugin
-msgid "https://github.com/svenbolte/foldergallery"
-msgstr "https://github.com/svenbolte/foldergallery"
+#: foldergallery.php:1785
+msgid "Show Pager"
+msgstr "Seitennavigation anzeigen"
 
-#. Author of the plugin
-msgid "PBMod"
-msgstr "PBMod"
+#: foldergallery.php:1777
+msgid "Show Play/Pause Button"
+msgstr "Show Play / Pause-Taste anzeigen"
 
-#. Author URI of the plugin
-msgid "https://github.com/svenbolte"
-msgstr "https://github.com/svenbolte"
+#: foldergallery.php:1769
+msgid "Show Previous/Next Buttons"
+msgstr "Vorherige / Nächste Schaltflächen anzeigen"
+
+#: foldergallery.php:1158
+msgid "Show Thumbnail Captions"
+msgstr "Miniaturansichten-Untertitel anzeigen"
+
+#: foldergallery.php:1115
+msgid "Single"
+msgstr "Einzel"
+
+#: foldergallery.php:552 foldergallery.php:713 foldergallery.php:1139
+msgid "Size"
+msgstr "Dateigröße"
+
+#: foldergallery.php:555 foldergallery.php:716 foldergallery.php:1142
+msgid "Size (descending)"
+msgstr "Dateigröße (absteigend)"
+
+#: foldergallery.php:1282
+msgid "Slideshow speed"
+msgstr "Diashow Geschwindigkeit"
+
+#: foldergallery.php:1188 foldergallery.php:1723
+msgid "Smart Filename"
+msgstr "Smarter Dateiname"
+
+#: foldergallery.php:1123
+msgid "Sort Pictures by"
+msgstr "Bilder sortieren nach"
+
+#: foldergallery.php:1760
+msgid "Speed"
+msgstr "Geschwindigkeit"
+
+#: foldergallery.php:1781
+msgid "Start Slider Automatically"
+msgstr "Slider automatisch starten"
+
+#: foldergallery.php:1281
+msgid "Start slideshow automatically"
+msgstr "Diaschau automatisch starten"
+
+#: foldergallery.php:1104
+msgid "Thumbnail Settings"
+msgstr "Vorschau Einstellungen"
+
+#: foldergallery.php:1151
+msgid "Thumbnails Height"
+msgstr "Vorschau Höhe"
+
+#: foldergallery.php:1150
+msgid "Thumbnails Width"
+msgstr "Vorschau Breite"
+
+#: foldergallery.php:1694
+msgid "Transition Mode"
+msgstr "Blendeffekt"
+
+#: foldergallery.php:644
+#, php-format
+msgid "Unable to create the thumbnails directory inside %s."
+msgstr "Kann Vorschau Verzeichnis nicht erstellen innerhalb %s."
+
+#: foldergallery.php:413 foldergallery.php:619 foldergallery.php:3153
+#, php-format
+msgid "Unable to find the directory %s."
+msgstr "Kann Verzeichnis %s nicht finden."
+
+#: foldergallery.php:3110
+msgid "Update RSS import settings"
+msgstr "RSS Einstellungen aktualisieren"
+
+#: foldergallery.php:645
+msgid "Verify that this directory is writable (chmod 777)."
+msgstr ""
+"Stellen Sie sicher, dass dieses Verzeichnis beschreibbar ist (chmod 777)."
+
+#: foldergallery.php:1701
+msgid "Vertical"
+msgstr "vertikal"
+
+#: foldergallery.php:1751
+msgid "White border"
+msgstr "weißer Rahmen"
+
+#: foldergallery.php:1758
+msgid "Width"
+msgstr "Breite in px"
+
+#: foldergallery.php:1304 foldergallery.php:1791
+msgid "WPML"
+msgstr "WPML Übersetzung"
+
+#: foldergallery.php:1165
+msgid "Yes"
+msgstr "Ja"
+
+#: foldergallery.php:1804
+msgid "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"
+msgstr "Zoom Link zum Bild für Lightbox wie Fancybox aktivieren"

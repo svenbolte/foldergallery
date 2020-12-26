@@ -3216,7 +3216,7 @@ function pb_adventscal($atts) {
 		  }	
 	    }
 		$output .= '</tr></table></div>';  
-		$output .='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.';
+		if ( $monnum == 12 && $daynum < 25 ) { $output .='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.'; }
 	}	  
 	// Sticky in allen Posts mit dem Advcal Shortcode rücksetzen wenn Datum größer als 24.12.
     if ( $monnum == 12 && $daynum > 24 ) {

@@ -2774,7 +2774,7 @@ function ICSEvents($atts) {
 		'items'  => 5,	  // set a number to limit number of items displayed in listings/calendars
 		'sumonly' => 0,	  // set to "1" if you do not want to list description and location
 		'showold' => 0,   // set to "1" to list older entries (happened before today)
-		'view' => 'list', // list or calendar display or list,calendar for both
+		'view' => 'list', // list or calendar display or list,calendar for both, widget for html-widget usage
 		'noeventsmessage' => '',  //if no events found nothing or this text will be displayed
 	), $atts ) );
 	// check if url is valid	
@@ -2796,12 +2796,25 @@ function ICSEvents($atts) {
 			}
 		}
 		$wtage = array(  0 => "Sonntag", 1 => "Montag", 2 => "Dienstag", 3 => "Mittwoch", 4 => "Donnerstag", 5 => "Freitag", 6 => "Samstag", 7 => "Sonntag"  );
-		$html = '<table style="overflow-wrap:anywhere">';
-		if ( !empty($title) ) { $html .= '<thead><th colspan="2">'.$title.'</th></thead>'; }
+		$html = '';
 		if (empty($eventsToDisplay)) {
 			if (isset($noeventsmsg)) {	$html .= $noeventsmsg;  }
 		} else {
+			if ( strpos($view,"widget") !== false ) {
+				if ( !empty($title) ) { $html .= '<abbr style="text-transform:uppercase">'.$title.'</abbr>'; }
+				foreach ($eventsToDisplay as $event) {
+				 	$html .= '<p>';
+					$timestamp = $ical->iCalDateToUnixTimestamp($event['DTSTART']);
+					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
+					$wielangeher = $prepo . human_time_diff($timestamp,$now);
+					if ( $wielangeher == 'vor 1 Sekunde' ) { $wielangeher = 'heute'; }
+					if ( $wielangeher !== 'heute' ) $html .= '<abbr>'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).' ' . $wielangeher.'</abbr> &nbsp; ';
+					$html .= $event['SUMMARY'] . '</p>';
+				}	
+			}	
 			if ( strpos($view,"list") !== false ) {
+				$html = '<table style="overflow-wrap:anywhere">';
+				if ( !empty($title) ) { $html .= '<thead><th colspan="2">'.$title.'</th></thead>'; }
 				foreach ($eventsToDisplay as $event) {
 					$timestamp = $ical->iCalDateToUnixTimestamp($event['DTSTART']);
 					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
@@ -2810,7 +2823,7 @@ function ICSEvents($atts) {
 					$tcolor = get_theme_mod( 'link-color', '#aaaaaa' );
 					list($r, $g, $b) = sscanf($tcolor, '#%02x%02x%02x');
 					$html .= '<tr><td style="text-align:center;width:95px;min-width:80px;max-width:95px;border-radius:8px;background-color:rgba('.$r.','.$g.','.$b.',.2);border-left:3px solid '.$tcolor.'"><abbr title="'.strftime('%a %e. %B %Y, %W. Kw', $timestamp).'">';
-					$html .= $wtage[date('N', $timestamp)].'<br><span style="font-size:1.3em;font-weight:700">' . strftime('%e. %b', $timestamp).'</span><br>' . $wielangeher;
+					$html .= $wtage[date('N', $timestamp)].'<br><span style="font-size:1.3em;font-weight:700">' . strftime('%e. %b', $timestamp).'</span><br>'.$wielangeher;
 					$html .= '</td><td>';
 					if ( $sumonly==0 ) { $html .= '<span class="headline">'; }
 					$html .= $event['SUMMARY'] . '</span>';
@@ -2833,9 +2846,9 @@ function ICSEvents($atts) {
 					}
 					$html .= '</tr>';
 				}
+				$html .= '</tr></table>';
 			}       // List view	
 		}
-		$html .= '</tr></table>';
 		if ( strpos($view,"calendar") !== false ) {
 			/** Get all months with ical events **/
 			$outputed_values = array();

@@ -2980,45 +2980,40 @@ function update_pbrss_news($number) {
 			if ( $number == 5 ) { $uri=esc_url_raw(get_option('rssnews_rss5')); }
             $feed = fetch_feed($uri);
         }
+	
+	if($feed) {
+		foreach ($feed->get_items() as $item){
+			$titlepost = $item->get_title();
+			$content = $item->get_content();
+			// $description = $item->get_description();
+			$description = show_post_images( $item->get_description() );
+			$itemdate = $item->get_date();
+			$cat_terms = array();
+			$categorien = $item->get_categories();
+			foreach ($categorien as $cat) {
+				$cat_terms[] = $cat->get_term();
+			}
 
-        if($feed) {
-            foreach ($feed->get_items() as $item){
-                $titlepost = $item->get_title();
-                $content = $item->get_content();
-                // $description = $item->get_description();
-                $description = show_post_images( $item->get_description() );
-				$itemdate = $item->get_date();
-				$cat_terms = array();
-				$categorien = $item->get_categories();
-				foreach ($categorien as $cat) {
-					$cat_terms[] = $cat->get_term();
-				}
-                $media_group = $item->get_item_tags('', 'enclosure');
-                $img = $media_group[0]['attribs']['']['url'];
-                $width = $media_group[0]['attribs']['']['width'];           
-                // $latestItemDate = $feed->get_item()->get_date();
+			// --- if the date is < than the date we have in database, get out of the loop
+			if( $itemdate <= $time) break;
 
-                // --- if the date is < than the date we have in database, get out of the loop
-                if( $itemdate <= $time) break;
-
-                // prepare values for inserting
-				$catid = wp_create_category( $cat_terms[0] );
-				$post_information = array(
-                    'post_title' => $titlepost,
-                    'post_content' => $description,
-                    'post_type' => 'post',
-					'post_author' => 1,
-                    'post_status' => 'publish',
-					'post_category' => array($catid),
-					'post_date' => date('Y-m-d H:i:s'),
-                );
-                wp_insert_post( $post_information );    
-            }
-        }
-        // update the new date in database to the date of the first item in the loop        
-        update_option( 'pbrss-latestpostdate'.$number, $feed->get_item()->get_date() );
+			// prepare values for inserting
+			$catid = wp_create_category( $cat_terms[0] );
+			$post_information = array(
+				'post_title' => $titlepost,
+				'post_content' => $description,
+				'post_type' => 'post',
+				'post_author' => 1,
+				'post_status' => 'publish',
+				'post_category' => array($catid),
+				'post_date' => date('Y-m-d H:i:s'),
+			);
+			wp_insert_post( $post_information );    
+		}
+		// update the new date in database to the date of the first item in the loop        
+		update_option( 'pbrss-latestpostdate'.$number, $feed->get_item()->get_date() );
+	}
 }
-
 
 // Admin update option for default value
 function rssnews_admin_options() {

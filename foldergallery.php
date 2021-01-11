@@ -2993,10 +2993,8 @@ function update_pbrss_news($number) {
 			foreach ($categorien as $cat) {
 				$cat_terms[] = $cat->get_term();
 			}
-
 			// --- if the date is < than the date we have in database, get out of the loop
 			if( $itemdate <= $time) break;
-
 			// prepare values for inserting
 			$catid = wp_create_category( $cat_terms[0] );
 			$post_information = array(
@@ -3011,7 +3009,7 @@ function update_pbrss_news($number) {
 			wp_insert_post( $post_information );    
 		}
 		// update the new date in database to the date of the first item in the loop        
-		update_option( 'pbrss-latestpostdate'.$number, $feed->get_item()->get_date() );
+		update_option( 'pbrss-latestpostdate'.$number, $feed->get_items()[0]->get_date() );
 	}
 }
 

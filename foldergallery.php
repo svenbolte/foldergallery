@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.26
-Stable tag: 9.7.6.26
+Version: 9.7.6.27
+Stable tag: 9.7.6.27
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2
@@ -739,7 +739,7 @@ function fg_init_handle_download() {
 			  $seite = $_GET['seite'];
 			  $start_idx = intval($thumbnails) * intval((intval($seite)-1));
 			} else {
-			  //Handle the case where there is no parameter
+				$seite=1;
 			}
 			//// Startindex Pagination Ende	
 
@@ -884,18 +884,48 @@ function fg_init_handle_download() {
 		if ( 'all' == $thumbnails ) {
 			$gallery_code .= '<br style="clear: both" />';
 		}
-		// Pagination links //
-		global $wp,$seite;
-		$gallery_code .= "\n\n<div class='nav-links'>";
-		if ( intval($thumbpagination) > 1 ) {
-			for ( $plink = 0 ; $plink < $NoP ; $plink++ ) {
-				if ( ($plink/intval($thumbpagination) + 1) <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-				if ($plink % intval($thumbpagination) == 0 ) { $gallery_code .= " &nbsp;<a title='Fotos ".($plink + 1)."-".($plink + intval($thumbpagination))."' class='".$klasse."' href='".add_query_arg( array(), home_url($wp->request) )."?seite=".($plink/intval($thumbpagination) + 1) ."&sort=".$sort ."'>". ($plink/intval($thumbpagination) + 1) ."</a>"; }
-			}	
-			$gallery_code .= "\n</div>\n";	
-		}	
-		$gallery_code .= "\n</div>\n";
+	
+		/* Pagination links:  calculate and set previous and next page values */
+		global $wp;
+		$totalpages=intval($NoP / $thumbpagination + 1);
+		$previous = $seite - 1;
+		$next = $seite + 1;
+		$start_page = 1;
+		$pages_to_left = 3;
+		$pages_to_right = 3;
+		$gallery_code .= '<div class="nav-links" style="text-align:center">';
+		/* show previous pages to the left and right */
+		if ($seite <= $totalpages && $seite > $start_page + $pages_to_left) {
+			$start_page = $seite - $pages_to_left;
+		}
+		if ($seite <= $totalpages && $seite > $start_page - $pages_to_right) {
+			$end_page = $seite + $pages_to_right;
+			if ($seite == $totalpages || $seite + 1 == $totalpages || $seite + 2 == $totalpages || $seite + 3 == $totalpages) {
+				$end_page = $totalpages;
+			}
+		} else {
+			$end_page = $totalpages;
+		}
+		/* show previous button and first page */
+		if ($seite > 1) {
+			$gallery_code .= '<a title="Vorige Seite ('.$previous.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($previous) .'&sort='.$sort .'">&laquo;</a>';
+			if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="Erste Seite (Fotos 1-'.$thumbpagination.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite=1&sort='.$sort .'">1</a> &hellip;';
 
+		}
+		/* display pages */
+		for ($page = $start_page; $page <= $end_page; $page++) {
+			if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+			$gallery_code .=' <a title="Fotos '.(($page - 1) * $thumbpagination + 1)  . '-' .($page * $thumbpagination) . ' " class="'.$klasse.'" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($page) .'&sort='.$sort .'">'. ($page) .'</a>';
+		}
+		/* show last page button */
+		if ($end_page + $pages_to_right <= $totalpages || $end_page != $totalpages) {
+			if ( $totalpages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+			$gallery_code .= ' &hellip; <a title="Letzte Seite (Fotos '.(($totalpages -1) * $thumbpagination + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($totalpages) .'&sort='.$sort .'">'.$totalpages.'</a>';
+		}
+		/* show next button */
+		if ($seite < $totalpages) { $gallery_code .= ' <a title="Nächste Seite ('.$next.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($next) .'&sort='.$sort .'">&raquo;</a>'; }
+		$gallery_code .= '</div>';
+		// Pagination links Ende		
 		return $gallery_code;
 	}
 

@@ -286,13 +286,14 @@ function fg_init_handle_download() {
 	}
 	
 	public function file_size($size_in_bytes ) {
-		if ($size_in_bytes < 1000) {
+		if ($size_in_bytes < 1024) {
 			return $size_in_bytes . ' B';
-		} elseif ($size_in_bytes < 1000*1000) {
-			$size_in_kb = (int) ($size_in_bytes/1000);
+		} elseif ($size_in_bytes < 1024*1024) {
+			$size_in_kb = (int) ($size_in_bytes/1024);
 			return $size_in_kb . ' KB';	
 		} else {
-			$size_in_mb = (int) ($size_in_bytes/1000/1000);
+			$size_in_mb = number_format(($size_in_bytes/1024/1024), 2, ',', '.');
+			// $size_in_mb = (int) ($size_in_bytes/1000/1000);
 			return $size_in_mb . ' MB';
 		}
 	}
@@ -402,11 +403,9 @@ function fg_init_handle_download() {
 		extract( shortcode_atts( array(
 			'folder'  => 'wp-content/uploads/pdf/',
 			'protect'  => 0,
-			'sort'	  => 'filename',
+			'sort'	  => 'filename',     // size date, asc desc and random order possible
 		), $atts ) );
-		if (isset($_GET['sort'])) {
-		  $sort = $_GET['sort'];
-		} 
+		if (isset($_GET['sort'])) { $sort = $_GET['sort']; } else $sort=''; 
 		$folder = rtrim( $folder, '/' ); // Remove trailing / from path
 		if ( !is_dir( $folder ) ) {
 			return '<p style="color:red;"><strong>' . __( 'Folder Gallery Error:', 'foldergallery' ) . '</strong> ' .
@@ -457,6 +456,7 @@ function fg_init_handle_download() {
 		}  else {
 			$creatext='<i class="fa fa-calendar-o"></i>';$modtext='<i class="fa fa-calendar-check-o"></i>';
 		}
+		$fcount=0;
 		$directory=$folder;
 		$extensions = explode(" ", $filetypes);
 		$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
@@ -471,6 +471,7 @@ function fg_init_handle_download() {
 						} else {
 							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
 						}
+						$fcount ++;
 						$dateigroesse = $this->file_size(filesize($directory ."/". $file));
 						$mtime = date("Y-m-d H:i:s", filemtime($directory ."/". $file));
 						$mtimed = date("d.m.y, H:i:s", filemtime($directory ."/". $file));
@@ -481,12 +482,12 @@ function fg_init_handle_download() {
 						if ( 1 == $protect ) {
 							global $wp;
 							$hashwert = md5($folder ."/". $file . intval(date('Y-m-d H:i:s')) / 24 * 3600 );
-							$dllink = '<a style="font-size:1.2em" title="'.$ext.'&#10;herunter laden" href="'. add_query_arg( array('dlid' => $folder ."/". $file,'code' => $hashwert) , home_url() ) . '">'.$file.'</a>';
+							$dllink = '<a style="font-size:1.1em" title="'.strtoupper($ext).'&#10;herunterladen" href="'. add_query_arg( array('dlid' => $folder ."/". $file,'code' => $hashwert) , home_url() ) . '">'.$file.'</a>';
 						} else {
-							$dllink = '<a style="font-size:1.2em" title="'.$ext.' anzeigen oder&#10;herunter laden" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
+							$dllink = '<a style="font-size:1.1em" title="'.strtoupper($ext).' anzeigen oder&#10;herunterladen" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
 						}
-						$content .= $dllink . '  &nbsp; '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
-						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed .' ' . ago(strtotime($mtime)). ' &nbsp; ' . $description . '</td></tr>';
+						$content .= $dllink . '<abbr> &nbsp; <i class="fa fa-list-ol"></i> '.$fcount.' &nbsp; <i class="fa fa-arrows-h"></i> '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
+						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed .' ' . ago(strtotime($mtime)). ' &nbsp; ' . $description . '</abbr></td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),
@@ -519,6 +520,11 @@ function fg_init_handle_download() {
 			case 'filename_desc' :
 				array_multisort(array_column($files, 'name'), SORT_DESC, $files);
 			break;
+			case 'random' :
+				$rand=range(0,count($files)-1);
+				shuffle($rand);
+				array_multisort($rand, SORT_NUMERIC, $files);
+			break;
 			default:
 				// nach filename
 				array_multisort(array_column($files, 'name'), SORT_ASC, $files);
@@ -526,12 +532,10 @@ function fg_init_handle_download() {
 		
 		// Zeilen filtern, wenn Suchbegriff gesetzt
 		$search='';
-		if (isset($_GET['search'])) {
-		  $search = sanitize_text_field( $_GET['search'] );
-		}
+		if (isset($_GET['search'])) { $search = sanitize_text_field( $_GET['search'] ); }
 		$nb_elem_per_page = 25;
 		$number_of_pages = intval(count($files)/$nb_elem_per_page)+1;
-		$page = isset($_GET['seite'])?intval($_GET['seite']):0;
+		$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 		// ausgeben
 		$gallery_code = '<div style="text-align:right"><form name="sorter" method="get"> '.intval(count($files)).' Dateien';
 		$gallery_code.= ' <input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"> &nbsp; ';
@@ -562,26 +566,60 @@ function fg_init_handle_download() {
 		// Suchfilter, wenn filter gesetzt, nicht paginieren
 		$fcount=0;
 		$totalsize=0;
-		if ( !empty($search)) { $nb_elem_per_page = 1000; $page = 0; }
+		if ( !empty($search)) { $nb_elem_per_page = 1000; $seite = 0; }
 		
-		foreach (array_slice($files, $page*$nb_elem_per_page, $nb_elem_per_page) as $fout) { 
+		foreach (array_slice($files, ($seite - 1)*$nb_elem_per_page, $nb_elem_per_page) as $fout) { 
 		// foreach( $files as $fout ) {
 			 if ( !isset( $search ) || isset( $search ) && $this->in_array_reg($search, $fout) ) {
 				 $fcount += 1;
 				 $totalsize += intval($fout['size']);
 				 $gallery_code.= $fout['content'];
 			 }
-			
 		}	
 		$gallery_code.='</table>';
-		$gallery_code .= $fcount.' '.__( 'files with', 'foldergallery' ). ' '.$this->file_size($totalsize);
+		$gallery_code .= __( 'file', 'foldergallery' ).' ('. (($seite - 1) * $nb_elem_per_page + 1) .' - '.($seite * $nb_elem_per_page ).') &nbsp; '. $fcount.' '.__( 'files with', 'foldergallery' ). ' &nbsp; '.$this->file_size($totalsize);
 		// Page Navigation Footer
 		if ( empty($search)) {
-			for($i=0;$i<$number_of_pages;$i++){
-				$seitennummer = intval($i+1);
-				if ( $i !== $page ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-				$gallery_code .= ' &nbsp;<a class="'.$klasse.'" href="'.add_query_arg( array('sort'=>$sortorder,'search'=>$search,'seite'=>$i), home_url($wp->request) ).'">'.$seitennummer.'</a>';
-			}	
+			/* Pagination links:  calculate and set previous and next page values */
+			global $wp;
+			// $number_of_pages=intval($NoP / $thumbpagination + 1);
+			$previous = $seite - 1;
+			$next = $seite + 1;
+			$start_page = 1;
+			$pages_to_left = 3;
+			$pages_to_right = 3;
+			$gallery_code .= '<div class="nav-links" style="text-align:center">';
+			/* show previous pages to the left and right */
+			if ($seite <= $number_of_pages && $seite > $start_page + $pages_to_left) {
+				$start_page = $seite - $pages_to_left;
+			}
+			if ($seite <= $number_of_pages && $seite > $start_page - $pages_to_right) {
+				$end_page = $seite + $pages_to_right;
+				if ($seite == $number_of_pages || $seite + 1 == $number_of_pages || $seite + 2 == $number_of_pages || $seite + 3 == $number_of_pages) {
+					$end_page = $number_of_pages;
+				}
+			} else {
+				$end_page = $number_of_pages;
+			}
+			/* show previous button and first page */
+			if ($seite > 1) {
+				$gallery_code .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$previous), home_url($wp->request) ).'">&laquo;</a>';
+				if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="'.__( 'first page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' 1-'.$nb_elem_per_page.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>1), home_url($wp->request) ).'">1</a> &hellip;';
+			}
+			/* display pages */
+			for ($page = $start_page; $page <= $end_page; $page++) {
+				if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .=' <a title="'.__( 'files', 'foldergallery' ).' '.(($page - 1) * $nb_elem_per_page + 1)  . '-' .($page * $nb_elem_per_page) . ' " class="'.$klasse.'" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$page), home_url($wp->request) ).'">'. ($page) .'</a>';
+			}
+			/* show last page button */
+			if ($end_page + $pages_to_right <= $number_of_pages || $end_page != $number_of_pages) {
+				if ( $number_of_pages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' '.(($number_of_pages -1) * $nb_elem_per_page + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$number_of_pages), home_url($wp->request) ).'">'.$number_of_pages.'</a>';
+			}
+			/* show next button */
+			if ($seite < $number_of_pages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$next), home_url($wp->request) ).'">&raquo;</a>'; }
+			$gallery_code .= '</div>';
+			// Pagination links Ende		
 		} 
 		return $gallery_code;
 	}
@@ -908,9 +946,8 @@ function fg_init_handle_download() {
 		}
 		/* show previous button and first page */
 		if ($seite > 1) {
-			$gallery_code .= '<a title="Vorige Seite ('.$previous.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($previous) .'&sort='.$sort .'">&laquo;</a>';
-			if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="Erste Seite (Fotos 1-'.$thumbpagination.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite=1&sort='.$sort .'">1</a> &hellip;';
-
+			$gallery_code .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($previous) .'&sort='.$sort .'">&laquo;</a>';
+			if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="'.__( 'first page', 'foldergallery' ).' (Fotos 1-'.$thumbpagination.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite=1&sort='.$sort .'">1</a> &hellip;';
 		}
 		/* display pages */
 		for ($page = $start_page; $page <= $end_page; $page++) {
@@ -920,10 +957,10 @@ function fg_init_handle_download() {
 		/* show last page button */
 		if ($end_page + $pages_to_right <= $totalpages || $end_page != $totalpages) {
 			if ( $totalpages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-			$gallery_code .= ' &hellip; <a title="Letzte Seite (Fotos '.(($totalpages -1) * $thumbpagination + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($totalpages) .'&sort='.$sort .'">'.$totalpages.'</a>';
+			$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' (Fotos '.(($totalpages -1) * $thumbpagination + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($totalpages) .'&sort='.$sort .'">'.$totalpages.'</a>';
 		}
 		/* show next button */
-		if ($seite < $totalpages) { $gallery_code .= ' <a title="Nächste Seite ('.$next.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($next) .'&sort='.$sort .'">&raquo;</a>'; }
+		if ($seite < $totalpages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($next) .'&sort='.$sort .'">&raquo;</a>'; }
 		$gallery_code .= '</div>';
 		// Pagination links Ende		
 		return $gallery_code;
@@ -1410,7 +1447,8 @@ class folderslider{
 			$size_in_kb = (int) ($size_in_bytes/1000);
 			return $size_in_kb . ' KB';	
 		} else {
-			$size_in_mb = (int) ($size_in_bytes/1000/1000);
+			//$size_in_mb = (int) ($size_in_bytes/1000/1000);
+			$size_in_mb = number_format(($size_in_bytes/1024/1024), 2, ',', '.');
 			return $size_in_mb . 'MB';
 		}
 	}

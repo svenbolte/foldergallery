@@ -582,7 +582,6 @@ function fg_init_handle_download() {
 		if ( empty($search)) {
 			/* Pagination links:  calculate and set previous and next page values */
 			global $wp;
-			// $number_of_pages=intval($NoP / $thumbpagination + 1);
 			$previous = $seite - 1;
 			$next = $seite + 1;
 			$start_page = 1;
@@ -1899,7 +1898,6 @@ if( !class_exists('csvtohtmlwp') ) {
      *                 
      */    
     public function fetch_content( $content_arr, $cutarr_fromend ) {
-        
         //Skip (first) empty rows
         $new_arr = array();        
         foreach ( $content_arr as $row => $subset) {
@@ -1918,11 +1916,9 @@ if( !class_exists('csvtohtmlwp') ) {
             }
 
         }
-        
         $first_value = true;
         $header_values = array();
-        if ( isset ( $new_arr[0] ) )
-        {
+        if ( isset ( $new_arr[0] ) ) {
             foreach ( $new_arr[0] as $hvalues) {
                     $header_values[] = $hvalues; //Add all but first value in arrya
             }
@@ -1930,44 +1926,34 @@ if( !class_exists('csvtohtmlwp') ) {
         
         $row_values = array();
         unset ( $new_arr[0] );
-        
         foreach ( $new_arr  as $row) {
             $row_values[]= $row;
         }
         
-        
         //Fetch last items? (eg. 2013,2014 instead of 2010,2011,2012,2013,2014)
         if ( $cutarr_fromend === 0) {$cutarr_fromend = 1;}
-        
         //Get last slice of header array
         $slice_header = array_merge ( array_slice ( $header_values, 0, 1), array_slice( $header_values, $cutarr_fromend) );
-
         //"Recreate header values array"
         $header_values = array();
         foreach ( $slice_header as $sh) {
             $header_values[] = $sh;                
         }
-
         //"Recreate" row values array
         $rvalues = array();
         foreach( $row_values as $rv) {
             $rvalues[] = array_merge( array_slice( $rv, 0,1), array_slice( $rv, $cutarr_fromend ) );
         }
-
         $row_values = array();
         foreach ( $rvalues as $rv) {
             $row_values[] = $rv;
         }   
-        
         $nr = 0;
         $firstrow = 0;
-        
         $row3values = array();        
         $row2values = array();        
-                  
         foreach($row_values as $row_key => $row_value) {
             foreach ( $header_values as $hkey => $h_value) {
-
                     $row2values[$hkey][0] = $h_value;
                     if ( isset($row_values[$row_key][$hkey]) )
                     {
@@ -1976,12 +1962,10 @@ if( !class_exists('csvtohtmlwp') ) {
                     else {
                         $row2values[$hkey][1] = '';                 
                     }
-                
                 $nr++;
             }
             $row3values[] = $row2values;        
          }
-                
         //Return row and headers
         return array( 'header_values' => $header_values, 'row_values' => $row3values );
     }
@@ -2003,7 +1987,6 @@ if( !class_exists('csvtohtmlwp') ) {
     *  Constructor
     *
     *  This function will construct all the neccessary actions, filters and functions for the sourcetotable plugin to work
-    *
     *
     *  @param	N/A
     *  @return	N/A
@@ -2462,24 +2445,19 @@ if( !class_exists('csvtohtmlwp') ) {
         
         //Create the object used for fetching
         $obj = $this->object_fromsourcetype( $source_type );        
-                
         //Fetch row and headers from objects created above
         $header_values = array();
         $row_values = array();
-        
          //Nr of items from end of array
         //If not set=0, then $cutarr_fromend would be 0 = last index)
         $cutarr_fromend = -1 * abs( (int)$fetch_lastheaders );
-                
         //Cut array from end is set if fetch_lastheaders is sent
         $values_from_obj = $obj->fetch_content( $content_arr, $cutarr_fromend );        
         $header_values = $values_from_obj['header_values'];
         $header_ori_values = $header_values;
         $row_values = $values_from_obj['row_values'];   
-        
         //If encoding is specified, then encode entire array to specified characterset
-        if ( $convert_encoding_from !== null || $convert_encoding_to !== null )
-        {
+        if ( $convert_encoding_from !== null || $convert_encoding_to !== null ) {
             $this->encoding_from = $convert_encoding_from;
             $this->encoding_to = $convert_encoding_to;        
             array_walk_recursive($header_values, array($this, 'convertarrayitem_encoding') );
@@ -2487,8 +2465,7 @@ if( !class_exists('csvtohtmlwp') ) {
         }
         
         //Include columns (only) ?
-        if ($include_cols !== null) 
-        {
+        if ($include_cols !== null) {
             $include_cols = $this->adjust_columns( $include_cols );
             
             //Recreate header_values
@@ -2500,20 +2477,17 @@ if( !class_exists('csvtohtmlwp') ) {
             }
             
             $header_values = array();
-            foreach($new_headervalues as $nhv) 
-            {
+            foreach($new_headervalues as $nhv) {
                 $header_values[]= $nhv;
             }
             
             //Recreate row values (with appropiate columns)
             $new_rowvalues = array();
-
-            //Add column values into new array from scratch
+			//Add column values into new array from scratch
             //Go through include columns (indexes) for every row and
             //add item to the new array
             $nr = 0;
-            foreach( $row_values as $key=>$rv ) 
-            {            
+            foreach( $row_values as $key=>$rv ) {            
                 foreach($include_cols as $ic) 
                 {
                     if ( isset( $rv[$ic])) 
@@ -2523,7 +2497,6 @@ if( !class_exists('csvtohtmlwp') ) {
                 }              
                 $nr++;             
            }            
-             
            $row_values = array();
            foreach($new_rowvalues as $nrv) 
            {
@@ -2531,29 +2504,23 @@ if( !class_exists('csvtohtmlwp') ) {
            }
         }
         //Exclude columns? (if include_cols is set, this attribute is ignored)
-        else if ( $exclude_cols !== null ) 
-        {
+        else if ( $exclude_cols !== null ) {
             //Remove last column?
             if (stristr($exclude_cols, 'last') !== false ) 
             {
                 $last_col = count ( $row_values[0] );                  
                 $exclude_cols = str_replace('last', $last_col, $exclude_cols );
             }
-            
             //remove given column(s)
             $remove_cols = $this->adjust_columns( $exclude_cols );
-   
             //Remove header values
-            foreach($remove_cols as $rc) 
-            {
+            foreach($remove_cols as $rc) {
                 unset( $header_values[$rc] );                
             }
-            
              //Remove column values
              //Go through each row and for each row
              //remove (unset) the index set by remove_cols above
-             foreach( $row_values as $key=>$rv ) 
-             {  
+             foreach( $row_values as $key=>$rv ) {  
                 foreach($remove_cols as $rc) 
                 {
                     unset ( $row_values[$key][$rc] );
@@ -2562,10 +2529,8 @@ if( !class_exists('csvtohtmlwp') ) {
         }
 
 
-
         //Sort by specific column(s) in format: 1,2,4 or 2-4
-        if ( $sort_cols !== null)
-        {                       
+        if ( $sort_cols !== null) {                       
             //Create new array in a "sort-friendly format"
             $new_arr = array();
             $index = 0;
@@ -2574,15 +2539,13 @@ if( !class_exists('csvtohtmlwp') ) {
             {
                 for ($c=0;$c<$cnt_headers;$c++) 
                 {
-                    $new_arr[$index][$c] = $r[$c][1]; //Column $c, value
+                    @$new_arr[$index][$c] = @$r[$c][1]; //Column $c, value
                 }
                 
                 $index++;
             }
-            
             //Do the sorting    
             $this->sorting_on_columns = $this->adjust_columns( $sort_cols );    
-            
             $sort_cols_order_arr = array();
             if ( $sort_cols_order === null )
             {                
@@ -2598,8 +2561,7 @@ if( !class_exists('csvtohtmlwp') ) {
                 $sort_cols_order_arr = explode(',',$sort_cols_order);
             }
 
-            foreach( $this->sorting_on_columns as $key => &$soc )
-            {
+            foreach( $this->sorting_on_columns as $key => &$soc ) {
                 $so = 'asc';
                 if (isset($sort_cols_order_arr[$key])) 
                 {
@@ -2612,11 +2574,9 @@ if( !class_exists('csvtohtmlwp') ) {
                         );                
             }            
             usort($new_arr, array( $this, 'custom_sort_columns') );
-            
             //Put values from the orded array $new_arr into $row_values
             $index = 0;
-            foreach($row_values as &$r)
-            {
+            foreach($row_values as &$r) {
                 for ($c=0;$c<$cnt_headers;$c++) 
                 {
                     $r[$c][1] = $new_arr[$index][$c]; 
@@ -2626,27 +2586,19 @@ if( !class_exists('csvtohtmlwp') ) {
         }
 
         //If title given, set this title in left top corner of htmltable
-        if ( isset($title) && isset($header_values[0])) 
-        {
+        if ( isset($title) && isset($header_values[0])) {
             $header_values[0] = sanitize_text_field( $title );
         }
-        
         //Create table
-        if ( isset($html_id) ) 
-        {
+        if ( isset($html_id) ) {
             $htmlid_set = 'id="' .  $html_id . '" '; 
-        }
-        else 
-        {
+        } else {
             $htmlid_set = '';
         }
         
-        if ( isset($html_class) ) 
-        {
+        if ( isset($html_class) ) {
             $html_class = ' ' . $html_class;
-        }
-        else 
-        {
+        } else {
             $html_class = '';
         }
         
@@ -2655,7 +2607,8 @@ if( !class_exists('csvtohtmlwp') ) {
 		if (isset($_GET['search'])) {
 		  $search = sanitize_text_field( $_GET['search'] );
 		}
-		$html = '<div style="text-align:right"><form><input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
+		$totalrecords = count($row_values);
+		$html = '<div style="text-align:right"><form>Gesamt Datensätze: '.$totalrecords.' &nbsp; <input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
         $html .= '<table ' . $htmlid_set . 'class="csvtohtml' . $html_class . '"><thead><tr class="headers">';
         $nr_col = 1;
 
@@ -2664,13 +2617,12 @@ if( !class_exists('csvtohtmlwp') ) {
 		$sortorder='asc';
 		$nb_elem_per_page = 20;
 		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
-		$page = isset($_GET['seite'])?intval($_GET['seite']):0;
-
+		$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 		foreach( $header_values as $hv) 
         {
 			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
-			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$page), home_url($wp->request) ).'">' . $hv;
+			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$seite), home_url($wp->request) ).'">' . $hv;
 			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
 			if (isset($_GET['order']) && $_GET['order'] == 'asc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-up"></i>';
 			$html.= '</a></th>';
@@ -2678,14 +2630,12 @@ if( !class_exists('csvtohtmlwp') ) {
         }
         $html .= '</tr></thead><tbody>';
         $nr_row = 1;
-        
 		// Suchfilter, wenn filter gesetzt, nicht paginieren
-		if ( !empty($search)) { $nb_elem_per_page = 200; $page = 0; }
+		if ( !empty($search)) { $nb_elem_per_page = 1000; $page = 1; }
 		// foreach( $row_values as $rv ) {
-		foreach (array_slice($row_values, $page*$nb_elem_per_page, $nb_elem_per_page) as $rv) { 
+		foreach (array_slice($row_values, ($seite - 1)*$nb_elem_per_page, $nb_elem_per_page) as $rv) { 
 			if ( ! isset( $search ) || isset( $search ) && $this->in_array_r($search, $rv) ) {
-				$html .= '<tr class="rowset rowset-' .$nr_row . '">';    
-					
+				$html .= '<tr title="Datensatz '.$nr_row. ' Zeile '.($nr_row * $seite).'" class="rowset rowset-' .$nr_row.'">';    
 				$nr_col = 1;
 				foreach ( $rv as $inner_value) {
 					//Display other float divider (e.g. 6,3 instead 6.2)
@@ -2701,11 +2651,46 @@ if( !class_exists('csvtohtmlwp') ) {
 		}
 		// Page navigation		
 		$html .= '</tbody></table>';
+		if (!empty($search)) $html .= 'Gefundene Datensätze: '.$nr_row - 1;
 		if ( empty($search)) {
-			for($i=0;$i<$number_of_pages;$i++){
-				$seitennummer = $i+1;
-				$html .= ' &nbsp;<a class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$i), home_url($wp->request) ).'">'.$seitennummer.'</a>';
-			}	
+			/* Pagination links:  calculate and set previous and next page values */
+			$previous = $seite - 1;
+			$next = $seite + 1;
+			$start_page = 1;
+			$pages_to_left = 3;
+			$pages_to_right = 3;
+			$html .= '<div class="nav-links" style="text-align:center">';
+			/* show previous pages to the left and right */
+			if ($seite <= $number_of_pages && $seite > $start_page + $pages_to_left) {
+				$start_page = $seite - $pages_to_left;
+			}
+			if ($seite <= $number_of_pages && $seite > $start_page - $pages_to_right) {
+				$end_page = $seite + $pages_to_right;
+				if ($seite == $number_of_pages || $seite + 1 == $number_of_pages || $seite + 2 == $number_of_pages || $seite + 3 == $number_of_pages) {
+					$end_page = $number_of_pages;
+				}
+			} else {
+				$end_page = $number_of_pages;
+			}
+			/* show previous button and first page */
+			if ($seite > 1) {
+				$html .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$previous), home_url($wp->request) ).'">&laquo;</a>';
+				if ($seite > $pages_to_left + 1) $html .= ' <a title="'.__( 'first page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' 1-'.$nb_elem_per_page.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>1), home_url($wp->request) ).'">1</a> &hellip;';
+			}
+			/* display pages */
+			for ($page = $start_page; $page <= $end_page; $page++) {
+				if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$html .=' <a title="'.__( 'files', 'foldergallery' ).' '.(($page - 1) * $nb_elem_per_page + 1)  . '-' .($page * $nb_elem_per_page) . ' " class="'.$klasse.'" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$page), home_url($wp->request) ).'">'. ($page) .'</a>';
+			}
+			/* show last page button */
+			if ($end_page + $pages_to_right <= $number_of_pages || $end_page != $number_of_pages) {
+				if ( $number_of_pages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$html .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' '.(($number_of_pages -1) * $nb_elem_per_page + 1).'-Ende)" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$number_of_pages), home_url($wp->request) ).'">'.$number_of_pages.'</a>';
+			}
+			/* show next button */
+			if ($seite < $number_of_pages) { $html .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort_cols, 'order'=>$sort_cols_order,'search'=>$search,'seite'=>$next), home_url($wp->request) ).'">&raquo;</a>'; }
+			$html .= '</div>';
+			// Pagination links Ende		
 		}
 		$html .= '<br>';
         return $html;

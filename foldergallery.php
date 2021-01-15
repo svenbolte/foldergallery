@@ -613,7 +613,7 @@ function fg_init_handle_download() {
 			/* show last page button */
 			if ($end_page + $pages_to_right <= $number_of_pages || $end_page != $number_of_pages) {
 				if ( $number_of_pages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-				$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' '.(($number_of_pages -1) * $nb_elem_per_page + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$number_of_pages), home_url($wp->request) ).'">'.$number_of_pages.'</a>';
+				$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' '.(($number_of_pages -1) * $nb_elem_per_page + 1).'-'.intval(count($files)).')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$number_of_pages), home_url($wp->request) ).'">'.$number_of_pages.'</a>';
 			}
 			/* show next button */
 			if ($seite < $number_of_pages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array('sort'=>$sort,'search'=>$search,'seite'=>$next), home_url($wp->request) ).'">&raquo;</a>'; }
@@ -773,7 +773,7 @@ function fg_init_handle_download() {
 		}
 			//// Startindex für Pagination aus url auslesen
 			if (isset($_GET['seite'])) {
-			  $seite = $_GET['seite'];
+			  $seite = sanitize_text_field($_GET['seite']);
 			  $start_idx = intval($thumbnails) * intval((intval($seite)-1));
 			} else {
 				$seite=1;
@@ -1108,7 +1108,7 @@ function fg_init_handle_download() {
 		echo '<p><code>[folderdir folder="wp-content/uploads/bilder/" protect=1]</code><br>' . __('shortcode to display folder document contents as a table - protect=1 disables deep links and protects folder', 'foldergallery' ).'</p>';
 		echo '<p><code>[csvtohtml_create path="mapfiles" source_files="sweden.csv;norway.csv;iceland.csv"]</code><br>'. __('html table from the files sweden.csv, norway.csv and iceland.csv that exists in', 'foldergallery' ) . ' ' . $upload_basedir . '/mapfiles/</p>';
 		echo '<p><code>[csvtohtml_create source_type="guess" source_files="https://domain.de/liste.csv" include_cols="1,2,3" sort_cols="1,2" sort_cols_order="desc,asc"]</code><br>'. __('html table from the file if exists on the root of domain', 'foldergallery' ) . ' ' . $upload_basedir . '</p>';
-		echo '<p><code>[rssdisplay excerpt="1" wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
+		echo '<p><code>[rssdisplay excerpt="1" limit=30 paged=0 wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
 		echo '<p><code>[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]</code><br>'. __('shortcode to display ICS or ical events in list or calendar on pages/shortcodes or html widget', 'foldergallery' ) . '</p>';
 		echo '<p><code>[pbadventskalender pages="4236,4237,4238,4239,4225"]</code><br>'. __('shortcode to display an advent calendar in december, links can be given on parameter (permalinks or post IDs)', 'foldergallery' ) . '</p>';
 		echo '</div>';
@@ -2712,37 +2712,81 @@ function t5_feed_shortcode( $attrs )
         array (
             'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
 			'excerpt' => '0',
-			'wordcount' => 0,
+			'wordcount' => 25,
+			'paged' => 0,
+			'limit' => 30
         ),
         $attrs
     );
 	global $excerpt;
     // a SimplePie instance
     $feed = fetch_feed( esc_url_raw( $args[ 'url' ] ) );
+	$limit = $args[ 'limit' ];
+    if ( is_wp_error( $feed ) ) return __( 'Feed display Error', 'foldergallery' );
+    if ( ! $feed->get_item_quantity() ) return __( 'Feed is down', 'foldergallery' );
+	if ( $args[ 'paged' ] == 1 ) $nb_elem_per_page = 10; else $nb_elem_per_page = $limit;
 	$excerpt = $args[ 'excerpt' ];
-	$wordcount= $args['wordcount'];
-    if ( is_wp_error( $feed ) )
-        return __( 'Feed display Error', 'foldergallery' );
-    if ( ! $feed->get_item_quantity() )
-        return __( 'Feed is down', 'foldergallery' );
-
-    $lis = array();
-    foreach ( $feed->get_items(0, 30) as $item )
-    {
+	$wordcount= intval($args[ 'wordcount' ]);
+	$lis = array();
+	$number_of_pages = intval(count($feed->get_items(0, $limit))/$nb_elem_per_page);
+	$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
+	foreach (array_slice($feed->get_items(0, $limit), ($seite - 1)*$nb_elem_per_page, $nb_elem_per_page) as $item) { 
+	// foreach ( $feed->get_items(0, $limit) as $item ) {    // oder alle unpaginiert anzeigen
+        if ( '' === $rdate = '&nbsp; <abbr>'.esc_attr( strip_tags( date_i18n( 'l, j. F Y h:i', strtotime($item->get_date()),false, true) ) ).'</abbr>' ) $rdate = '';
         if ( '' === $title = esc_attr( strip_tags( $item->get_title() ) ) ) $title = __( 'Untitled' );
         if ( '' === $content = $item->get_description() ) $content = __( 'none' );
 		if ( '1' == $excerpt ) { $content = esc_attr( strip_tags( $item->get_description() )); }
-		if ( $wordcount > 0 ) {
-			$content = implode(" ", array_slice( explode(" ", $content), 0, $wordcount) );
+		if ( $wordcount >= 1 ) {
+			$content = implode(" ", array_slice( explode(" ", $content), 0, $wordcount + 4) );
+			if ( $wordcount <=12 ) $content = sanitize_text_field($content);
 			$compactcss ='compact';
 		} else { $compactcss='rssdisplay'; }
         $lis[] = sprintf(
-            '<a class="headline" href="%1$s">%2$s</a><br>%3$s',
+            '<a title="Datensatz '.(count($lis) + 1).'" class="headline" href="%1$s">%2$s</a><br>%3$s',
             esc_url( strip_tags( $item->get_link() ) ),
-            $title, $content
+            $title, $rdate.' &nbsp; '.$content
         );
     }
-    return '<ul class="'.$compactcss.'"><li>' . join( '</li><li>', $lis ) . '</ul>';
+			/* Pagination links:  calculate and set previous and next page values */
+			global $wp;
+			$previous = $seite - 1;
+			$next = $seite + 1;
+			$start_page = 1;
+			$pages_to_left = 3;
+			$pages_to_right = 3;
+			$gallery_code = '<div class="nav-links" style="text-align:center">';
+			/* show previous pages to the left and right */
+			if ($seite <= $number_of_pages && $seite > $start_page + $pages_to_left) {
+				$start_page = $seite - $pages_to_left;
+			}
+			if ($seite <= $number_of_pages && $seite > $start_page - $pages_to_right) {
+				$end_page = $seite + $pages_to_right;
+				if ($seite == $number_of_pages || $seite + 1 == $number_of_pages || $seite + 2 == $number_of_pages || $seite + 3 == $number_of_pages) {
+					$end_page = $number_of_pages;
+				}
+			} else {
+				$end_page = $number_of_pages;
+			}
+			/* show previous button and first page */
+			if ($seite > 1) {
+				$gallery_code .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array('seite'=>$previous), home_url($wp->request) ).'">&laquo;</a>';
+				if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="'.__( 'first page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' 1-'.$nb_elem_per_page.')" class="page-numbers" href="'.add_query_arg( array('seite'=>1), home_url($wp->request) ).'">1</a> &hellip;';
+			}
+			/* display pages */
+			for ($page = $start_page; $page <= $end_page; $page++) {
+				if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .=' <a title="'.__( 'files', 'foldergallery' ).' '.(($page - 1) * $nb_elem_per_page + 1)  . '-' .($page * $nb_elem_per_page) . ' " class="'.$klasse.'" href="'.add_query_arg( array('seite'=>$page), home_url($wp->request) ).'">'. ($page) .'</a>';
+			}
+			/* show last page button */
+			if ($end_page + $pages_to_right <= $number_of_pages || $end_page != $number_of_pages) {
+				if ( $number_of_pages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' ('.__( 'files', 'foldergallery' ).' '.(($number_of_pages -1) * $nb_elem_per_page + 1).'-Ende)" class="page-numbers" href="'.add_query_arg( array('seite'=>$number_of_pages), home_url($wp->request) ).'">'.$number_of_pages.'</a>';
+			}
+			/* show next button */
+			if ($seite < $number_of_pages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array('seite'=>$next), home_url($wp->request) ).'">&raquo;</a>'; }
+			$gallery_code .= '</div>';
+			// Pagination links Ende		
+    return '<ul class="'.$compactcss.'"><li>' . join( '</li><li>', $lis ) . '</ul>'.$gallery_code;
 }
 
 // 

@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.27
-Stable tag: 9.7.6.27
+Version: 9.7.6.28
+Stable tag: 9.7.6.28
 Requires at least: 5.1
 Tested up to: 5.5.3
 Requires PHP: 7.2

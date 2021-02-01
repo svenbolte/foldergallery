@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.27
-Stable tag: 9.7.6.27
+Version: 9.7.6.28
+Stable tag: 9.7.6.28
 Requires at least: 5.1
 Tested up to: 5.6
 Requires PHP: 7.2
@@ -307,8 +307,12 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 
 == Changelog ==
 
+= 9.7.6.28 =
+ics fixes if invalid or empty ics file is downloaded from url
+
 = 9.7.6.27 =
 Pagination optimized to previous first ... page-3 upto page+3 ... last next
+
 = 9.7.6.26 =
 localisationm, german translations, description updated
 

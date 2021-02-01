@@ -4,11 +4,8 @@
  * array with its content.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
-
-error_reporting(E_ALL);
+if ( ! defined( 'ABSPATH' ) ) {	exit; } // Exit if accessed directly.
+// error_reporting(E_ALL);
 
 /**
  * This is the iCal-class
@@ -17,7 +14,6 @@ error_reporting(E_ALL);
  * @package  Ics-parser
  * @author   Martin Thoma <info@martin-thoma.de>, MOD am 24.08.2020 - added wordpress caching PBMod
  * @license  http://www.opensource.org/licenses/mit-license.php  MIT License
- *
  * @param {string} filename The name of the file which should be parsed
  * @constructor
  */
@@ -25,28 +21,21 @@ class ICal
 {
     /* How many ToDos are in this ical? */
     public  /** @type {int} */ $todo_count = 0;
-
     /* How many events are in this ical? */
     public  /** @type {int} */ $event_count = 0; 
-
     /* The parsed calendar */
     public /** @type {Array} */ $cal;
-
     /* Which keyword has been added to cal at last? */
     private /** @type {string} */ $_lastKeyWord;
 
     /** 
      * Creates the iCal-Object
-     * 
      * @param {string} $filename The path to the iCal-file
-     *
      * @return Object The iCal-Object
      */ 
     public function __construct($filename) 
     {
-        if (!$filename) {
-            return false;
-        }
+        if (!$filename) { return false; }
  		
 		// Download der ICS Datei 5 Stunden cachen	
 		if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()) . get_the_ID(); }
@@ -126,7 +115,6 @@ class ICal
      * @param {string} $component This could be VTODO, VEVENT, VCALENDAR, ... 
      * @param {string} $keyword   The keyword, for example DTSTART
      * @param {string} $value     The value, for example 20110105T090000Z
-     *
      * @return {None}
      */ 
     public function addCalendarComponentWithKeyAndValue($component, 
@@ -169,9 +157,7 @@ class ICal
 
     /**
      * Get a key-value pair of a string.
-     *
      * @param {string} $text which is like "VCALENDAR:Begin" or "LOCATION:"
-     *
      * @return {array} array("VCALENDAR", "Begin")
      */
     public function keyValueFromString($text) 
@@ -186,10 +172,8 @@ class ICal
 
     /** 
      * Return Unix timestamp from ical date time format 
-     * 
      * @param {string} $icalDate A Date in the format YYYYMMDD[T]HHMMSS[Z] or
      *                           YYYYMMDD[T]HHMMSS
-     *
      * @return {int} 
      */ 
     public function iCalDateToUnixTimestamp($icalDate) 
@@ -226,19 +210,18 @@ class ICal
      *
      * @return {array}
      */
-    public function events() 
-    {
-        $array = $this->cal;
-        return $array['VEVENT'];
+    public function events() {
+   		if (!empty($this->cal)) {
+			$array = $this->cal;
+			return $array['VEVENT'];
+		} else return array ();	
     }
 
     /**
      * Returns a boolean value whether thr current calendar has events or not
-     *
      * @return {boolean}
      */
-    public function hasEvents() 
-    {
+    public function hasEvents() {
         return ( count($this->events()) > 0 ? true : false );
     }
 
@@ -252,33 +235,22 @@ class ICal
      *
      * @param {boolean} $rangeStart Either true or false
      * @param {boolean} $rangeEnd   Either true or false
-     *
      * @return {mixed}
      */
-    public function eventsFromRange($rangeStart = false, $rangeEnd = false) 
-    {
+    public function eventsFromRange($rangeStart = false, $rangeEnd = false) {
         $events = $this->sortEventsWithOrder($this->events(), SORT_ASC);
-
-        if (!$events) {
-            return false;
-        }
-
+        if (!$events) {  return false;  }
         $extendedEvents = array();
-        
         if ($rangeStart !== false) {
             $rangeStart = new DateTime();
         }
-
         if ($rangeEnd !== false or $rangeEnd <= 0) {
             $rangeEnd = new DateTime('2038/01/18');
         } else {
             $rangeEnd = new DateTime($rangeEnd);
         }
-
         $rangeStart = $rangeStart->format('U');
         $rangeEnd   = $rangeEnd->format('U');
-
-        
 
         // loop through all events by adding two new elements
         foreach ($events as $anEvent) {
@@ -287,44 +259,37 @@ class ICal
                 $extendedEvents[] = $anEvent;
             }
         }
-
         return $extendedEvents;
     }
 
     /**
      * Returns a boolean value whether thr current calendar has events or not
-     *
      * @param {array} $events    An array with events.
      * @param {array} $sortOrder Either SORT_ASC, SORT_DESC, SORT_REGULAR, 
      *                           SORT_NUMERIC, SORT_STRING
-     *
      * @return {boolean}
      */
-    public function sortEventsWithOrder($events, $sortOrder = SORT_ASC)
-    {
+    public function sortEventsWithOrder($events, $sortOrder = SORT_ASC) {
         $extendedEvents = array();
-        
-        // loop through all events by adding two new elements
-        foreach ($events as $anEvent) {
-            if (!array_key_exists('UNIX_TIMESTAMP', $anEvent)) {
-                $anEvent['UNIX_TIMESTAMP'] = 
-                            $this->iCalDateToUnixTimestamp($anEvent['DTSTART']);
-            }
-
-            if (!array_key_exists('REAL_DATETIME', $anEvent)) {
-                $anEvent['REAL_DATETIME'] = 
-                            date("d.m.Y", $anEvent['UNIX_TIMESTAMP']);
-            }
-            
-            $extendedEvents[] = $anEvent;
-        }
-        
-        foreach ($extendedEvents as $key => $value) {
-            $timestamp[$key] = $value['UNIX_TIMESTAMP'];
-        }
-        array_multisort($timestamp, $sortOrder, $extendedEvents);
-
-        return $extendedEvents;
+		if (!empty($events)) {
+			// loop through all events by adding two new elements
+			foreach ($events as $anEvent) {
+				if (!array_key_exists('UNIX_TIMESTAMP', $anEvent)) {
+					$anEvent['UNIX_TIMESTAMP'] = 
+								$this->iCalDateToUnixTimestamp($anEvent['DTSTART']);
+				}
+				if (!array_key_exists('REAL_DATETIME', $anEvent)) {
+					$anEvent['REAL_DATETIME'] = 
+								date("d.m.Y", $anEvent['UNIX_TIMESTAMP']);
+				}
+				$extendedEvents[] = $anEvent;
+			}
+			foreach ($extendedEvents as $key => $value) {
+				$timestamp[$key] = $value['UNIX_TIMESTAMP'];
+			}
+			array_multisort($timestamp, $sortOrder, $extendedEvents);
+			return $extendedEvents;
+		}
     }
 } 
 ?>

@@ -37,7 +37,7 @@ class foldergallery{
  */
 function fg_init_handle_download() {
 	if ( isset( $_GET[ 'dlid' ] ) ) {
-		// Onedaypass prüfen
+		// Onedaypass prÃ¼fen
 		if ($_GET['code'] == md5( $_GET[ 'dlid' ] . intval(date('Y-m-d H:i:s')) / 24 * 3600)) { // if it match it is legit
 			// onedaypass_process( absint( $_GET[ 'dlid' ] ) );
 			$url_parse = wp_parse_url( $_GET[ 'dlid' ] );
@@ -393,7 +393,7 @@ function fg_init_handle_download() {
 	}
 
 
-	// Für Dirlist Search Parameter Wert in Zeile suchen - search function fulltext
+	// FÃ¼r Dirlist Search Parameter Wert in Zeile suchen - search function fulltext
 	function in_array_reg($item , $array){
 		return preg_match('/'.preg_quote($item, '/').'/i' , json_encode($array, JSON_UNESCAPED_SLASHES));
 	}            
@@ -771,7 +771,7 @@ function fg_init_handle_download() {
 			$thumbnail_idx = - intval($thumbnails) -1;
 			$thumbnails = 'single';
 		}
-			//// Startindex für Pagination aus url auslesen
+			//// Startindex fÃ¼r Pagination aus url auslesen
 			if (isset($_GET['seite'])) {
 			  $seite = sanitize_text_field($_GET['seite']);
 			  $start_idx = intval($thumbnails) * intval((intval($seite)-1));
@@ -840,7 +840,7 @@ function fg_init_handle_download() {
 					$thecaption = date_i18n( get_option( 'date_format' ) . ', ' . get_option( 'time_format' ) , $moddate);					
 				break;
 				case 'namenumbersize' :
-					// Caption mit Namen, Nummer, Größe
+					// Caption mit Namen, Nummer, GrÃ¶ÃŸe
 					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
 					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
 					if ( 'lightbox2' != $fg_options['engine'] ) {
@@ -848,7 +848,7 @@ function fg_init_handle_download() {
 					}	
 				break;
 				case 'namenumbersizedescr' :
-					// Caption mit Namen, Nummer, Größe, Beschreibung
+					// Caption mit Namen, Nummer, GrÃ¶ÃŸe, Beschreibung
 					$filesizer = $this->file_size(filesize( $folder . '/' . $pictures[ $idx ] ));
 					$thecaption = $this->filename_without_extension( $pictures[ $idx ]) ;
 					if ( 'lightbox2' != $fg_options['engine'] ) {
@@ -1522,10 +1522,10 @@ class folderslider{
 
 		$folder = rtrim( $folder, '/' ); // Remove trailing / from path
 
-		// Parameter für Recent Posts Carousel: Folder ist 'recentposts'
+		// Parameter fÃ¼r Recent Posts Carousel: Folder ist 'recentposts'
 		if ( $folder == 'recentposts') {
 			++$this->slider_no;
-			// Optionen für Carousel modus und adaptive height aus
+			// Optionen fÃ¼r Carousel modus und adaptive height aus
 			$param = array( 'width'=>$width, 'controls'=>($controls == 'true'), 'auto'=>($autostart == 'true'), 'playcontrol'=>($playcontrol == 'true'), 'speed'=>intval($speed*1000), 'captions'=>($captions != 'none'), 'pager'=>($pager == 'true'), 'mode'=>$mode, 'adaptiveheight'=>$adaptiveheight, 'minslides'=>$minslides, 'maxslides'=>$maxslides, 'moveslides'=>$moveslides );
 			$this->fsd_scripts($param, $this->slider_no);
 			$picture_size = "";
@@ -1594,7 +1594,7 @@ class folderslider{
 		
 		// Set JS parameters
 		++$this->slider_no;
-		// Optionen für Carousel modus und adaptive height aus
+		// Optionen fÃ¼r Carousel modus und adaptive height aus
 		$param = array( 'width'=>$width, 'controls'=>($controls == 'true'), 'auto'=>($autostart == 'true'), 'playcontrol'=>($playcontrol == 'true'), 'speed'=>intval($speed*1000), 'captions'=>($captions != 'none'), 'pager'=>($pager == 'true'), 'mode'=>$mode, 'adaptiveheight'=>$adaptiveheight, 'minslides'=>$minslides, 'maxslides'=>$maxslides, 'moveslides'=>$moveslides );
 		$this->fsd_scripts($param, $this->slider_no);
 		$picture_size = "";
@@ -1651,7 +1651,7 @@ class folderslider{
 					$title = '';
 				break;
 			}	
-			// Bei Doppelklick öffnet sich das Bild z.B. für eine installierte Lightbox mit Zoom
+			// Bei Doppelklick Ã¶ffnet sich das Bild z.B. fÃ¼r eine installierte Lightbox mit Zoom
 			if ( $fsd_options['lightboxlink'] == 1 ) {
 				$sliderlink ='<a title="Doppelklicken zum Zoomen" style="cursor:zoom-in" href="' . $this->fsd_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '">';
 				$sliderlinkend = '</a>';
@@ -1862,13 +1862,13 @@ class folderslider{
 			echo '> ' . __('Fix WPML Paths', 'foldergallery' ) . "</label><br />\n";
 		echo "</td>\n</tr>\n";
 
-		// Doubleklick auf Bild öffnet Link zum Darstellen in einer Lightbox wie Fancybox3 mit a href Zuordnung (wie in Theme penguin)
+		// Doubleklick auf Bild Ã¶ffnet Link zum Darstellen in einer Lightbox wie Fancybox3 mit a href Zuordnung (wie in Theme penguin)
 		echo '<tr valign="top">' . "\n";
 		echo '<th scope="row">' . __( 'Link zum Bild', 'foldergallery' ) . '</th>' . "\n";
 		echo '<td><label for="lightboxlink">';
 			echo '<input name="FolderSlider[lightboxlink]" type="checkbox" id="FolderSlider[lightboxlink]" value="1"';
 			if ( 1 == $fsd_options['lightboxlink'] ) echo ' checked="checked"';
-			echo '> ' . __('Zoom Link zum Bild für Lightbox wie Fancybox aktivieren', 'foldergallery' ) . "</label><br />\n";
+			echo '> ' . __('Zoom Link zum Bild fÃ¼r Lightbox wie Fancybox aktivieren', 'foldergallery' ) . "</label><br />\n";
 		echo "</td>\n</tr>\n";
 		echo "</tbody></table></div>\n";
 		submit_button();
@@ -2248,7 +2248,7 @@ if( !class_exists('csvtohtmlwp') ) {
     }
     
 
-	// Für Search Parameter Wert in Zeile suchen - search function fulltext
+	// FÃ¼r Search Parameter Wert in Zeile suchen - search function fulltext
 	function in_array_r($item , $array){
 		return preg_match('/'.preg_quote($item, '/').'/i' , json_encode($array, JSON_UNESCAPED_SLASHES));
 	}            
@@ -2608,7 +2608,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		  $search = sanitize_text_field( $_GET['search'] );
 		}
 		$totalrecords = count($row_values);
-		$html = '<div style="text-align:right"><form>Gesamt Datensätze: '.$totalrecords.' &nbsp; <input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
+		$html = '<div style="text-align:right"><form>Gesamt DatensÃ¤tze: '.$totalrecords.' &nbsp; <input type="text" placeholder="Suchbegriff" name="search" id="search" value="'.$search.'"><input type="submit" value="suchen"></form></div>';
         $html .= '<table ' . $htmlid_set . 'class="csvtohtml' . $html_class . '"><thead><tr class="headers">';
         $nr_col = 1;
 
@@ -2651,7 +2651,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		}
 		// Page navigation		
 		$html .= '</tbody></table>';
-		if (!empty($search)) $html .= 'Gefundene Datensätze: '.$nr_row - 1;
+		if (!empty($search)) $html .= 'Gefundene Datensätze: '. ($nr_row - 1);
 		if ( empty($search)) {
 			/* Pagination links:  calculate and set previous and next page values */
 			$previous = $seite - 1;
@@ -3046,7 +3046,7 @@ function show_post_images($input) {
 			  $fileurl = $upload_dir['baseurl'] . '/' . $filename;
 			}
 			file_put_contents( $file, $image_data );
-			// Pfad ändern
+			// Pfad Ã¤ndern
             $input = str_replace( $url,$fileurl, $input );
         }
     }
@@ -3231,14 +3231,14 @@ register_deactivation_hook(__FILE__, 'rssnews_deactivation');
 // =================================   Adventskalender Shortcode ========================================================
 //
 
-// Zufallstüren eindeutig erzeugen
+// ZufallstÃ¼ren eindeutig erzeugen
 function UniqueRandomNumbersWithinRange($min, $max, $quantity) {
     $numbers = range($min, $max);
     shuffle($numbers);
     return array_slice($numbers, 0, $quantity);
 }
 
-// Shortcode für Adventskalender
+// Shortcode fÃ¼r Adventskalender
 function pb_adventscal($atts) {
 	date_default_timezone_set('Europe/Berlin');
 	setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');
@@ -3275,7 +3275,7 @@ function pb_adventscal($atts) {
 	$output = '';
 	if ( $args[ 'debug' ] == 1) $monnum = 12;      /// Zum Debuggen diese Zeile aktivieren debug=1 im shortcode
 	if ( $monnum <= 11 ) $output='Der Adventskalender erscheint wieder in '. human_time_diff( current_time( 'timestamp' ), mktime(0,0,0,12,1,date("Y")) ) . '.';
-	if ( $monnum == 12 ) {      // Nur im Dezember ausführen, Monat 12
+	if ( $monnum == 12 ) {      // Nur im Dezember ausfÃ¼hren, Monat 12
 		$xmastag = strftime("%A %d. %B %Y", mktime(0, 0, 0, 12, 25, date("Y")));
 		$advarray = explode(',', sanitize_text_field($args[ 'pages' ]) );
 		wp_enqueue_style( 'advent-style', plugins_url( 'pbadvent.css', __FILE__ ) );
@@ -3310,9 +3310,9 @@ function pb_adventscal($atts) {
 				if ( is_numeric($advarray[$zufseite]) ) { $shortl = '?p='; } else { $shortl = ''; }
 				$output .= '<a href="'.$wphome.'/' . $shortl . $advarray[$zufseite] . '">';
 				$output .= '<div class="layer1" style="background-color:rgba('.$r.','.$g.','.$b.',.4)"><small>' .$ftg.$wotag . '</small><br>' . $zuftuer[$lauftag] . '</div>';
-				$output .= '<div class="tr-slideIn"><img src="'.$plugin_pfad.'images/iconblank.gif" width="100" title="'.$zuftuer[$lauftag].' .Dez - Tür öffnen"></div></a>';
+				$output .= '<div class="tr-slideIn"><img src="'.$plugin_pfad.'images/iconblank.gif" width="100" title="'.$zuftuer[$lauftag].' .Dez - TÃ¼r Ã¶ffnen"></div></a>';
 			} else {
-				$output .= '<div title="Tür noch nicht geöffnet" class="layer1" style="background-color:rgba('.$r.','.$g.','.$b.',.4)"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
+				$output .= '<div title="TÃ¼r noch nicht geÃ¶ffnet" class="layer1" style="background-color:rgba('.$r.','.$g.','.$b.',.4)"><small>' .$ftg.$wotag . '</small><br>'.$zuftuer[$lauftag] . '</div>';
 			}	
 			$output .= '</div></td>';
 			$lauftag += 1;
@@ -3321,7 +3321,7 @@ function pb_adventscal($atts) {
 		$output .= '</tr></table></div>';  
 		if ( $monnum == 12 && $daynum < 25 ) { $output .='Weihnachten ('.$xmastag.') ist in ' . ceil( (mktime(0,0,0,12,25,date("Y")) - current_time( 'timestamp' ) ) / 86400 ) . ' Tagen.'; }
 	}	  
-	// Sticky in allen Posts mit dem Advcal Shortcode rücksetzen wenn Datum größer als 24.12.
+	// Sticky in allen Posts mit dem Advcal Shortcode rÃ¼cksetzen wenn Datum grÃ¶ÃŸer als 24.12.
     if ( $monnum == 12 && $daynum > 24 ) {
 		global $wpdb;
 		$xposts = $wpdb->get_results("SELECT ID FROM {$wpdb->posts} WHERE post_content LIKE '%[pbadventskalender%' AND post_type = 'post' AND (post_status = 'publish') ");

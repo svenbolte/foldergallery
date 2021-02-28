@@ -10,11 +10,11 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.27
-Stable tag: 9.7.6.27
+Version: 9.7.6.29
+Stable tag: 9.7.6.29
 Requires at least: 5.1
-Tested up to: 5.5.3
-Requires PHP: 7.2
+Tested up to: 5.6.2
+Requires PHP: 7.4
 */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -1430,7 +1430,7 @@ class folderslider{
 	
 	public function fsd_styles() {
 		wp_enqueue_style( 'bxslider-style', plugins_url( 'jquery.bxslider/jquery.bxslider.min.css', __FILE__ ) );
-		wp_enqueue_style( 'fsd-style', plugins_url( 'style.css', __FILE__ ) );
+		wp_enqueue_style( 'fsd-style', plugins_url( 'style.min.css', __FILE__ ) );
 	}
 
 	public function fsd_scripts( $param, $num ) {

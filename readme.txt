@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Version: 9.7.6.29
 Stable tag: 9.7.6.29
 Requires at least: 5.1
-Tested up to: 5.6.2
+Tested up to: 5.7
 Requires PHP: 7.2
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.

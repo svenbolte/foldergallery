@@ -4,14 +4,14 @@ Plugin Name: Folder Gallery Slider
 Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
 Author: PBMod
-Description: Shortcodes for galleries and sliders from a folder or from recent posts. output directory contents with secure download links. show csv files from url or file as table, import rss-feeds as posts and store their images locally. Display ics from url as calendar. flexible advent calendar locally hosted.
-Tags: advent,adventskalender,gallery,folder,lightbox,lightview,bxslider,slideshow,image sliders,csv-folder-to-table,csv-to-table-from-url,rss-to-posts,ics-to-calendar
+Description: Shortcodes for galleries and sliders from a folder or from recent posts. output directory contents with secure download links. show csv files from url or file as table, import rss-feeds as posts and store their images locally. Display ics from url as calendar. flexible advent calendar locally hosted. Export bookmarks from your browser and import them as a list in a new WordPress post.
+Tags: advent,adventskalender,gallery,folder,lightbox,slideshow,imagesliders,csv-folder-to-table,csv-to-table-from-url,rss-to-posts,ics-to-calendar
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.29
-Stable tag: 9.7.6.29
+Version: 9.7.6.30
+Stable tag: 9.7.6.30
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.4
@@ -3334,4 +3334,604 @@ function pb_adventscal($atts) {
 return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
+
+//
+// ***************************   Import Bookmarks Klassen ***************************************************
+//
+
+/**
+ * Generic Netscape bookmark parser
+ */
+class NetscapeBookmarkParser
+{
+    protected $keepNestedTags;
+    protected $defaultTags;
+    protected $defaultPub;
+    protected $normalizeDates;
+    protected $dateRange;
+    protected $items;
+    /**
+     * Instantiates a new NetscapeBookmarkParser
+     *
+     * @param bool   $keepNestedTags Tag links with parent folder names
+     * @param array  $defaultTags    Tag all links with these values
+     * @param mixed  $defaultPub     Link publication status if missing
+     *                               - '1' => public
+     *                               - '0' => private)
+     * @param bool   $normalizeDates Whether parsed dates are expected to fall within
+     *                               a given date/time interval
+     * @param string $dateRange      Delta used to compute the "acceptable" date/time interval
+     */
+    public function __construct($keepNestedTags = \true, $defaultTags = array(), $defaultPub = '0', $logDir = null, $normalizeDates = \true, $dateRange = '30 years')
+    {
+        if ($keepNestedTags) {
+            $this->keepNestedTags = \true;
+        }
+        if ($defaultTags) {
+            $this->defaultTags = $defaultTags;
+        } else {
+            $this->defaultTags = array();
+        }
+        $this->defaultPub = $defaultPub;
+        $this->normalizeDates = $normalizeDates;
+        $this->dateRange = $dateRange;
+    }
+    /**
+     * Parses a Netscape bookmark file
+     *
+     * @param string $filename Bookmark file to parse
+     *
+     * @return array An associative array containing parsed links
+     */
+    public function parseFile($filename)
+    {
+        return $this->parseString(\file_get_contents($filename));
+    }
+    /**
+     * Parses a string containing Netscape-formatted bookmarks
+     *
+     * Output format:
+     *
+     *     Array
+     *     (
+     *         [0] => Array
+     *             (
+     *                 [note]  => Some comments about this link
+     *                 [pub]   => 1
+     *                 [tags]  => a list of tags
+     *                 [time]  => 1459371397
+	 *                 [icon]  => Bild
+     *                 [title] => Some page
+     *                 [uri]   => http://domain.tld:5678/some-page.html
+     *             )
+     *         [1] => Array
+     *             (
+     *                 ...
+     *             )
+     *     )
+     *
+     * @param string $bookmarkString String containing Netscape bookmarks
+     *
+     * @return array An associative array containing parsed links
+     */
+    public function parseString($bookmarkString)
+    {
+        $i = 0;
+        $next = \false;
+        $folderTags = array();
+        $lines = \explode("\n", $this->sanitizeString($bookmarkString));
+        foreach ($lines as $line_no => $line) {
+            if (\preg_match('/^<h\\d.*>(.*)<\\/h\\d>/i', $line, $m1)) {
+                // a header is matched:
+                // - links may be grouped in a (sub-)folder
+                // - append the header's content to the folder tags
+                $tag = $this->sanitizeTagString($m1[1]);
+                $folderTags[] = $tag;
+                continue;
+            } elseif (\preg_match('/^<\\/DL>/i', $line)) {
+                // </DL> matched: stop using header value
+                $tag = \array_pop($folderTags);
+                continue;
+            }
+            if (\preg_match('/<a/i', $line, $m2)) {
+                if (\preg_match('/href="(.*?)"/i', $line, $m3)) {
+                    $this->items[$i]['uri'] = $m3[1];
+                } else {
+                    $this->items[$i]['uri'] = '';
+                }
+                if (\preg_match('/<a.*>(.*?)<\\/a>/i', $line, $m4)) {
+                    $this->items[$i]['title'] = $m4[1];
+                } else {
+                    $this->items[$i]['title'] = 'untitled';
+                }
+                if (\preg_match('/(description|note)="(.*?)"/i', $line, $m5)) {
+                    $this->items[$i]['note'] = $m5[2];
+                } elseif (\preg_match('/<dd>(.*?)$/i', $line, $m6)) {
+                    $this->items[$i]['note'] = \str_replace('<br>', "\n", $m6[1]);
+                } else {
+                    $this->items[$i]['note'] = '';
+                }
+                $tags = array();
+                if ($this->defaultTags) {
+                    $tags = \array_merge($tags, $this->defaultTags);
+                }
+                if ($this->keepNestedTags) {
+                    $tags = \array_merge($tags, $folderTags);
+                }
+                if (\preg_match('/(tags?|labels?|folders?)="(.*?)"/i', $line, $m7)) {
+                    $tags = \array_merge($tags, \explode(' ', \strtr($m7[2], ',', ' ')));
+                }
+                $this->items[$i]['tags'] = \implode(' ', $tags);
+                if (\preg_match('/add_date="(.*?)"/i', $line, $m8)) {
+                    $this->items[$i]['time'] = $this->parseDate($m8[1]);
+                } else {
+                    $this->items[$i]['time'] = \time();
+                }
+
+                if (\preg_match('/icon="(.*?)"/i', $line, $m28)) {
+                    $this->items[$i]['icon'] = $m28[1];
+                } else {
+                    $this->items[$i]['icon'] = '';
+                }
+
+
+                if (\preg_match('/(public|published|pub)="(.*?)"/i', $line, $m9)) {
+                    $this->items[$i]['pub'] = $this->parseBoolean($m9[2], \false) ? 1 : 0;
+                } elseif (\preg_match('/(private|shared)="(.*?)"/i', $line, $m10)) {
+                    $this->items[$i]['pub'] = $this->parseBoolean($m10[2], \true) ? 0 : 1;
+                } else {
+                    $this->items[$i]['pub'] = $this->defaultPub;
+                }
+                $i++;
+            }
+        }
+        \ksort($this->items);
+        return $this->items;
+    }
+    /**
+     * Parses a formatted date
+     *
+     * @see http://php.net/manual/en/datetime.formats.compound.php
+     * @see http://php.net/manual/en/function.strtotime.php
+     *
+     * @param string $date formatted date
+     *
+     * @return int Unix timestamp corresponding to a successfully parsed date,
+     *             else current date and time
+     */
+    public function parseDate($date)
+    {
+        if (\strtotime('@' . $date)) {
+            // Unix timestamp
+            if ($this->normalizeDates) {
+                $date = $this->normalizeDate($date);
+            }
+            return \strtotime('@' . $date);
+        } else {
+            if (\strtotime($date)) {
+                // attempt to parse a known compound date/time format
+                return \strtotime($date);
+            }
+        }
+        // current date & time
+        return $time;
+    }
+    /**
+     * Normalizes a date by supposing it is comprised in a given range
+     *
+     * Although most bookmarking services return dates formatted as a Unix epoch
+     * (seconds elapsed since 1970-01-01 00:00:00) or human-readable strings,
+     * some services return microtime epochs (microseconds elapsed since
+     * 1970-01-01 00:00:00.000000) WITHOUT using a delimiter for the microseconds
+     * part...
+     *
+     * This is likely to raise issues in the distant future!
+     *
+     * @see https://stackoverflow.com/questions/33691428/datetime-with-microseconds
+     * @see https://stackoverflow.com/questions/23929145/how-to-test-if-a-given-time-stamp-is-in-seconds-or-milliseconds
+     * @see https://stackoverflow.com/questions/539900/google-bookmark-export-date-format
+     * @see https://www.wired.com/2010/11/1110mars-climate-observer-report/
+     *
+     * @param string $epoch     Unix timestamp to normalize
+     *
+     * @return string Unix timestamp in seconds, within the expected range
+     */
+    public function normalizeDate($epoch)
+    {
+        $date = new \DateTime('@' . $epoch);
+        $maxDate = new \DateTime('+' . $this->dateRange);
+        for ($i = 1; $date > $maxDate; $i++) {
+            // trim the provided date until it falls within the expected range
+            $date = new \DateTime('@' . \substr($epoch, 0, \strlen($epoch) - $i));
+        }
+        return $date->getTimestamp();
+    }
+    /**
+     * Parses the value of a supposedly boolean attribute
+     *
+     * @param string $value   Attribute value to evaluate
+     *
+     * @return mixed 'true' when the value is evaluated as true
+     *               'false' when the value is evaluated as false
+     *               $this->defaultPub if the value is not a boolean
+     */
+    public function parseBoolean($value)
+    {
+        if (!$value) {
+            return \false;
+        }
+        if (!\is_string($value)) {
+            return \true;
+        }
+        if (\preg_match("/^(" . self::TRUE_PATTERN . ")\$/i", $value)) {
+            return \true;
+        }
+        if (\preg_match("/^(" . self::FALSE_PATTERN . ")\$/i", $value)) {
+            return \false;
+        }
+        return $this->defaultPub;
+    }
+    /**
+     * Sanitizes the content of a string containing Netscape bookmarks
+     *
+     * This removes:
+     * - comment blocks
+     * - metadata: DOCTYPE, H1, META, TITLE
+     * - extra newlines, trailing spaces and tabs
+     *
+     * @param string $bookmarkString Original bookmark string
+     *
+     * @return string Sanitized bookmark string
+     */
+    public static function sanitizeString($bookmarkString)
+    {
+        $sanitized = $bookmarkString;
+        // trim comments
+        $sanitized = \preg_replace('@<!--.*?-->@mis', '', $sanitized);
+        // keep one XML element per line to prepare for linear parsing
+        $sanitized = \preg_replace('@>(\\s*?)<@mis', ">\n<", $sanitized);
+        // trim unused metadata
+        $sanitized = \preg_replace('@(<!DOCTYPE|<META|<TITLE|<H1|<P).*\\n@i', '', $sanitized);
+        // trim whitespace
+        $sanitized = \trim($sanitized);
+        // trim carriage returns, replace tabs by a single space
+        $sanitized = \str_replace(array("\r", "\t"), array('', ' '), $sanitized);
+        // convert multiline descriptions to one-line descriptions
+        // line feeds are converted to <br>
+        $sanitized = \preg_replace_callback('@<DD>(.*?)(</?(:?DT|DD|DL))@mis', function ($match) {
+            return '<DD>' . \str_replace("\n", '<br>', \trim($match[1])) . \PHP_EOL . $match[2];
+        }, $sanitized);
+        // convert multiline descriptions inside <A> tags to one-line descriptions
+        // line feeds are converted to <br>
+        $sanitized = \preg_replace_callback('@<A(.*?)</A>@mis', function ($match) {
+            return '<A' . \str_replace("\n", '<br>', \trim($match[1])) . '</A>';
+        }, $sanitized);
+        // concatenate all information related to the same entry on the same line
+        // e.g. <A HREF="...">My Link</A><DD>List<br>- item1<br>- item2
+        $sanitized = \preg_replace('@\\n<br>@mis', "<br>", $sanitized);
+        $sanitized = \preg_replace('@\\n<DD@i', '<DD', $sanitized);
+        return $sanitized;
+    }
+    /**
+     * Sanitizes a space-separated list of tags
+     *
+     * This removes:
+     * - duplicate whitespace
+     * - leading punctuation
+     * - undesired characters
+     *
+     * @param string $tagString Space-separated list of tags
+     *
+     * @return string Sanitized space-separated list of tags
+     */
+    public static function sanitizeTagString($tagString)
+    {
+        $tags = \explode(' ', \strtolower($tagString));
+        foreach ($tags as $key => &$value) {
+            if (\ctype_alnum($value)) {
+                continue;
+            }
+            // trim leading punctuation
+            $value = \preg_replace('/^[[:punct:]]/', '', $value);
+            // trim all but alphanumeric characters, underscores and non-leading dashes
+            $value = \preg_replace('/[^\\p{L}\\p{N}\\-_]++/u', '', $value);
+            if ($value == '') {
+                unset($tags[$key]);
+            }
+        }
+        return \implode(' ', $tags);
+    }
+}
+
+/**
+ * Main plugin class and settings.
+ */
+class Bookmarks_Importer {
+	/**
+	 * WordPress' default post types, sans 'post'.
+	 *
+	 * @var array DEFAULT_POST_TYPES Default post types, minus 'post' itself.
+	 * @since 0.2.6
+	 */
+	const DEFAULT_POST_TYPES = array(
+		'page',
+		'attachment',
+		'revision',
+		'nav_menu_item',
+		'custom_css',
+		'customize_changeset',
+		'user_request',
+		'oembed_cache',
+		'wp_block',
+	);
+
+	/**
+	 * Allowable post statuses.
+	 * @var array POST_STATUSES Allowable post statuses.
+	 */
+	const POST_STATUSES = array(
+		'publish',
+		'draft',
+		'pending',
+		'private',
+	);
+
+	/**
+	 * Registers actions.
+	 */
+	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'create_menu' ) );
+		add_action( 'admin_post_import_bookmarks', array( $this, 'import' ) );
+	}
+
+	/**
+	 * Registers the plugin 'Tools' page.
+	 */
+	public function create_menu() {
+		add_management_page(
+			__( 'Import Bookmarks', 'import-bookmarks' ),
+			__( 'Import Bookmarks', 'import-bookmarks' ),
+			'import',
+			'import-bookmarks',
+			array( $this, 'settings_page' )
+		);
+	}
+
+	/**
+	 * Echoes the upload form.
+	 */
+	public function settings_page() {
+		$options      = get_option( 'import_bookmarks', array() );
+		$post_types   = array_diff( get_post_types(), self::DEFAULT_POST_TYPES );
+		$post_formats = get_post_format_slugs();
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Import Bookmarks', 'import-bookmarks' ); ?></h1>
+			<form action="admin-post.php" method="post" enctype="multipart/form-data">
+			<div class="postbox">
+				<?php wp_nonce_field( 'import-bookmarks-run' ); ?>
+				<input type="hidden" name="action" value="import_bookmarks">
+
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"><label for="bookmarks-file"><?php esc_html_e( 'Bookmarks File', 'import-bookmarks' ); ?></label></th>
+						<td>
+							<input type="file" name="bookmarks_file" id="bookmarks-file" accept="text/html">
+							<p class="description"><?php esc_html_e( 'Chrome, Edge on Chromium, Firefox, Opera - Bookmarks HTML file to be imported.', 'import-bookmarks' ); ?></p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><label for="post-type"><?php esc_html_e( 'Post Type', 'import-bookmarks' ); ?></label></th>
+						<td>
+							<select name="post_type" id="post-type">
+								<?php
+								foreach ( $post_types as $post_type ) :
+									$post_type_object = get_post_type_object( $post_type );
+									?>
+									<option value="<?php echo esc_attr( $post_type ); ?>" <?php ( ! empty( $options['post_type'] ) ? selected( $post_type, $options['post_type'] ) : '' ); ?>>
+										<?php echo esc_html( $post_type_object->labels->singular_name ); ?>
+									</option>
+									<?php
+								endforeach;
+								?>
+							</select>
+							<p class="description"><?php esc_html_e( 'Imported bookmarks will be of this type.', 'import-bookmarks' ); ?></p>
+						</td>
+					</tr>
+
+					<tr valign="top">
+						<th scope="row"><label for="post-status"><?php esc_html_e( 'Post Category to set', 'import-bookmarks' ); ?></label></th>
+						<td>
+					    <?php wp_dropdown_categories(array( 'show_option_none' => __( 'Select category', 'textdomain' ), 'show_count' => 1, 'orderby' => 'name', 'selected' => $options['post_categ'] ) ); ?>
+							<p class="description"><?php esc_html_e( 'Post with links will get the selected first category', 'import-bookmarks' ); ?></p>
+						</td>	
+					
+					<tr valign="top">
+						<th scope="row"><label for="post-status"><?php esc_html_e( 'Post Status', 'import-bookmarks' ); ?></label></th>
+						<td>
+							<select name="post_status" id="post-status">
+								<?php foreach ( self::POST_STATUSES as $post_status ) : ?>
+									<option value="<?php echo esc_attr( $post_status ); ?>" <?php ( ! empty( $options['post_status'] ) ? selected( $post_status, $options['post_status'] ) : '' ); ?>><?php echo esc_html( ucfirst( $post_status ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'Imported bookmarks will receive this status. Regardless to post status: if you giva a a folder name the prefix 0- like &lsquo;0-secret&rsquo;, content will be ownly shown to site administrators. You can set status to private to hide all links from public.', 'import-bookmarks' ); ?></p>
+						</td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><label for="post-format"><?php esc_html_e( 'Post Format', 'import-bookmarks' ); ?></label></th>
+						<td>
+							<select name="post_format" id="post-format">
+								<?php foreach ( $post_formats as $post_format ) : ?>
+									<option value="<?php echo esc_attr( $post_format ); ?>" <?php ( ! empty( $options['post_format'] ) ? selected( $post_format, $options['post_format'] ) : '' ); ?>><?php echo esc_html( get_post_format_string( $post_format ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'Affects only Post Types that actually support Post Formats. Your active theme decides how different Post Formats are displayed.', 'import-bookmarks' ); ?></p>
+						</td>
+					</tr>
+				</table>
+			</div>
+				<p class="submit"><?php submit_button( __( 'Import Bookmarks', 'import-bookmarks' ), 'primary', 'submit', false ); ?></p>
+			</form>
+		</div>
+
+		<?php
+		if ( ! empty( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ), 'import-bookmarks-success' ) && ! empty( $_GET['message'] ) && 'success' === $_GET['message'] ) :
+			?>
+			<div class="notice notice-success is-dismissible">
+				<p><?php esc_html_e( 'Bookmarks imported!', 'import-bookmarks' ); ?></p>
+			</div>
+			<?php
+		endif;
+	}
+
+	/**
+	 * Runs the importer after a file was uploaded.
+	 */
+	public function import() {
+		
+		if ( ! current_user_can( 'import' ) ) {
+			wp_die( esc_html__( 'You have insufficient permissions to access this page.', 'import-bookmarks' ) );
+		}
+
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['_wpnonce'] ), 'import-bookmarks-run' ) ) {
+			wp_die( esc_html__( 'This page should not be accessed directly.', 'import-bookmarks' ) );
+		}
+
+		if ( empty( $_FILES['bookmarks_file'] ) ) {
+			wp_die( esc_html__( 'Something went wrong uploading the file.', 'import-bookmarks' ) );
+		}
+
+		// Let WordPress handle the uploaded file.
+		$uploaded_file = wp_handle_upload(
+			$_FILES['bookmarks_file'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			array(
+				'test_form' => false,
+				'mimes'     => array( 'htm|html' => 'text/html' ),
+			)
+		);
+
+		if ( ! empty( $uploaded_file['error'] ) && is_string( $uploaded_file['error'] ) ) {
+			// `wp_handle_upload()` returned an error.
+			wp_die( esc_html( $uploaded_file['error'] ) );
+		} elseif ( empty( $uploaded_file['file'] ) || ! is_string( $uploaded_file['file'] ) ) {
+			wp_die( esc_html__( 'Something went wrong uploading the file.', 'import-bookmarks' ) );
+		}
+
+		$options = get_option( 'import_bookmarks', array() );
+
+		// Allowed post types.
+		$post_types = array_diff( get_post_types(), self::DEFAULT_POST_TYPES );
+
+		// Default post type.
+		$post_type = 'post';
+
+		if ( ! empty( $_POST['post_type'] ) && in_array( wp_unslash( $_POST['post_type'] ), $post_types, true ) ) {
+			$post_type = wp_unslash( $_POST['post_type'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			// Remember the chosen post type.
+			$options['post_type'] = $post_type;
+			update_option( 'import_bookmarks', $options, false );
+		}
+
+		// Default category.
+		$post_categ = 0;
+
+		if ( ! empty( $_POST['cat'] ) ) {
+			$post_categ = wp_unslash( $_POST['cat'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			// Remember the chosen post type.
+			$options['post_categ'] = $post_categ;
+			update_option( 'import_bookmarks', $options, false );
+		}
+
+		// Default post status.
+		$post_status = 'publish';
+
+		if ( ! empty( $_POST['post_status'] ) && in_array( wp_unslash( $_POST['post_status'] ), self::POST_STATUSES, true ) ) {
+			$post_status = wp_unslash( $_POST['post_status'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			// Remember the chosen post status.
+			$options['post_status'] = $post_status;
+			update_option( 'import_bookmarks', $options, false );
+		}
+
+		// Default post format.
+		$post_format = 'standard';
+
+		if ( ! empty( $_POST['post_format'] ) && in_array( wp_unslash( $_POST['post_format'] ), get_post_format_slugs(), true ) ) {
+			$post_format = wp_unslash( $_POST['post_format'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			// Remember the chosen post format.
+			$options['post_format'] = $post_format;
+			update_option( 'import_bookmarks', $options, false );
+		}
+
+		$parser    = new NetscapeBookmarkParser();
+		$bookmarks = $parser->parseFile( $uploaded_file['file'] );
+
+		if ( empty( $bookmarks ) || ! is_array( $bookmarks ) ) {
+			wp_die( esc_html__( 'Empty or invalid bookmarks file.', 'import-bookmarks' ) );
+		}
+		setlocale (LC_ALL, 'de_DE.utf8', 'de_DE@euro', 'de_DE', 'de', 'ge'); 
+		$post_content = '<p>Speziell für Admins und Redakteure sind hier einige #Lesezeichen #Hyperlinks gespeichert:</p><table>'; $ctr = 0;
+		foreach ( $bookmarks as $bookmark ) {
+			$ordner = str_replace('lesezeichenleiste', '', $bookmark['tags']);
+			if (substr( $ordner,1 ,2 ) !== '0-' || current_user_can('administrator') ) { // nur anzeigen, wenn folder nicht mit 0- beginnt
+				$ctr += 1;
+				$post_content .= '<tr><td><img src="' . $bookmark['icon'] . '"> &nbsp; ';
+				$post_content .= '<a style="font-size:1.2em" href="' . esc_url( $bookmark['uri'] ) . '">' . $bookmark['title'] . '</a> &nbsp; ';
+				$post_content .= '<abbr title="Ordner"><i class="fa fa-folder-o"></i> ';
+				if (substr( $ordner,1 ,2 ) == '0-' ) $post_content .= '<i class="fa fa-lock" style="color:tomato"></i> ';
+				$post_content .= $ordner . '</abbr> &nbsp; ';
+				$post_content .= '<abbr title="erstellt"><i class="fa fa-calendar-o"></i> ' . strftime("%a %e. %b %G", strtotime(date( 'Y-m-d H:i:s', $bookmark['time'] ))).' &nbsp;';
+				$post_content .= ' vor ' . human_time_diff ( $bookmark['time'], current_time('U') ) . ' &nbsp; <i class="fa fa-list-ol"></i> '.$ctr.'</abbr><br>';
+				$post_content .= '<abbr title="Web-Link (URL)">' . esc_url( $bookmark['uri'] ) . '</abbr><br>';
+				$post_content .= sanitize_text_field( $bookmark['note'] ) . '</td></tr>';
+				$post_content  = trim( $post_content );
+			}	
+		}
+		$post_content .= '</table>'. $ctr . ' Lesezeichen gefunden.';
+		$post_content = apply_filters( 'import_bookmarks_post_content', $post_content, $bookmark, $post_type );
+
+		// delete a bookmark list post if exists
+		$lzpost = get_page_by_path( 'lesezeichenliste', OBJECT, 'post' );
+		if (!empty($lzpost)) wp_delete_post($lzpost->ID,true);
+		$post_id = wp_insert_post(
+			array(
+				'post_title'   => 'Lesezeichenliste',
+				'post_content' => $post_content,
+				'post_status'  => $post_status,
+				'post_type'    => $post_type,
+				'post_category' =>  array ( $options['post_categ'] ),
+			)
+		);
+
+		if ( $post_id && post_type_supports( $post_type, 'custom-fields' ) ) {
+			update_post_meta( $post_id, 'import_bookmarks_uri', esc_url_raw( $bookmark['uri'] ) );
+		}
+
+		if ( $post_id && post_type_supports( $post_type, 'post-formats' ) ) {
+			set_post_format( $post_id, $post_format );
+		}
+
+		// Delete uploaded bookmark file
+		wp_delete_file($uploaded_file['file']);
+		
+		wp_redirect( // phpcs:ignore WordPress.Security.SafeRedirect
+			esc_url_raw(
+				add_query_arg(
+					array(
+						'page'     => 'import-bookmarks',
+						'message'  => 'success',
+						'_wpnonce' => wp_create_nonce( 'import-bookmarks-success' ),
+					),
+					admin_url( 'tools.php' )
+				)
+			)
+		);
+		exit;
+	}
+}
+new Bookmarks_Importer();
+
 ?>

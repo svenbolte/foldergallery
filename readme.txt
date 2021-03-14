@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.29
-Stable tag: 9.7.6.29
+Version: 9.7.6.30
+Stable tag: 9.7.6.30
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.2
@@ -304,8 +304,19 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 ============================================================================================================================================================
 =
 
-
 == Changelog ==
+
+= 9.7.6.30 =
+* Bookmark importer 9.0.3.4 merged. Tools/import bookmarks imports bookmarks to a single post that can be private
+* You can select a category for the post with the link list now (selected cat will be stored for next import
+a previous post with slug "lesezeichenliste" will be deleted prior to creating the new one
+entries in bookmark folder names with prefix "0-" will only be listed when wordpress admins are logged on - you may set post status to private to hide all links from public tho
+code optimizations and speed up.
+* Bookmarks are transferred to a single post now
+updated netscapeparser class: icon contents are embedded so that icons of chrome bookmarks show up in post
+formatting output as table and with larger headline/link and displaying url text
+add human time diff to date and format date local europe
+
 
 = 9.7.6.28 =
 ics fixes if invalid or empty ics file is downloaded from url

@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.30
-Stable tag: 9.7.6.30
+Version: 9.7.6.31
+Stable tag: 9.7.6.31
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.4
@@ -75,18 +75,6 @@ function fg_init_handle_download() {
 			$fg_options['engine'] = 'none';
 			update_option( 'FolderGallery', $fg_options );
 		}
-		if ( 'lightview' == $fg_options['engine'] ) {
-			if ( ! is_dir( WP_CONTENT_DIR . '/lightview' ) ) {
-				$fg_options['engine'] = 'none';
-				update_option( 'FolderGallery', $fg_options );
-			}
-		}		
-		if ( 'fancybox2' == $fg_options['engine'] ) {
-			if ( ! is_dir( WP_CONTENT_DIR . '/fancybox' ) ) {
-				$fg_options['engine'] = 'none';
-				update_option( 'FolderGallery', $fg_options );
-			}
-		}
 		if ( 'fancybox3' == $fg_options['engine'] ) {
 			if ( ! is_dir( WP_CONTENT_DIR . '/fancybox3' ) ) {
 				$fg_options['engine'] = 'none';
@@ -136,14 +124,8 @@ function fg_init_handle_download() {
 			case 'lightbox2' :
 				wp_enqueue_style( 'fg-lightbox-style', content_url( '/lightbox/css/lightbox.css', __FILE__ ) );
 			break;
-			case 'fancybox2' :
-				wp_enqueue_style( 'fancybox-style', content_url( '/fancybox/source/jquery.fancybox.css', __FILE__ ) );
-			break;
 			case 'fancybox3' :
 				wp_enqueue_style( 'fancybox-style', content_url( '/fancybox3/dist/jquery.fancybox.min.css', __FILE__ ) );
-			break;
-			case 'lightview' :
-				wp_enqueue_style( 'lightview-style', content_url( '/lightview/css/lightview/lightview.css', __FILE__ ) );		
 			break;
 			case 'photoswipe' :
 			case 'responsive-lightbox' :
@@ -162,19 +144,6 @@ function fg_init_handle_download() {
 			case 'lightbox2' :
 				wp_enqueue_script( 'lightbox-script', content_url( '/lightbox/js/lightbox.min.js', __FILE__ ), array( 'jquery' ) );
 			break;
-			case 'fancybox2' :
-				wp_enqueue_script( 'fancybox-script', content_url( '/fancybox/source/jquery.fancybox.pack.js', __FILE__ ), array( 'jquery' ) );
-				wp_enqueue_script( 'fg-fancybox-script', plugins_url( '/js/fg-fancybox.js', __FILE__ ), array( 'jquery' ) );
-				if ( $firstcall ) {
-					wp_localize_script( 'fg-fancybox-script', 'FancyBoxGalleryOptions', array(
-						'title' => $fg_options['fb_title'],
-						'speed' => $fg_options['fb_speed'],
-						'effect' => $fg_options['fb_effect'],						
-						)
-					);
-					$firstcall = 0;
-				}
-			break;
 			case 'fancybox3' :
 				wp_enqueue_script( 'fancybox-script', content_url( '/fancybox3/dist/jquery.fancybox.min.js', __FILE__ ), array( 'jquery' ) );
 				wp_enqueue_script( 'fg-fancybox-script', plugins_url( '/js/fg-fancybox3.js', __FILE__ ), array( 'jquery' ) );
@@ -191,15 +160,6 @@ function fg_init_handle_download() {
 					);
 					$firstcall = 0;
 				}
-			break;
-
-			case 'lightview' :
-				global $is_IE;
-				if ( $is_IE ) {
-					wp_enqueue_script( 'excanvas', content_url( '/lightview/js/excanvas/excanvas.js', __FILE__  ), array( 'jquery' ) );
-				}
-				wp_enqueue_script( 'lightview_spinners', content_url( '/lightview/js/spinners/spinners.min.js', __FILE__ ), array( 'jquery' ) );
-				wp_enqueue_script( 'lightview-script', content_url( '/lightview/js/lightview/lightview.js', __FILE__ ) );   		
 			break;
 			case 'photoswipe' :
 			case 'responsive-lightbox' :
@@ -873,16 +833,8 @@ function fg_init_handle_download() {
 				case 'lightbox2' :
 					$gallery_code.= '<a title="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-lightbox="' . $lightbox_id . '">';
 				break;
-				case 'fancybox2' :				
-					$gallery_code.= '<a class="fancybox-gallery" title="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-fancybox-group="' . $lightbox_id . '">';
-				break;
 				case 'fancybox3' :				
 					$gallery_code.= '<a class="fancybox-gallery" title="' . wp_strip_all_tags($thecaption) . '" data-caption="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '" data-fancybox="' . $lightbox_id . '">';
-				break;
-				case 'lightview' :
-					if ( $options ) $options = " data-lightview-group-options=\"$options\"";
-					$gallery_code .= '<a title="' . $thecaption . '" href="' . $this->fg_home_url( '/'  . $folder . '/' . $pictures[ $idx ] ) . '" class="lightview" data-lightview-group="' . $lightbox_id . '"' . $options . '>';
-					$options = ''; // group-options required only once per group.
 				break;
 				case 'responsive-lightbox' :
 					$gallery_code .= '<a rel="lightbox[' . $lightbox_id . ']" data-lightbox-gallery="' . $lightbox_id . '" title="' . $thecaption . '" href="' . $this->fg_home_url( '/' . $folder . '/' . $pictures[ $idx ] ) . '">';
@@ -1126,20 +1078,10 @@ function fg_init_handle_download() {
 				if ( 'lightbox2' == $fg_options['engine'] ) echo ' selected="selected"';
 				echo '>Lightbox 2</option>' . "\n";	
 			}		
-			if ( is_dir( WP_CONTENT_DIR . '/fancybox' ) ) {
-				echo "\t" .	'<option value="fancybox2"';
-				if ( 'fancybox2' == $fg_options['engine'] ) echo ' selected="selected"';
-				echo '>Fancybox 2</option>' . "\n";
-			}
 			if ( is_dir( WP_CONTENT_DIR . '/fancybox3' ) ) {
 				echo "\t" .	'<option value="fancybox3"';
 				if ( 'fancybox3' == $fg_options['engine'] ) echo ' selected="selected"';
 				echo '>Fancybox 3</option>' . "\n";
-			}
-			if ( is_dir( WP_CONTENT_DIR . '/lightview' ) ) {
-				echo "\t" .	'<option value="lightview"';
-				if ( 'lightview' == $fg_options['engine'] ) echo ' selected="selected"';
-				echo '>Lightview 3</option>' . "\n";
 			}
 			if ( is_plugin_active('easy-fancybox/easy-fancybox.php') ) {
 				echo "\t" .	'<option value="easy-fancybox"';
@@ -1277,66 +1219,8 @@ function fg_init_handle_download() {
 		echo "</td>\n</tr>\n";
 
 
-		// Lightview		
-		if ( 'lightview' == $fg_options['engine'] ) {			
-			echo '<tr valign="top">' . "\n";
-			echo '<th scope="row"><label for="lw_options">' . __( 'Lightview Options', 'foldergallery' ) . '</label></th>' . "\n";
-			echo '<td><textarea id="lw_options" rows="5" cols="50" name="FolderGallery[lw_options]" class="large-text code">' . $fg_options['lw_options'] . "</textarea>\n";
-			echo '<p class="description">' . __( 'Lightview default options, comma-separated.', 'foldergallery' );
-			echo " E.g., <code>controls: { slider: false }, skin: 'mac'</code>. ";
-			echo __( 'For details, see:', 'foldergallery' );
-			echo ' <a href="http://projects.nickstakenburg.com/lightview/documentation/options" target="_blank">http://projects.nickstakenburg.com/lightview</a>.</p>' . "\n";
-			echo "</td>\n";
-			echo "</tr>\n";
-		} else {
-			echo '<input type="hidden" name="FolderGallery[lw_options]" id="lw_options" value="' . $fg_options['lw_options'] . '" />';
-		}		
-		// Fancybox 2 options
-		if ( 'fancybox2' == $fg_options['engine'] ) {
-			echo '<tr valign="top">' . "\n";
-			echo '<th scope="row"><label for="fb_title">' . __( 'Fancybox Caption Style', 'foldergallery' ) . '</label></th>' . "\n";
-			echo '<td><select name="FolderGallery[fb_title]" id="FolderGallery[fb_title]">' . "\n";		
-				echo "\t" .	'<option value="inside"';
-					if ( 'inside' == $fg_options['fb_title'] ) echo ' selected="selected"';
-					echo '>' . __( 'Inside', 'foldergallery' ) . '</option>' . "\n";	
-				echo "\t" .	'<option value="outside"';
-					if ( 'outside' == $fg_options['fb_title'] ) echo ' selected="selected"';
-					echo '>' . __( 'Outside', 'foldergallery' ) . '</option>' . "\n";			
-				echo "\t" .	'<option value="over"';
-					if ( 'over' == $fg_options['fb_title'] ) echo ' selected="selected"';
-					echo '>' . __( 'Over', 'foldergallery' ) . '</option>' . "\n";			
-				echo "\t" .	'<option value="float"';
-					if ( 'float' == $fg_options['fb_title'] ) echo ' selected="selected"';
-					echo '>' . __( 'Float', 'foldergallery' ) . '</option>' . "\n";
-				echo "\t" .	'<option value="null"';
-					if ( 'null' == $fg_options['fb_title'] ) echo ' selected="selected"';
-					echo '>' . __( 'None', 'foldergallery' ) . '</option>' . "\n";
-			echo "</select>\n";
-			echo "</td>\n</tr>\n";
-			
-			echo '<tr valign="top">' . "\n";
-			echo '<th scope="row"><label for="fb_effect">' . __( 'Fancybox Transition', 'foldergallery' ) . '</label></th>' . "\n";
-			echo '<td><select name="FolderGallery[fb_effect]" id="FolderGallery[fb_effect]">' . "\n";		
-				echo "\t" .	'<option value="elastic"';
-					if ( 'elastic' == $fg_options['fb_effect'] ) echo ' selected="selected"';
-					echo '>' . 'Elastic' . '</option>' . "\n";	
-				echo "\t" .	'<option value="fade"';
-					if ( 'fade' == $fg_options['fb_effect'] ) echo ' selected="selected"';
-					echo '>' . 'Fade' . '</option>' . "\n";			
-			echo "</select>\n";
-			echo "</td>\n</tr>\n";
-			
-			$this->fg_option_field( 'fb_speed', __( 'Autoplay Speed', 'foldergallery' ), ' seconds ' . __( '(0 = off)', 'foldergallery' ) );
-			
-		} else {
-			echo '<input type="hidden" name="FolderGallery[fb_title]" id="fb_title" value="' . $fg_options['fb_title'] . '" />';
-			echo '<input type="hidden" name="FolderGallery[fb_effect]" id="fb_effect" value="' . $fg_options['fb_effect'] . '" />';
-			echo '<input type="hidden" name="FolderGallery[fb_speed]" id="fb_speed" value="' . $fg_options['fb_speed'] . '" />';
-		}
-			
 		// Fancybox 3 options
 		if ( 'fancybox3' == $fg_options['engine'] ) {
-			
 			echo '<tr><th scope="row">FancyBox 3</th>';
 			echo '<td><fieldset>';
 			$this->fg_option_checkbox( 'fb3_loop', '', __('Enable infinite gallery navigation', 'foldergallery' ) );	
@@ -1348,7 +1232,6 @@ function fg_init_handle_download() {
 			echo __( 'Slideshow speed', 'foldergallery' ) . ': ' ;
 			$this->fg_option_field( 'fb3_speed', '', __(' seconds ', 'foldergallery' ) );
 			echo '</fieldset></td></tr>';
-			
 		} else {
 			echo '<input type="hidden" name="FolderGallery[fb3_loop]" id="fb3_loop" value="' . $fg_options['fb3_loop'] . '" />';
 			echo '<input type="hidden" name="FolderGallery[fb3_toolbar]" id="fb3_toolbar" value="' . $fg_options['fb3_toolbar'] . '" />';
@@ -1430,7 +1313,7 @@ class folderslider{
 	
 	public function fsd_styles() {
 		wp_enqueue_style( 'bxslider-style', plugins_url( 'jquery.bxslider/jquery.bxslider.min.css', __FILE__ ) );
-		wp_enqueue_style( 'fsd-style', plugins_url( 'style.min.css', __FILE__ ) );
+		wp_enqueue_style( 'fsd-style', plugins_url( 'fgstyle.min.css', __FILE__ ) );
 	}
 
 	public function fsd_scripts( $param, $num ) {

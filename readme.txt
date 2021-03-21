@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.30
-Stable tag: 9.7.6.30
+Version: 9.7.6.31
+Stable tag: 9.7.6.31
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.2
@@ -317,6 +317,9 @@ updated netscapeparser class: icon contents are embedded so that icons of chrome
 formatting output as table and with larger headline/link and displaying url text
 add human time diff to date and format date local europe
 
+
+= 9.7.6.31 =
+style fixes
 
 = 9.7.6.28 =
 ics fixes if invalid or empty ics file is downloaded from url

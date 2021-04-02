@@ -692,7 +692,8 @@ function fg_init_handle_download() {
 			$gallery_code = '<div class="fg_gallery">';
 		}		
 		// Sortierselectbox
-		$gallery_code.= '<div style="text-align:right"><form name="sorter" method="get"> <select name="sort">';
+		global $wp;
+		$gallery_code.= '<div style="margin-top:-1.4em;margin-bottom:5px"><form name="sorter" method="get">Sortierung <select name="sort" onchange="document.location.href=\'' . add_query_arg( array('sort'=>'\' + this.options[this.selectedIndex].value;'), home_url( $wp->request ) ). '">';
 		$gallery_code.=	'<option value="filename"';
 		if ( 'filename' == $sort ) $gallery_code.= ' selected="selected"';
 		$gallery_code.= '>' . __( 'Filename', 'foldergallery' ) . '</option>' ;		
@@ -714,8 +715,7 @@ function fg_init_handle_download() {
 		$gallery_code.=	'<option value="random"';
 		if ( 'random' == $sort ) $gallery_code.= ' selected="selected"';
 		$gallery_code.= '>' . __( 'Random', 'foldergallery' ) . '</option>' ;
-		$gallery_code.='</select><input type="submit" value="sortieren" /></form></div>';
-
+		$gallery_code.='</select><input class="screen-reader-text" type="submit" value="sortieren" /></form></div>';
 		
 		// Default single thumbnail
 		$thumbnail_idx = 0;

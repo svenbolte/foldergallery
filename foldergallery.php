@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.31
-Stable tag: 9.7.6.31
+Version: 9.7.6.33
+Stable tag: 9.7.6.33
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.4
@@ -494,7 +494,7 @@ function fg_init_handle_download() {
 		$search='';
 		if (isset($_GET['search'])) { $search = sanitize_text_field( $_GET['search'] ); }
 		$nb_elem_per_page = 25;
-		$number_of_pages = intval(count($files)/$nb_elem_per_page)+1;
+		$number_of_pages = intval(ceil(count($files)/$nb_elem_per_page));
 		$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 		// ausgeben
 		$gallery_code = '<div style="text-align:right"><form name="sorter" method="get"> '.intval(count($files)).' Dateien';
@@ -539,7 +539,7 @@ function fg_init_handle_download() {
 		$gallery_code.='</table>';
 		$gallery_code .= __( 'file', 'foldergallery' ).' ('. (($seite - 1) * $nb_elem_per_page + 1) .' - '.($seite * $nb_elem_per_page ).') &nbsp; '. $fcount.' '.__( 'files with', 'foldergallery' ). ' &nbsp; '.$this->file_size($totalsize);
 		// Page Navigation Footer
-		if ( empty($search)) {
+		if ( empty($search) ) {
 			/* Pagination links:  calculate and set previous and next page values */
 			global $wp;
 			$previous = $seite - 1;
@@ -876,44 +876,46 @@ function fg_init_handle_download() {
 	
 		/* Pagination links:  calculate and set previous and next page values */
 		global $wp;
-		$totalpages=intval($NoP / $thumbpagination + 1);
-		$previous = $seite - 1;
-		$next = $seite + 1;
-		$start_page = 1;
-		$pages_to_left = 3;
-		$pages_to_right = 3;
-		$gallery_code .= '<div class="nav-links" style="text-align:center">';
-		/* show previous pages to the left and right */
-		if ($seite <= $totalpages && $seite > $start_page + $pages_to_left) {
-			$start_page = $seite - $pages_to_left;
-		}
-		if ($seite <= $totalpages && $seite > $start_page - $pages_to_right) {
-			$end_page = $seite + $pages_to_right;
-			if ($seite == $totalpages || $seite + 1 == $totalpages || $seite + 2 == $totalpages || $seite + 3 == $totalpages) {
+		$totalpages=intval(ceil($NoP / $thumbpagination) );
+		if ( $totalpages > 1 ) {
+			$previous = $seite - 1;
+			$next = $seite + 1;
+			$start_page = 1;
+			$pages_to_left = 3;
+			$pages_to_right = 3;
+			$gallery_code .= '<div class="nav-links" style="text-align:center">';
+			/* show previous pages to the left and right */
+			if ($seite <= $totalpages && $seite > $start_page + $pages_to_left) {
+				$start_page = $seite - $pages_to_left;
+			}
+			if ($seite <= $totalpages && $seite > $start_page - $pages_to_right) {
+				$end_page = $seite + $pages_to_right;
+				if ($seite == $totalpages || $seite + 1 == $totalpages || $seite + 2 == $totalpages || $seite + 3 == $totalpages) {
+					$end_page = $totalpages;
+				}
+			} else {
 				$end_page = $totalpages;
 			}
-		} else {
-			$end_page = $totalpages;
+			/* show previous button and first page */
+			if ($seite > 1) {
+				$gallery_code .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($previous) .'&sort='.$sort .'">&laquo;</a>';
+				if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="'.__( 'first page', 'foldergallery' ).' (Fotos 1-'.$thumbpagination.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite=1&sort='.$sort .'">1</a> &hellip;';
+			}
+			/* display pages */
+			for ($page = $start_page; $page <= $end_page; $page++) {
+				if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .=' <a title="Fotos '.(($page - 1) * $thumbpagination + 1)  . '-' .($page * $thumbpagination) . ' " class="'.$klasse.'" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($page) .'&sort='.$sort .'">'. ($page) .'</a>';
+			}
+			/* show last page button */
+			if ($end_page + $pages_to_right <= $totalpages || $end_page != $totalpages) {
+				if ( $totalpages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
+				$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' (Fotos '.(($totalpages -1) * $thumbpagination + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($totalpages) .'&sort='.$sort .'">'.$totalpages.'</a>';
+			}
+			/* show next button */
+			if ($seite < $totalpages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($next) .'&sort='.$sort .'">&raquo;</a>'; }
+			$gallery_code .= '</div>';
+			// Pagination links Ende
 		}
-		/* show previous button and first page */
-		if ($seite > 1) {
-			$gallery_code .= '<a title="'.__( 'previous page', 'foldergallery' ).' ('.$previous.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($previous) .'&sort='.$sort .'">&laquo;</a>';
-			if ($seite > $pages_to_left + 1) $gallery_code .= ' <a title="'.__( 'first page', 'foldergallery' ).' (Fotos 1-'.$thumbpagination.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite=1&sort='.$sort .'">1</a> &hellip;';
-		}
-		/* display pages */
-		for ($page = $start_page; $page <= $end_page; $page++) {
-			if ( $page <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-			$gallery_code .=' <a title="Fotos '.(($page - 1) * $thumbpagination + 1)  . '-' .($page * $thumbpagination) . ' " class="'.$klasse.'" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($page) .'&sort='.$sort .'">'. ($page) .'</a>';
-		}
-		/* show last page button */
-		if ($end_page + $pages_to_right <= $totalpages || $end_page != $totalpages) {
-			if ( $totalpages <> intval($seite) ) { $klasse="page-numbers"; } else { $klasse="page-numbers current"; }
-			$gallery_code .= ' &hellip; <a title="'.__( 'last page', 'foldergallery' ).' (Fotos '.(($totalpages -1) * $thumbpagination + 1).'-'.$NoP.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($totalpages) .'&sort='.$sort .'">'.$totalpages.'</a>';
-		}
-		/* show next button */
-		if ($seite < $totalpages) { $gallery_code .= ' <a title="'.__( 'next page', 'foldergallery' ).' ('.$next.')" class="page-numbers" href="'.add_query_arg( array(), home_url($wp->request) ).'?seite='.($next) .'&sort='.$sort .'">&raquo;</a>'; }
-		$gallery_code .= '</div>';
-		// Pagination links Ende		
 		return $gallery_code;
 	}
 
@@ -2499,7 +2501,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		global $wp;
 		$sortorder='asc';
 		$nb_elem_per_page = 20;
-		$number_of_pages = intval(count($row_values)/$nb_elem_per_page)+1;
+		$number_of_pages = intval(ceil(count($row_values)/$nb_elem_per_page));
 		$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 		foreach( $header_values as $hv) 
         {
@@ -2611,7 +2613,7 @@ function t5_feed_shortcode( $attrs )
 	$excerpt = $args[ 'excerpt' ];
 	$wordcount= intval($args[ 'wordcount' ]);
 	$lis = array();
-	$number_of_pages = intval(count($feed->get_items(0, $limit))/$nb_elem_per_page);
+	$number_of_pages = intval(ceil(count($feed->get_items(0, $limit))/$nb_elem_per_page));
 	$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 	foreach (array_slice($feed->get_items(0, $limit), ($seite - 1)*$nb_elem_per_page, $nb_elem_per_page) as $item) { 
 	// foreach ( $feed->get_items(0, $limit) as $item ) {    // oder alle unpaginiert anzeigen

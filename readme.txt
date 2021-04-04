@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.31
-Stable tag: 9.7.6.31
+Version: 9.7.6.33
+Stable tag: 9.7.6.33
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.2
@@ -305,6 +305,11 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 =
 
 == Changelog ==
+
+= 9.7.6.33 =
+page navigation styles and fixes
+if only one page, page navi is not shown
+german and formal translations updates
 
 = 9.7.6.30 =
 * Bookmark importer 9.0.3.4 merged. Tools/import bookmarks imports bookmarks to a single post that can be private

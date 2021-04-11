@@ -603,7 +603,7 @@ function fg_init_handle_download() {
 			'sort'	  => $fg_options['sort'],
 		), $atts ) );
 		if (isset($_GET['sort'])) {
-		  $sort = $_GET['sort'];
+		  $sort = esc_url($_GET['sort']);
 		} 
 		
 		// 1.3 Compatibility
@@ -693,7 +693,7 @@ function fg_init_handle_download() {
 		}		
 		// Sortierselectbox
 		global $wp;
-		$gallery_code.= '<div style="margin-top:-1.4em;margin-bottom:5px"><form name="sorter" method="get">Sortierung <select name="sort" onchange="document.location.href=\'' . add_query_arg( array('sort'=>'\' + this.options[this.selectedIndex].value;'), home_url( $wp->request ) ). '">';
+		$gallery_code.= '<div style="margin-bottom:5px"><form name="sorter" method="get">Sortierung <select name="sort" onchange="document.location.href=\'' . add_query_arg( array('sort'=>'\' + this.options[this.selectedIndex].value;'), home_url( $wp->request ) ). '">';
 		$gallery_code.=	'<option value="filename"';
 		if ( 'filename' == $sort ) $gallery_code.= ' selected="selected"';
 		$gallery_code.= '>' . __( 'Filename', 'foldergallery' ) . '</option>' ;		
@@ -2178,8 +2178,8 @@ if( !class_exists('csvtohtmlwp') ) {
         extract ( $args );
 		
 		// Sort order from url parameter
-		if (isset($_GET['sort'])) { $sort_cols = $_GET['sort']; }
-		if (isset($_GET['order'])) { $sort_cols_order = $_GET['order']; }
+		if (isset($_GET['sort'])) { $sort_cols = esc_url($_GET['sort']); }
+		if (isset($_GET['order'])) { $sort_cols_order = esc_url($_GET['order']); }
 		
         $this->csv_delimit = $csv_delimiter; //Use this char as delimiter
       
@@ -2505,7 +2505,7 @@ if( !class_exists('csvtohtmlwp') ) {
 		$seite = isset($_GET['seite'])?intval($_GET['seite']):1;
 		foreach( $header_values as $hv) 
         {
-			if (isset($_GET['order'])) { if ( $_GET['order'] == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
+			if (isset($_GET['order'])) { if ( esc_url($_GET['order']) == 'asc' ) { $sortorder = 'desc'; } else { $sortorder='asc'; } } else { $sort_order = 'desc'; }
             $key = array_search($hv, $header_ori_values)+1;
 			$html .= '<th class="colset colset-' . $nr_col . '"><a title="Sortieren" href="'.add_query_arg( array('sort'=>$nr_col, 'order'=>$sortorder,'search'=>$search,'seite'=>$seite), home_url($wp->request) ).'">' . $hv;
 			if (isset($_GET['order']) && $_GET['order'] == 'desc' && $_GET['sort'] == $nr_col) $html.='<i class="fa fa-angle-down"></i>';
@@ -3220,15 +3220,38 @@ return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
 
-//
-// ***************************   Import Bookmarks Klassen ***************************************************
-//
+// Zufallsbild aus angegebenen Folder holen und anzeigen
+function get_random_img($atts) {
+    $args = shortcode_atts( array (	'dir' => 'wp-content/uploads/bilder/0000-xx-automietwagen'), $atts );
+	$dir=$args['dir'];
+	$arr = array();
+    $list = scandir($dir);
+    foreach ($list as $file) {
+        if (!isset($img)) { $img = ''; }
+        if (is_file($dir . '/' . $file)) {
+            $ext = end(explode('.', $file));
+            if ($ext == 'gif' || $ext == 'jpeg' || $ext == 'jpg' || $ext == 'png' || $ext == 'GIF' || $ext == 'JPEG' || $ext == 'JPG' || $ext == 'PNG') {
+                array_push($arr, $file);
+                $img = $file;
+            }
+        }
+    }
+    if ($img != '') {
+        $img = array_rand($arr);
+        $img = $arr[$img];
+		$img = str_replace("'", "\'", $img);
+		$img = str_replace(" ", "%20", $img);
+		$imgout = '<img style="width:100%;max-width:100%" title="'.$img.'" src="'.get_home_url().'/'.$dir.'/'.$img.'">';
+    } else { $imgout =''; }
+	return $imgout;
+}
+add_shortcode( 'getrandomimage', 'get_random_img' );
 
-/**
- * Generic Netscape bookmark parser
- */
-class NetscapeBookmarkParser
-{
+
+// ***************************   Import Bookmarks Klassen ***************************************************
+
+// Generic Netscape bookmark parser
+class NetscapeBookmarkParser {
     protected $keepNestedTags;
     protected $defaultTags;
     protected $defaultPub;

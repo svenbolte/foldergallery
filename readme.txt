@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.33
-Stable tag: 9.7.6.33
+Version: 9.7.6.35
+Stable tag: 9.7.6.35
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.2
@@ -305,6 +305,11 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 =
 
 == Changelog ==
+
+= 9.7.6.35 =
+shortcode for displaying a random pic from a given folder and its subfolders.
+cache folders are excluded automatically
+if lightbox is enabled, it will be used.
 
 = 9.7.6.33 =
 page navigation styles and fixes

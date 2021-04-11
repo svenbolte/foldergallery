@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.33
-Stable tag: 9.7.6.33
+Version: 9.7.6.35
+Stable tag: 9.7.6.35
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.4
@@ -3220,16 +3220,34 @@ return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
 
-// Zufallsbild aus angegebenen Folder holen und anzeigen
+// =======================   Zufallsbild aus angegebenen Folder holen und anzeigen  ===================================
+function scanAllDir($dir) {
+  $result = [];
+  if (is_dir($dir)) foreach(scandir($dir) as $filename) {
+    if ($filename[0] === '.') continue;
+    $filePath = $dir . '/' . $filename;
+    if (is_dir($filePath) && strpos($filePath,'cache') == 0 ) {
+      foreach (scanAllDir($filePath) as $childFilename) {
+        $result[] = $filename . '/' . $childFilename;
+      }
+    } else {
+      $result[] = $filename;
+    }
+  }
+  return $result;
+}
+
 function get_random_img($atts) {
-    $args = shortcode_atts( array (	'dir' => 'wp-content/uploads/bilder/0000-xx-automietwagen'), $atts );
+    $img='';
+	$args = shortcode_atts( array (	'dir' => 'wp-content/uploads/bilder'), $atts );
 	$dir=$args['dir'];
 	$arr = array();
-    $list = scandir($dir);
+    $list = scanAllDir($dir);
     foreach ($list as $file) {
         if (!isset($img)) { $img = ''; }
         if (is_file($dir . '/' . $file)) {
-            $ext = end(explode('.', $file));
+            $exttmp = explode('.', $file);
+			$ext = end($exttmp);
             if ($ext == 'gif' || $ext == 'jpeg' || $ext == 'jpg' || $ext == 'png' || $ext == 'GIF' || $ext == 'JPEG' || $ext == 'JPG' || $ext == 'PNG') {
                 array_push($arr, $file);
                 $img = $file;
@@ -3241,15 +3259,14 @@ function get_random_img($atts) {
         $img = $arr[$img];
 		$img = str_replace("'", "\'", $img);
 		$img = str_replace(" ", "%20", $img);
-		$imgout = '<img style="width:100%;max-width:100%" title="'.$img.'" src="'.get_home_url().'/'.$dir.'/'.$img.'">';
+		$imgshowpath = str_replace("wp-content/uploads/","",$dir);
+		$imgout = '<a class="fancybox-gallery" href="'.get_home_url().'/'.$dir.'/'.$img.'"><img style="width:100%;max-width:100%" title="Zum Vergößern klicken&#10;Stammordner:  '.$imgshowpath.'&#10;Bild: '.$img.'" src="'.get_home_url().'/'.$dir.'/'.$img.'"></a>';
     } else { $imgout =''; }
 	return $imgout;
 }
 add_shortcode( 'getrandomimage', 'get_random_img' );
 
-
 // ***************************   Import Bookmarks Klassen ***************************************************
-
 // Generic Netscape bookmark parser
 class NetscapeBookmarkParser {
     protected $keepNestedTags;
@@ -3286,20 +3303,14 @@ class NetscapeBookmarkParser {
     }
     /**
      * Parses a Netscape bookmark file
-     *
-     * @param string $filename Bookmark file to parse
-     *
-     * @return array An associative array containing parsed links
+     * @param string $filename Bookmark file to parse * @return array An associative array containing parsed links
      */
-    public function parseFile($filename)
-    {
+    public function parseFile($filename) {
         return $this->parseString(\file_get_contents($filename));
     }
     /**
      * Parses a string containing Netscape-formatted bookmarks
-     *
      * Output format:
-     *
      *     Array
      *     (
      *         [0] => Array
@@ -3319,11 +3330,9 @@ class NetscapeBookmarkParser {
      *     )
      *
      * @param string $bookmarkString String containing Netscape bookmarks
-     *
      * @return array An associative array containing parsed links
      */
-    public function parseString($bookmarkString)
-    {
+    public function parseString($bookmarkString) {
         $i = 0;
         $next = \false;
         $folderTags = array();
@@ -3398,17 +3407,12 @@ class NetscapeBookmarkParser {
     }
     /**
      * Parses a formatted date
-     *
-     * @see http://php.net/manual/en/datetime.formats.compound.php
-     * @see http://php.net/manual/en/function.strtotime.php
-     *
      * @param string $date formatted date
      *
      * @return int Unix timestamp corresponding to a successfully parsed date,
      *             else current date and time
      */
-    public function parseDate($date)
-    {
+    public function parseDate($date) {
         if (\strtotime('@' . $date)) {
             // Unix timestamp
             if ($this->normalizeDates) {
@@ -3432,20 +3436,10 @@ class NetscapeBookmarkParser {
      * some services return microtime epochs (microseconds elapsed since
      * 1970-01-01 00:00:00.000000) WITHOUT using a delimiter for the microseconds
      * part...
-     *
-     * This is likely to raise issues in the distant future!
-     *
-     * @see https://stackoverflow.com/questions/33691428/datetime-with-microseconds
-     * @see https://stackoverflow.com/questions/23929145/how-to-test-if-a-given-time-stamp-is-in-seconds-or-milliseconds
-     * @see https://stackoverflow.com/questions/539900/google-bookmark-export-date-format
-     * @see https://www.wired.com/2010/11/1110mars-climate-observer-report/
-     *
      * @param string $epoch     Unix timestamp to normalize
-     *
      * @return string Unix timestamp in seconds, within the expected range
      */
-    public function normalizeDate($epoch)
-    {
+    public function normalizeDate($epoch) {
         $date = new \DateTime('@' . $epoch);
         $maxDate = new \DateTime('+' . $this->dateRange);
         for ($i = 1; $date > $maxDate; $i++) {
@@ -3463,8 +3457,7 @@ class NetscapeBookmarkParser {
      *               'false' when the value is evaluated as false
      *               $this->defaultPub if the value is not a boolean
      */
-    public function parseBoolean($value)
-    {
+    public function parseBoolean($value) {
         if (!$value) {
             return \false;
         }
@@ -3491,8 +3484,7 @@ class NetscapeBookmarkParser {
      *
      * @return string Sanitized bookmark string
      */
-    public static function sanitizeString($bookmarkString)
-    {
+    public static function sanitizeString($bookmarkString) {
         $sanitized = $bookmarkString;
         // trim comments
         $sanitized = \preg_replace('@<!--.*?-->@mis', '', $sanitized);
@@ -3532,8 +3524,7 @@ class NetscapeBookmarkParser {
      *
      * @return string Sanitized space-separated list of tags
      */
-    public static function sanitizeTagString($tagString)
-    {
+    public static function sanitizeTagString($tagString) {
         $tags = \explode(' ', \strtolower($tagString));
         foreach ($tags as $key => &$value) {
             if (\ctype_alnum($value)) {

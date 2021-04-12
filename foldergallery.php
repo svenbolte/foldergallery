@@ -2784,15 +2784,17 @@ function ICSEvents($atts) {
 		} else {
 			if ( strpos($view,"widget") !== false ) {
 				if ( !empty($title) ) { $html .= '<abbr style="text-transform:uppercase">'.$title.'</abbr>'; }
+				$html .='<ul style="line-height:1.1em">';
 				foreach ($eventsToDisplay as $event) {
-				 	$html .= '<p>';
+				 	$html .= '<li>';
 					$timestamp = $ical->iCalDateToUnixTimestamp($event['DTSTART']);
 					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
 					$wielangeher = $prepo . human_time_diff($timestamp,$now);
 					if ( $wielangeher == 'vor 1 Sekunde' ) { $wielangeher = 'heute'; }
 					if ( $wielangeher !== 'heute' ) $html .= '<abbr>'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).' ' . $wielangeher.'</abbr> &nbsp; ';
-					$html .= $event['SUMMARY'] . '</p>';
-				}	
+					$html .= $event['SUMMARY'] . '</li>';
+				}
+				$html .='</ul>';
 			}	
 			if ( strpos($view,"list") !== false ) {
 				$html = '<table style="overflow-wrap:anywhere">';

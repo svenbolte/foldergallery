@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.35
-Stable tag: 9.7.6.35
+Version: 9.7.6.36
+Stable tag: 9.7.6.36
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.4
@@ -399,7 +399,6 @@ function fg_init_handle_download() {
 					$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 					if ( in_array( $ext, $extensions ) ) {
 						$filed[] = $file;
-						//$content .= $file . ",\n";
 					}	
 				}
 				closedir( $handle );
@@ -410,7 +409,7 @@ function fg_init_handle_download() {
 			}
 			@file_put_contents( $folder . '/descriptions-vorlage.txt', $content );
 		// List files
-		$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4";
+		$filetypes="pdf docx xlsx pptx vsdx pubx exe zip mp3 mp4 7z txt";
 		if (!wp_style_is( 'font-awesome', 'enqueued' )) {
 			$creatext='erstellt:'; $modtext='erstellt:';
 		}  else {
@@ -420,17 +419,15 @@ function fg_init_handle_download() {
 		$directory=$folder;
 		$extensions = explode(" ", $filetypes);
 		$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
+		wp_enqueue_style( 'filetye-style',  plugin_dir_url( __FILE__ ).'icons/filetypes.min.css' );
 		$files = array();
 		if( $handle = opendir( $directory ) ) {
 			while ( false !== ( $file = readdir( $handle ) ) ) {
 				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
 				if ( in_array( $ext, $extensions ) ) {
 					if ($file != '.' && $file != '..') {
-						if ( file_exists( plugin_dir_path( __FILE__ ).'icons/'.$ext.'.png' ) ) {
-							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/'.$ext.'.png' );
-						} else {
-							$fileicon = esc_url( plugin_dir_url(__FILE__). 'icons/_blank.png' );
-						}
+						$filetype = wp_check_filetype( $directory.'/'.$file );
+						$fileicon = '<i class="ftyp ftyp-'.strtolower($ext).'" title="'.$ext.'-Datei&#10;'.$filetype['type'].'"></i>';
 						$fcount ++;
 						$dateigroesse = $this->file_size(filesize($directory ."/". $file));
 						$mtime = date("Y-m-d H:i:s", filemtime($directory ."/". $file));
@@ -438,7 +435,7 @@ function fg_init_handle_download() {
 						$ctime = date("Y.m.d H:i:s", filectime($directory ."/". $file));
 						$ctimed = date("d.m.Y, H:i:s", filectime($directory ."/". $file));
 						$description = $this->filedescription($directory,$file);
-						$content = '<tr><td><img style="width:50px;height:auto;" src="' . $fileicon . '"></td><td style="vertical-align:middle">';
+						$content = '<tr><td>' . $fileicon . '</td><td style="vertical-align:middle">';
 						if ( 1 == $protect ) {
 							global $wp;
 							$hashwert = md5($folder ."/". $file . intval(date('Y-m-d H:i:s')) / 24 * 3600 );
@@ -446,8 +443,8 @@ function fg_init_handle_download() {
 						} else {
 							$dllink = '<a style="font-size:1.1em" title="'.strtoupper($ext).' anzeigen oder&#10;herunterladen" href="'. home_url() . "/". $folder ."/". $file.'">' . $file . ' </a>';
 						}
-						$content .= $dllink . '<abbr> &nbsp; <i class="fa fa-list-ol"></i> '.$fcount.' &nbsp; <i class="fa fa-arrows-h"></i> '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
-						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed .' ' . ago(strtotime($mtime)). ' &nbsp; ' . $description . '</abbr></td></tr>';
+						$content .= $dllink . '<br><abbr><i class="fa fa-list-ol"></i> '.$fcount.' &nbsp; <i class="fa fa-arrows-h"></i> '.$dateigroesse.'  &nbsp; '.$creatext.' '. $ctimed; 
+						$content .= ' &nbsp; ' . $modtext . ' ' . $mtimed .' ' . ago(strtotime($mtime)). '</abbr><div class="entry-content">' . $description . '</div></td></tr>';
 						$file_object = array(
 							'name' => $file,
 							'size' => filesize($directory ."/". $file),
@@ -462,7 +459,6 @@ function fg_init_handle_download() {
 			}
 			closedir( $handle );
 		}
-
 		// Sort files
 		switch ( $sort ) {
 			case 'size' :

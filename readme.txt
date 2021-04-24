@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.35
-Stable tag: 9.7.6.35
+Version: 9.7.6.36
+Stable tag: 9.7.6.36
 Requires at least: 5.1
 Tested up to: 5.7
 Requires PHP: 7.2
@@ -306,6 +306,9 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 
 == Changelog ==
 
+= 9.7.6.36 =
+filetype pngs changed to css sprite with one png
+
 = 9.7.6.35 =
 shortcode for displaying a random pic from a given folder and its subfolders.
 cache folders are excluded automatically
@@ -326,7 +329,6 @@ code optimizations and speed up.
 updated netscapeparser class: icon contents are embedded so that icons of chrome bookmarks show up in post
 formatting output as table and with larger headline/link and displaying url text
 add human time diff to date and format date local europe
-
 
 = 9.7.6.31 =
 style fixes

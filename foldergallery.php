@@ -5,7 +5,7 @@ Plugin URI: https://github.com/svenbolte/foldergallery
 Author URI: https://github.com/svenbolte
 Author: PBMod
 Description: Shortcodes for galleries and sliders from a folder or from recent posts. output directory contents with secure download links. show csv files from url or file as table, import rss-feeds as posts and store their images locally. Display ics from url as calendar. flexible advent calendar locally hosted. Export bookmarks from your browser and import them as a list in a new WordPress post.
-Tags: advent,adventskalender,gallery,folder,lightbox,slideshow,imagesliders,csv-folder-to-table,csv-to-table-from-url,rss-to-posts,ics-to-calendar
+Tags: advent,adventskalender,grusskarte,gallery,folder,lightbox,slideshow,imagesliders,csv-folder-to-table,csv-to-table-from-url,rss-to-posts,ics-to-calendar
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
@@ -1061,6 +1061,7 @@ function fg_init_handle_download() {
 		echo '<p><code>[rssdisplay excerpt="1" limit=30 paged=0 wordcount=25 url="https://domain.de/rss.xml" ]</code><br>'. __('shortcode to display rss feed in short or long form in pages/posts/html widgets', 'foldergallery' ) . '</p>';
 		echo '<p><code>[ics_events url="https://ssl.pbcs.de/dcounter/calendar-ics.asp?action=history" items="8" sumonly="1"]</code><br>'. __('shortcode to display ICS or ical events in list or calendar on pages/shortcodes or html widget', 'foldergallery' ) . '</p>';
 		echo '<p><code>[pbadventskalender pages="4236,4237,4238,4239,4225"]</code><br>'. __('shortcode to display an advent calendar in december, links can be given on parameter (permalinks or post IDs)', 'foldergallery' ) . '</p>';
+		echo '<p><code>[grusskarte]</code><br>'. __('shortcode to display a greeting card for several occasions with random picture, some with audio', 'foldergallery' ) . '</p>';
 		echo '</div>';
 		echo '<h3>' . __( 'Folder Gallery Settings', 'foldergallery' ) . "</h3>\n";
 		echo '<div class="postbox">' . "\n";
@@ -3217,6 +3218,86 @@ function pb_adventscal($atts) {
 return $output;
 } 
 add_shortcode( 'pbadventskalender', 'pb_adventscal' );
+
+// 
+// =================================   Grusskarte Shortcode ========================================================
+//
+function pb_grusskarte($atts) {
+	if ( ! is_admin() ) {
+		global $wp;
+		$output='';
+		if (isset($_GET['anlass'])) {
+			$anlass = sanitize_text_field($_GET['anlass']);
+		} else {
+			$anlass="Geburtstag";
+			$output .= '<div class="noprint" style="position:absolute;z-index:9999"><form style="float:left;" method="get" name="getanlass">';
+			$output .= '<select name="vselect" onchange="javascript:window.location.href = \''.home_url( $wp->request ).'?anlass=\' + document.getanlass.vselect.options[document.getanlass.vselect.selectedIndex].value;">';
+			$output .= '<option value="Geburtstag">Geburtstag</option>';
+			$output .= '<option value="Genesung">Genesung</option>';
+			$output .= '<option value="Fuehrerschein">Führerschein</option>';
+			$output .= '<option value="Hochzeit">Hochzeit</option>';
+			$output .= '<option value="Jubilaeum">Jubilaeum</option>';
+			$output .= '<option value="Muttertag">Muttertag</option>';
+			$output .= '<option value="Nachwuchs">Nachwuchs</option>';
+			$output .= '<option value="NeueArbeitsstelle">Neue Arbeitsstelle</option>';
+			$output .= '<option value="Ostern">Ostern</option>';
+			$output .= '<option value="Terminverpasst">Termin verpasst</option>';
+			$output .= '<option value="Weihnachten">Weihnachten</option>';
+			$output .= '</select></form></div>';
+		}	
+		date_default_timezone_set('Europe/Berlin');
+		setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');
+		// $args = shortcode_atts( array (	'' => 0 ), $atts );
+		$tody=date_i18n( 'l, j. F Y', false, false);
+		// Zufallszeile aus Sprüchen ermitteln
+		$ci=0;
+		$sprueche = array();
+		if (($handle = fopen("wp-content/plugins/foldergallery/public_grusskarten.csv", "r")) !== FALSE) {	
+			while (($line = fgetcsv($handle, 1000, ";")) !== FALSE ) {  
+				if ( strtolower($line[4]) == strtolower($anlass) ) {
+				$sprueche[$ci] = $line[6];
+				$ci += 1;
+				}
+			}
+		}	
+		// Zufallsbild aus angegebenen Ordner ermitteln
+		$wphome = get_home_url();
+		$folder = 'wp-content/plugins/foldergallery/images';
+		if ( !is_dir( $folder ) ) {
+			return '<p style="color:red;"><strong>' . __( 'Folder Gallery Error:', 'foldergallery' ) . '</strong> ' .
+				sprintf( __( 'Unable to find the directory %s.', 'foldergallery' ), $folder ) . '</p>';	
+		}
+		$filetypes="jpg png";
+		$directory=$folder;
+		$extensions = explode(" ", $filetypes);
+		$extensions = array_merge( array_map( 'strtolower', $extensions ) , array_map( 'strtoupper', $extensions ) );		
+		$files = array();
+		if( $handle = opendir( $directory ) ) {
+			while ( false !== ( $file = readdir( $handle ) ) ) {
+				$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
+				if ( in_array( $ext, $extensions ) ) {
+					if ($file != '.' && $file != '..' && strpos(strtolower($file), strtolower($anlass))) {
+						$files[] = $file;
+					}	
+				}	
+			}
+			closedir( $handle );
+		}
+		if (count($files)>0) {
+			$zufbild = random_int(0, count($files)-1);
+			$output .= '<div class="illustration" style="border-radius:3px;position:relative;height:550px;width:100%;background-image: url('.$wphome.'/'.$folder.'/'.$files[$zufbild].')">';
+			$output .= '<div style="padding:10px;font-family:cursive;position:absolute;top:10%;left:15%;right:15%;width:75%;background:rgba(222,222,222,.8);font-size:1.5em;text-align:center">';
+			$output .= '<span style="font-size:2em">'.$anlass.'</span><br><br>'.$sprueche[rand(0, count($sprueche) - 1)].'<br><br>'.$tody;
+			$output .= '</div></div>';  
+			$musifile = plugin_dir_path( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';
+			$musiurl = plugin_dir_URL( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';
+			if (file_exists($musifile)) $output .= '<audio style="width:100%" controls src="'.$musiurl.'"></audio>';
+		}
+		return $output;
+	}	
+} 
+add_shortcode( 'grusskarte', 'pb_grusskarte' );
+
 
 // =======================   Zufallsbild aus angegebenen Folder holen und anzeigen  ===================================
 function scanAllDir($dir) {

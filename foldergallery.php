@@ -3291,7 +3291,7 @@ function pb_grusskarte($atts) {
 			$output .= '</div></div>';  
 			$musifile = plugin_dir_path( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';
 			$musiurl = plugin_dir_URL( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';
-			if (file_exists($musifile)) $output .= '<audio style="width:100%" controls src="'.$musiurl.'"></audio>';
+			if (file_exists($musifile)) $output .= '<audio class="noprint" controlsList="nodownload" style="width:100%" controls src="'.$musiurl.'"></audio>';
 		}
 		return $output;
 	}	

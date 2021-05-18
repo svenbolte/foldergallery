@@ -3226,6 +3226,11 @@ function pb_grusskarte($atts) {
 	if ( ! is_admin() ) {
 		global $wp;
 		$output='';
+		if (isset($_GET['an'])) {
+			$an = sanitize_text_field($_GET['an']) . '. ';
+		} else {
+			$an = '';
+		}	
 		if (isset($_GET['anlass'])) {
 			$anlass = sanitize_text_field($_GET['anlass']);
 		} else {
@@ -3287,7 +3292,7 @@ function pb_grusskarte($atts) {
 			$zufbild = random_int(0, count($files)-1);
 			$output .= '<div class="illustration" style="border-radius:3px;position:relative;height:550px;width:100%;background-image: url('.$wphome.'/'.$folder.'/'.$files[$zufbild].')">';
 			$output .= '<div style="padding:10px;font-family:cursive;position:absolute;top:10%;left:15%;right:15%;width:75%;background:rgba(222,222,222,.8);font-size:1.5em;text-align:center">';
-			$output .= '<span style="font-size:2em">'.$anlass.'</span><br><br>'.$sprueche[rand(0, count($sprueche) - 1)].'<br><br>'.$tody;
+			$output .= '<span style="font-size:2em">'.$anlass.'</span><br><br>'.$an.$sprueche[rand(0, count($sprueche) - 1)].'<br><br>'.$tody;
 			$output .= '</div></div>';  
 			$musifile = plugin_dir_path( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';
 			$musiurl = plugin_dir_URL( __FILE__ ).'images/gru-'.strtolower($anlass).'.mp3';

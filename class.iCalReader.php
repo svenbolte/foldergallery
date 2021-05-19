@@ -40,7 +40,7 @@ class ICal
 		// Download der ICS Datei 5 Stunden cachen	
 		if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()) . get_the_ID(); }
 		$cache_key = 'ics-shortcode-' . $iswidget . '-' . md5($filename);
-		// delete_site_transient($cache_key);  // zum Cache löschen die folgende Zeile aktivieren
+		  // delete_site_transient($cache_key);  // zum Cache löschen die folgende Zeile aktivieren XXX
 		$lines = get_site_transient($cache_key);
 		if (empty($lines)) {
 			$lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

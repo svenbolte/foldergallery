@@ -10,10 +10,10 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.36
-Stable tag: 9.7.6.36
+Version: 9.7.6.37
+Stable tag: 9.7.6.37
 Requires at least: 5.1
-Tested up to: 5.7
+Tested up to: 5.7.2
 Requires PHP: 7.4
 */
 
@@ -1964,12 +1964,9 @@ if( !class_exists('csvtohtmlwp') ) {
 
     /*
      *   Create object from given sourcetype
-     * 
      *  Returns an object based on sourcetype given by user
-     * 
      *  @param  string $source_type     source type from user
      *  @return   object $obj                     
-     *                 
      */    
     private function object_fromsourcetype( $source_type ) {
 		// require_once( 'guess.php' ); 
@@ -1980,9 +1977,7 @@ if( !class_exists('csvtohtmlwp') ) {
     
     /*
      *   adjust_columns
-     * 
      *  This function is a helper function for including or excluding columns in the final html table
-     * 
      *  @param  string $what_columns             What columns it is about (1,2,3,7-12)
      *  @return   array                                        What columns to use
      *                 
@@ -2207,33 +2202,24 @@ if( !class_exists('csvtohtmlwp') ) {
 
         //Create an array of ("csv content")
         $content_arr = array();
-        
-        foreach( $sources as $s) 
-        {
+        foreach( $sources as $s) {
             //If $s(file) misses an extension add csv extension to filename(s)
             //if add extension auto is set to yes (yes is default)
             if (stristr($s, '.csv') === false && $add_ext_auto === 'yes') {
                 $file = $s . '.csv';
-            }
-            else {
+            } else {
                 $file = $s;
             }
           
             //Add array item with content from file(s)
-        
             //If source file do not have http or https in it or if path is given, then it's a local file
             $local_file = true;
-            
-            if ( stristr($file, 'http') !== false || stristr($file, 'https') !== false )
-            {
+            if ( stristr($file, 'http') !== false || stristr($file, 'https') !== false ) {
                 $local_file = false;
             }                    
             
-
-            
             //Load external file and add it into array
-            if ( $local_file === false ) 
-            {         
+            if ( $local_file === false ) {         
                 $file_arr = false;
                 //Check if (external) file exists
                 $wp_response = wp_remote_get($file);
@@ -2241,9 +2227,8 @@ if( !class_exists('csvtohtmlwp') ) {
                 $ret_message = wp_remote_retrieve_response_message( $wp_response );
 
                 //200 OK               
-                if ( $ret_code === 200)
-                {
-					// Download der ICS Datei 1 Stunde cachen	
+                if ( $ret_code === 200) {
+					// Download der CSV Datei 1 Stunde cachen	
 					if (!in_the_loop () || !is_main_query ()) { $iswidget = 'widget'; } else { $iswidget = get_post_type( get_the_ID()) . get_the_ID(); }
 					$cache_key = 'foldergallery-' . $iswidget . '-' . md5($file);
 					$body_data = get_site_transient($cache_key);
@@ -2256,12 +2241,11 @@ if( !class_exists('csvtohtmlwp') ) {
 							 set_site_transient($cache_key, $body_data, 3600);   // 4debug: auf 0 setzen, wenn neu geladen werden muss
 						 }
 					}
-					
-					// $body_data = wp_remote_retrieve_body( $wp_response );                        
-
-                    //What end of line to use when handling file(s)
-                    switch (strtolower( $eol_detection ) ) 
-                    {
+					// Debug XXX nocache
+					// $body_data = wp_remote_retrieve_body( $wp_response );  
+				
+					//What end of line to use when handling file(s)
+                    switch (strtolower( $eol_detection ) ) {
                         case 'auto':
                             $use_eol = $this->detect_eol ( $body_data ); 
                             break;
@@ -2279,7 +2263,6 @@ if( !class_exists('csvtohtmlwp') ) {
 
                     //Explode array with selected end of line
                     $file_arr = explode( $use_eol, $body_data);
-
                     //remove last item from array
                     $x = count ( $file_arr ) - 1;
                     unset ( $file_arr[$x] );
@@ -2297,28 +2280,20 @@ if( !class_exists('csvtohtmlwp') ) {
                 
                 //Put an array with content into this array item
                 //(but only if  array has been created from file/url)
-                if ( $file_arr !== false ) 
-                {
+                if ( $file_arr !== false ) {
                     //Put an array with csv content into this array item                    
                     $content_arr[] = array_map(function($v){return str_getcsv($v, $this->csv_delimit);}, $file_arr);   
                 }
             }
             
             //Load local file into content array
-            if ( $local_file === true ) 
-            {
-                
-                if ( strlen( $path ) > 0 ) 
-                {
+            if ( $local_file === true ) {
+                if ( strlen( $path ) > 0 ) {
                     $file = $upload_basedir . '/' . $path . '/' . $file; //File from uploads folder and path
-                }
-                else 
-                {
+                } else {
                     $file = $upload_basedir . '/' . $file; //File directly from root upload folder
                 }
-                
-                if (file_exists($file)) 
-                {                                        
+                if (file_exists($file)) {                                        
                     //Put an array with csv content into this array item
                     $content_arr[] = array_map(function($v){return str_getcsv($v, $this->csv_delimit);}, file( $file ));                    
                 }
@@ -2672,7 +2647,7 @@ function t5_feed_shortcode( $attrs )
 }
 
 // 
-// ----------------------------- Shortcode, um ICS und ICAL Kalender einzuzeigen (6h Cached) auf einer Seite/ Beitrag anzuzeigen --------------------------
+// ----------------------------- Shortcode, um ICS und ICAL Kalender einzuzeigen (6h Cached in class.icalreader) auf einer Seite/ Beitrag anzuzeigen --------------------------
 //
 
 require_once 'class.iCalReader.php';
@@ -2788,7 +2763,13 @@ function ICSEvents($atts) {
 					if ( $timestamp > $now ) { $prepo = 'in '; } else { $prepo = 'vor '; }
 					$wielangeher = $prepo . human_time_diff($timestamp,$now);
 					if ( $wielangeher == 'vor 1 Sekunde' ) { $wielangeher = 'heute'; }
-					if ( $wielangeher !== 'heute' ) $html .= '<abbr>'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).' ' . $wielangeher.'</abbr> &nbsp; ';
+					if ( $wielangeher == 'in 1 Tag' ) { $wielangeher = 'morgen'; }
+					if ( $wielangeher == 'in 2 Tag' ) { $wielangeher = 'übermorgen'; }
+					if ( $wielangeher !== 'heute' && $wielangeher !== 'morgen' && $wielangeher !== 'übermorgen' ) {
+						$html .= '<abbr>'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).' ' . $wielangeher.'</abbr> &nbsp; ';
+					} else {
+						$html .= '<abbr title="'.$wtage[date('N', $timestamp)].' ' . strftime('%e. %b', $timestamp).'">'. $wielangeher.'</abbr> &nbsp; ';						
+					}
 					$html .= $event['SUMMARY'] . '</li>';
 				}
 				$html .='</ul>';
@@ -2817,6 +2798,7 @@ function ICSEvents($atts) {
 					}
 					if ( $sumonly==0 && !empty($event['LOCATION']) && '-' !== $event['LOCATION'] ) {
 						$html .= ' <br>'.$event['LOCATION'].'';
+						if ( strpos($event['LOCATION'], 'ISO=')) $html .= ' &nbsp; ' . do_shortcode('[ipflag iso='.substr($event['LOCATION'], -2,2) .']');
 					}
 					if (strlen($event['DTSTART']) > 8) {
 						$html .= '<br>'.strftime('%a %d. %b %Y %H:%M', $timestamp).' Uhr';
@@ -3227,7 +3209,7 @@ function pb_grusskarte($atts) {
 		global $wp;
 		$output='';
 		if (isset($_GET['an'])) {
-			$an = sanitize_text_field($_GET['an']) . '. ';
+			$an = sanitize_text_field($_GET['an']) . ' &nbsp; ';
 		} else {
 			$an = '';
 		}	
@@ -3236,7 +3218,8 @@ function pb_grusskarte($atts) {
 		} else {
 			$anlass="Geburtstag";
 			$output .= '<div class="noprint" style="position:absolute;z-index:9999"><form style="float:left;" method="get" name="getanlass">';
-			$output .= '<select name="vselect" onchange="javascript:window.location.href = \''.home_url( $wp->request ).'?anlass=\' + document.getanlass.vselect.options[document.getanlass.vselect.selectedIndex].value;">';
+			$output .= '<input style="padding:6.5px;vertical-align:top" type="text" placeholder="Kartenanrede" name="an" id="an" value="'.$an.'">';
+			$output .= ' <select name="vselect" onchange="javascript:window.location.href = \''.home_url( $wp->request ).'?anlass=\' + document.getanlass.vselect.options[document.getanlass.vselect.selectedIndex].value+ \'&an=\' + document.getanlass.an.value;">';
 			$output .= '<option value="Geburtstag">Geburtstag</option>';
 			$output .= '<option value="Genesung">Genesung</option>';
 			$output .= '<option value="Fuehrerschein">Führerschein</option>';
@@ -3248,7 +3231,7 @@ function pb_grusskarte($atts) {
 			$output .= '<option value="Ostern">Ostern</option>';
 			$output .= '<option value="Terminverpasst">Termin verpasst</option>';
 			$output .= '<option value="Weihnachten">Weihnachten</option>';
-			$output .= '</select></form></div>';
+			$output .= '</select> <input type="submit" value="erstellen"></form></div>';
 		}	
 		date_default_timezone_set('Europe/Berlin');
 		setlocale(LC_ALL, 'de_DE.UTF-8', 'German_Germany');

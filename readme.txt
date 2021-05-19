@@ -2,10 +2,10 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.36
-Stable tag: 9.7.6.36
+Version: 9.7.6.37
+Stable tag: 9.7.6.37
 Requires at least: 5.1
-Tested up to: 5.7
+Tested up to: 5.7.2
 Requires PHP: 7.2
 
 This plugin generates file listings, picture galleries and Sliders from a folder using three types of shortcodes.
@@ -305,6 +305,10 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 =
 
 == Changelog ==
+
+= 9.7.6.37 =
+Create greeting cards with and without public domain sounds and royalty free Images. [grusskarte] Shortcode can be 
+added on a page or post to display. Link to generated card can be copied to clipboard
 
 = 9.7.6.36 =
 filetype pngs changed to css sprite with one png

@@ -2,8 +2,8 @@
 Contributors: wibergsweb,vjalby,PBMod
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Version: 9.7.6.37
-Stable tag: 9.7.6.37
+Version: 9.7.6.38
+Stable tag: 9.7.6.38
 Requires at least: 5.1
 Tested up to: 5.7.2
 Requires PHP: 7.2
@@ -239,7 +239,10 @@ You can click on the header titles to sort toggling from asc to desc or give url
 [rssdisplay url="https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&amp;items=30&amp;shopid=" excerpt="1" wordcount="20" ]
 
             'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
-			'excerpt' => '0',
+			'excerpt' => '0',   // mit 1 wird ein Textauszug importiert, mit 0 der volle Text bis zum Wordlimit
+			'wordcount' => 25, // soll ein voller Artikel (Fulltext) gezogen werden, limit auf 99999 setzen
+			'paged' => 0,  // paginierung bei der Liste einschalten mit 1
+			'limit' => 30   // Paginierung neue Seite nach Limit Wert
 
 =
 ========================================= iCalendar Shortcode ics event =================================================================================
@@ -305,6 +308,9 @@ Für eigene Motive bitte in einen Ordner hochladen und folder= Pfad angeben
 =
 
 == Changelog ==
+
+= 9.7.6.38 =
+Fixes for RSSImport and RSSDisplay: display full content uf available OR excerpt
 
 = 9.7.6.37 =
 Create greeting cards with and without public domain sounds and royalty free Images. [grusskarte] Shortcode can be 

@@ -10,8 +10,8 @@ License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: foldergallery
 Domain Path: /languages
-Version: 9.7.6.37
-Stable tag: 9.7.6.37
+Version: 9.7.6.38
+Stable tag: 9.7.6.38
 Requires at least: 5.1
 Tested up to: 5.7.2
 Requires PHP: 7.4
@@ -2562,16 +2562,15 @@ $csvtohtmlwp = new csvtohtmlwp();
 //
 
 add_shortcode( 'rssdisplay', 't5_feed_shortcode' );
-
 function t5_feed_shortcode( $attrs )
 {
     $args = shortcode_atts(
         array (
             'url' => 'https://ssl.pbcs.de/dcounter/shopadd.asp?mode=rss&items=30&shopid=',
-			'excerpt' => '0',
-			'wordcount' => 25,
-			'paged' => 0,
-			'limit' => 30
+			'excerpt' => '0',   // mit 1 wird ein Textauszug importiert, mit 0 der volle Text bis zum Wordlimit
+			'wordcount' => 25, // soll ein voller Artikel (Fulltext) gezogen werden, limit auf 99999 setzen
+			'paged' => 0,  // paginierung bei der Liste einschalten mit 1
+			'limit' => 30   // Paginierung neue Seite nach Limit Wert
         ),
         $attrs
     );
@@ -2593,6 +2592,7 @@ function t5_feed_shortcode( $attrs )
         if ( '' === $title = esc_attr( strip_tags( $item->get_title() ) ) ) $title = __( 'Untitled' );
         if ( '' === $content = $item->get_description() ) $content = __( 'none' );
 		if ( '1' == $excerpt ) { $content = esc_attr( strip_tags( $item->get_description() )); }
+		if ( '0' == $excerpt ) { $content = show_post_images($item->get_content() ); }
 		if ( $wordcount >= 1 ) {
 			$content = implode(" ", array_slice( explode(" ", $content), 0, $wordcount + 4) );
 			if ( $wordcount <=12 ) $content = sanitize_text_field($content);
@@ -2919,8 +2919,6 @@ function show_post_images($input) {
 	return $input;
 }
 
-
-
 function update_pbrss_news($number) {
 	$upload_dir = wp_upload_dir();
     // To reset set this one (for debugging)
@@ -2948,8 +2946,9 @@ function update_pbrss_news($number) {
 		foreach ($feed->get_items() as $item){
 			$titlepost = $item->get_title();
 			$content = $item->get_content();
-			// $description = $item->get_description();
 			$description = show_post_images( $item->get_description() );
+			$content = show_post_images( $item->get_content() );
+			if (empty($content)) $content = $description;
 			$itemdate = $item->get_date();
 			$cat_terms = array();
 			$categorien = $item->get_categories();
@@ -2962,7 +2961,8 @@ function update_pbrss_news($number) {
 			$catid = wp_create_category( $cat_terms[0] );
 			$post_information = array(
 				'post_title' => $titlepost,
-				'post_content' => $description,
+				// 'post_content' => $description,
+				'post_content' => $content,
 				'post_type' => 'post',
 				'post_author' => 1,
 				'post_status' => 'publish',
